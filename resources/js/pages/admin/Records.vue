@@ -218,6 +218,23 @@ const sheets = [
                         : 'Everything looks ready.'
                 }}</strong>
             </p>
+            <div
+                class="h-2 overflow-hidden rounded-full bg-muted"
+                role="progressbar"
+                aria-label="Records ready"
+                :aria-valuenow="
+                    readiness.items.filter((i) => i.status === 'ok').length
+                "
+                aria-valuemin="0"
+                :aria-valuemax="readiness.items.length"
+            >
+                <div
+                    class="h-full rounded-full bg-emerald-600"
+                    :style="{
+                        width: `${(readiness.items.filter((i) => i.status === 'ok').length / Math.max(readiness.items.length, 1)) * 100}%`,
+                    }"
+                ></div>
+            </div>
             <ul class="divide-y rounded-xl border bg-card">
                 <li
                     v-for="i in readiness.items"

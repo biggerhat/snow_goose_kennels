@@ -87,10 +87,10 @@ watch([q, type], () => {
         </EmptyState>
 
         <ul v-else class="divide-y rounded-xl border bg-card">
-            <li v-for="c in contacts" :key="c.id">
+            <li v-for="c in contacts" :key="c.id" class="flex items-center">
                 <Link
                     :href="edit(c.id)"
-                    class="flex flex-wrap items-center justify-between gap-x-4 gap-y-1 p-4 transition-colors hover:bg-muted/50"
+                    class="flex min-w-0 flex-1 flex-wrap items-center justify-between gap-x-4 gap-y-1 p-4 transition-colors hover:bg-muted/50"
                 >
                     <div class="min-w-0">
                         <p class="font-medium">{{ c.name }}</p>
@@ -124,6 +124,13 @@ watch([q, type], () => {
                         />
                     </div>
                 </Link>
+                <a
+                    v-if="c.phone"
+                    :href="`tel:${c.phone.replace(/[^0-9+]/g, '')}`"
+                    class="mr-3 inline-flex shrink-0 items-center gap-1.5 rounded-md border px-3 py-2 text-sm font-medium hover:bg-muted"
+                    :aria-label="`Call ${c.name}`"
+                    ><Phone class="size-4" />Call</a
+                >
             </li>
         </ul>
     </div>

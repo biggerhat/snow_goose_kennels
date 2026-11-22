@@ -83,7 +83,7 @@ class DogController extends Controller
     public function edit(Dog $dog): Response
     {
         return Inertia::render('admin/dogs/Edit', [
-            'dog' => $dog->load(['healthTests', 'heatCycles', 'photos', 'documents']),
+            'dog' => $dog->load(['healthTests', 'heatCycles', 'photos', 'documents', 'healthRecords']),
             'pedigree' => Pedigree::build($dog, 3),
             'akc' => AkcChecks::forDog($dog),
             'litters' => Litter::where('sire_id', $dog->id)->orWhere('dam_id', $dog->id)

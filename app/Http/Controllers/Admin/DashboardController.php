@@ -14,6 +14,7 @@ use App\Models\Photo;
 use App\Models\Puppy;
 use App\Models\Setting;
 use App\Models\WaitlistEntry;
+use App\Support\Attention;
 use App\Support\SiteContent;
 use Inertia\Inertia;
 use Inertia\Response;
@@ -26,6 +27,7 @@ class DashboardController extends Controller
 
         return Inertia::render('admin/Dashboard', [
             'setup' => $this->setup(),
+            'attention' => Attention::items(14),
             'stats' => [
                 'dogs' => Dog::count(),
                 'contacts' => Contact::count(),

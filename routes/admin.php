@@ -7,6 +7,7 @@ use App\Http\Controllers\Admin\DiaryEntryController;
 use App\Http\Controllers\Admin\DocumentController;
 use App\Http\Controllers\Admin\DogController;
 use App\Http\Controllers\Admin\ExportController;
+use App\Http\Controllers\Admin\HealthRecordController;
 use App\Http\Controllers\Admin\HealthTestController;
 use App\Http\Controllers\Admin\HeatCycleController;
 use App\Http\Controllers\Admin\LitterController;
@@ -54,5 +55,10 @@ Route::middleware('auth')->prefix('admin')->name('admin.')->group(function () {
     Route::post('photos/bulk', [PhotoController::class, 'bulk'])->name('photos.bulk');
     Route::resource('photos', PhotoController::class)->only(['index', 'store', 'update', 'destroy']);
     Route::resource('albums', AlbumController::class)->only(['store', 'update', 'destroy']);
+    Route::post('dogs/{dog}/health-records', [HealthRecordController::class, 'storeForDog'])->name('health-records.dog');
+    Route::post('puppies/{puppy}/health-records', [HealthRecordController::class, 'storeForPuppy'])->name('health-records.puppy');
+    Route::post('litters/{litter}/health-records', [HealthRecordController::class, 'storeForLitter'])->name('health-records.litter');
+    Route::put('health-records/{health_record}', [HealthRecordController::class, 'update'])->name('health-records.update');
+    Route::delete('health-records/{health_record}', [HealthRecordController::class, 'destroy'])->name('health-records.destroy');
     Route::resource('documents', DocumentController::class)->only(['store', 'update', 'show', 'destroy']);
 });

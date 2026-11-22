@@ -15,6 +15,14 @@
 @endforeach
 
 @endif
+@if ($attention->isNotEmpty())
+## Due or running out
+@foreach ($attention as $a)
+- **{{ $a['title'] }}**: {{ \Illuminate\Support\Carbon::parse($a['date'])->format('D, M j') }}@if ($a['overdue']) (overdue)@endif
+
+@endforeach
+
+@endif
 @if ($unanswered->isNotEmpty())
 ## Applications still waiting for a reply
 @foreach ($unanswered as $e)

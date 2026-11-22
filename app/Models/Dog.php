@@ -48,7 +48,10 @@ class Dog extends Model
         });
 
         // Photos are kept in the library when a dog is deleted.
-        static::deleting(fn (Dog $dog) => $dog->photos()->update(['photoable_type' => null, 'photoable_id' => null]));
+        static::deleting(function (Dog $dog) {
+            $dog->photos()->update(['photoable_type' => null, 'photoable_id' => null]);
+            $dog->healthRecords()->delete();
+        });
     }
 
     protected function slugSource(): string
@@ -75,6 +78,11 @@ class Dog extends Model
     public function healthTests(): HasMany
     {
         return $this->hasMany(HealthTest::class)->orderBy('name');
+    }
+
+    public function healthRecords(): MorphMany
+    {
+        return $this->morphMany(HealthRecord::class, 'recordable')->orderByDesc('given_on')->orderByDesc('id');
     }
 
     public function heatCycles(): HasMany

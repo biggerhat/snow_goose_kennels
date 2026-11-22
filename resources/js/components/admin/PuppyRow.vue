@@ -3,6 +3,7 @@ import { router, useForm, usePage } from '@inertiajs/vue3';
 import { computed, watch } from 'vue';
 import ConfirmDelete from '@/components/admin/ConfirmDelete.vue';
 import DocumentManager from '@/components/admin/DocumentManager.vue';
+import HealthRecords from '@/components/admin/HealthRecords.vue';
 import Field from '@/components/admin/Field.vue';
 import NativeSelect from '@/components/admin/NativeSelect.vue';
 import { Button } from '@/components/ui/button';
@@ -246,6 +247,23 @@ function save() {
                 </div>
             </details>
         </form>
+
+        <details class="rounded-lg border bg-card/50 p-3">
+            <summary class="cursor-pointer text-sm font-medium select-none">
+                Health records
+                <span class="font-normal text-muted-foreground"
+                    >(deworming, vaccines, vet checks;
+                    {{ puppy.health_records?.length ?? 0 }})</span
+                >
+            </summary>
+            <div class="mt-3">
+                <HealthRecords
+                    target="puppy"
+                    :id="puppy.id"
+                    :records="puppy.health_records ?? []"
+                />
+            </div>
+        </details>
 
         <details class="rounded-lg border bg-card/50 p-3">
             <summary class="cursor-pointer text-sm font-medium select-none">

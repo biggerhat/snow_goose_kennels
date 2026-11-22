@@ -12,6 +12,18 @@ export type Options = {
     breedingMethod: Option[];
     registrationType: Option[];
     documentCategory: Option[];
+    healthRecordType: Option[];
+};
+
+export type HealthRecord = {
+    id: number;
+    type: string;
+    name: string;
+    given_on: string;
+    next_due_on: string | null;
+    given_by: string | null;
+    lot_number: string | null;
+    notes: string | null;
 };
 
 export type DocumentFile = {
@@ -86,6 +98,7 @@ export type Dog = {
     age_label?: string | null;
     photos?: Photo[];
     documents?: DocumentFile[];
+    health_records?: HealthRecord[];
     health_tests?: HealthTest[];
     heat_cycles?: {
         id: number;
@@ -115,6 +128,7 @@ export type Puppy = {
     vet_checked_on?: string | null;
     buyer?: { id: number; name: string } | null;
     documents?: DocumentFile[];
+    health_records?: HealthRecord[];
     weights?: { id: number; weighed_on: string; weight_g: number }[];
 };
 

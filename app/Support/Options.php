@@ -9,6 +9,7 @@ use App\Enums\DocumentCategory;
 use App\Enums\DogLeftReason;
 use App\Enums\DogRole;
 use App\Enums\DogSex;
+use App\Enums\HealthRecordType;
 use App\Enums\LitterStatus;
 use App\Enums\PuppyStatus;
 use App\Enums\RegistrationType;
@@ -24,6 +25,7 @@ class Options
             'role' => DogRole::options(),
             'leftReason' => DogLeftReason::options(),
             'documentCategory' => DocumentCategory::options(),
+            'healthRecordType' => HealthRecordType::options(),
             'breedingMethod' => BreedingMethod::options(),
             'registrationType' => RegistrationType::options(),
             'color' => CoatColor::options(),

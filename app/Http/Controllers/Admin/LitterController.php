@@ -53,7 +53,7 @@ class LitterController extends Controller
 
     public function edit(Litter $litter): Response
     {
-        $litter->load(['puppies.buyer:id,name', 'puppies.weights', 'puppies.documents', 'diary', 'photos', 'documents', 'waitlistEntries.contact:id,name,phone,email'])
+        $litter->load(['puppies.buyer:id,name', 'puppies.weights', 'puppies.documents', 'puppies.healthRecords', 'diary', 'photos', 'documents', 'waitlistEntries.contact:id,name,phone,email'])
             ->append('title');
 
         return Inertia::render('admin/litters/Edit', [

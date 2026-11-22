@@ -6,6 +6,7 @@ import type { AkcItem } from '@/components/admin/AkcChecklist.vue';
 import ConfirmDelete from '@/components/admin/ConfirmDelete.vue';
 import DocumentManager from '@/components/admin/DocumentManager.vue';
 import Field from '@/components/admin/Field.vue';
+import HealthRecords from '@/components/admin/HealthRecords.vue';
 import NativeSelect from '@/components/admin/NativeSelect.vue';
 import PageHeader from '@/components/admin/PageHeader.vue';
 import PhotoManager from '@/components/admin/PhotoManager.vue';
@@ -678,6 +679,30 @@ const suggestions = [
                     AKC record for this dog
                 </h2>
                 <AkcChecklist :akc="akc" />
+            </section>
+
+            <section
+                v-if="dog?.is_ours !== false"
+                class="space-y-3 rounded-xl border bg-card p-5"
+            >
+                <div>
+                    <h2 class="font-serif text-lg font-semibold">
+                        Vaccines, treatments &amp; vet visits
+                        <span class="text-sm font-normal text-muted-foreground"
+                            >(private)</span
+                        >
+                    </h2>
+                    <p class="text-sm text-muted-foreground">
+                        Rabies and other shots, worming, flea and heartworm
+                        medicine, checkups. Add a “next due” date and you will
+                        be reminded.
+                    </p>
+                </div>
+                <HealthRecords
+                    target="dog"
+                    :id="dog?.slug ?? ''"
+                    :records="dog?.health_records ?? []"
+                />
             </section>
 
             <section class="space-y-3 rounded-xl border bg-card p-5">

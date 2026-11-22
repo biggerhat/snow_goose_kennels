@@ -27,6 +27,14 @@ const props = defineProps<{
         done: boolean;
         href: string;
     }[];
+    attention: {
+        kind: string;
+        title: string;
+        detail: string;
+        date: string;
+        overdue: boolean;
+        href: string;
+    }[];
     stats: {
         dogs: number;
         contacts: number;
@@ -107,6 +115,29 @@ const allDone = computed(() => doneCount.value === props.setup.length);
                                 s.hint
                             }}</span>
                         </span>
+                    </Link>
+                </li>
+            </ul>
+        </section>
+
+        <section v-if="attention.length" class="space-y-3">
+            <h2 class="font-serif text-xl font-semibold">Needs attention</h2>
+            <ul class="grid gap-2 sm:grid-cols-2">
+                <li v-for="(a, i) in attention" :key="i">
+                    <Link
+                        :href="a.href"
+                        :class="[
+                            'block rounded-lg border p-3 text-sm transition-colors hover:bg-muted/50',
+                            a.overdue
+                                ? 'border-red-500/40 bg-red-500/5'
+                                : 'border-amber-500/40 bg-amber-500/5',
+                        ]"
+                    >
+                        <span class="block font-medium">{{ a.title }}</span>
+                        <span class="block text-xs text-muted-foreground"
+                            >{{ a.overdue ? 'Overdue · ' : 'Due '
+                            }}{{ formatDate(a.date) }} · {{ a.detail }}</span
+                        >
                     </Link>
                 </li>
             </ul>

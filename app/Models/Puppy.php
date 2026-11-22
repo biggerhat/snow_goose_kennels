@@ -36,7 +36,15 @@ class Puppy extends Model
 
     protected static function booted(): void
     {
-        static::deleting(fn (Puppy $puppy) => $puppy->photos()->update(['photoable_type' => null, 'photoable_id' => null]));
+        static::deleting(function (Puppy $puppy) {
+            $puppy->photos()->update(['photoable_type' => null, 'photoable_id' => null]);
+            $puppy->healthRecords()->delete();
+        });
+    }
+
+    public function healthRecords(): MorphMany
+    {
+        return $this->morphMany(HealthRecord::class, 'recordable')->orderByDesc('given_on')->orderByDesc('id');
     }
 
     public function litter(): BelongsTo

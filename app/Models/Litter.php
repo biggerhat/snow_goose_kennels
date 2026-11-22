@@ -39,6 +39,7 @@ class Litter extends Model
         // Photos of the litter and its puppies stay in the library when the litter is deleted.
         static::deleting(function (Litter $litter) {
             $litter->photos()->update(['photoable_type' => null, 'photoable_id' => null]);
+            HealthRecord::where('recordable_type', 'puppy')->whereIn('recordable_id', $litter->puppies()->select('id'))->delete();
             Document::where('documentable_type', 'puppy')->whereIn('documentable_id', $litter->puppies()->select('id'))->get()->each->delete();
             Photo::where('photoable_type', 'puppy')
                 ->whereIn('photoable_id', $litter->puppies()->select('id'))

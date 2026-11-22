@@ -6,6 +6,7 @@ import type { AkcItem } from '@/components/admin/AkcChecklist.vue';
 import ConfirmDelete from '@/components/admin/ConfirmDelete.vue';
 import DocumentManager from '@/components/admin/DocumentManager.vue';
 import Field from '@/components/admin/Field.vue';
+import HealthRecords from '@/components/admin/HealthRecords.vue';
 import NativeSelect from '@/components/admin/NativeSelect.vue';
 import PageHeader from '@/components/admin/PageHeader.vue';
 import PhotoManager from '@/components/admin/PhotoManager.vue';
@@ -650,6 +651,23 @@ const summary = computed(() => {
                         />
                     </li>
                 </ul>
+            </section>
+
+            <section
+                v-if="litter.puppies?.length"
+                class="space-y-3 rounded-xl border bg-card p-5"
+            >
+                <div>
+                    <h2 class="font-serif text-lg font-semibold">
+                        Litter health: deworming, vaccines &amp; vet checks
+                    </h2>
+                    <p class="text-sm text-muted-foreground">
+                        Did the whole litter get dewormed or vaccinated today?
+                        Record it once here and it is added to every puppy. Each
+                        puppy’s own records are in its card above.
+                    </p>
+                </div>
+                <HealthRecords target="litter" :id="litter.slug" />
             </section>
 
             <section

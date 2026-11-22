@@ -13,6 +13,7 @@ class DailyReminders extends Mailable
         public Collection $due,
         public Collection $goingHome,
         public Collection $unanswered,
+        public Collection $attention = new Collection,
     ) {}
 
     public function envelope(): Envelope

@@ -74,7 +74,9 @@ const move = (t: LitterTask, due_on: string) =>
                     :key="t.id"
                     class="flex flex-wrap items-center gap-x-3 gap-y-1 p-3"
                 >
-                    <label class="flex min-w-0 flex-1 items-start gap-3">
+                    <label
+                        class="flex min-w-0 basis-full items-start gap-3 sm:flex-1 sm:basis-0"
+                    >
                         <input
                             type="checkbox"
                             class="mt-1 size-5 shrink-0 accent-primary"
@@ -95,7 +97,7 @@ const move = (t: LitterTask, due_on: string) =>
                             >
                         </span>
                     </label>
-                    <span class="flex items-center gap-2">
+                    <span class="flex items-center gap-2 pl-8 sm:pl-0">
                         <span
                             :class="[
                                 'rounded-full px-2 py-0.5 text-xs font-medium',

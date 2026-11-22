@@ -5,13 +5,14 @@ namespace App\Models;
 use App\Enums\CoatColor;
 use App\Enums\DogSex;
 use App\Enums\PuppyStatus;
+use App\Enums\RegistrationType;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
 
-#[Fillable(['name', 'collar', 'sex', 'color', 'birth_weight_g', 'status', 'contact_id', 'sale_price', 'notes'])]
+#[Fillable(['name', 'collar', 'sex', 'color', 'birth_weight_g', 'status', 'contact_id', 'sale_price', 'notes', 'microchip', 'registration_type', 'akc_number', 'papers_given_on', 'went_home_on', 'vet_checked_on'])]
 class Puppy extends Model
 {
     /** Editing a puppy refreshes the litter's "last updated" date. */
@@ -19,7 +20,15 @@ class Puppy extends Model
 
     protected function casts(): array
     {
-        return ['sex' => DogSex::class, 'color' => CoatColor::class, 'status' => PuppyStatus::class];
+        return [
+            'sex' => DogSex::class,
+            'color' => CoatColor::class,
+            'status' => PuppyStatus::class,
+            'registration_type' => RegistrationType::class,
+            'papers_given_on' => 'date:Y-m-d',
+            'went_home_on' => 'date:Y-m-d',
+            'vet_checked_on' => 'date:Y-m-d',
+        ];
     }
 
     protected static function booted(): void

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Enums\BreedingMethod;
 use App\Enums\DogSex;
 use App\Enums\LitterStatus;
 use App\Http\Controllers\Admin\Concerns\CleansInput;
@@ -9,6 +10,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Contact;
 use App\Models\Dog;
 use App\Models\Litter;
+use App\Support\AkcChecks;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
@@ -58,6 +60,7 @@ class LitterController extends Controller
             'litter' => $litter,
             'dogs' => $this->dogs(),
             'contacts' => Contact::orderBy('name')->get(['id', 'name']),
+            'akc' => AkcChecks::forLitter($litter),
         ]);
     }
 
@@ -87,7 +90,7 @@ class LitterController extends Controller
     /** @return array<string, mixed> */
     private function validated(Request $request): array
     {
-        $this->cleanMoney($request, ['price', 'deposit']);
+        $this->cleanMoney($request, ['price', 'deposit', 'stud_fee']);
 
         $validator = Validator::make($request->all(), [
             'name' => ['nullable', 'string', 'max:150'],
@@ -104,6 +107,14 @@ class LitterController extends Controller
             'description' => ['nullable', 'string', 'max:5000'],
             'is_public' => ['boolean'],
             'private_notes' => ['nullable', 'string', 'max:10000'],
+            'breeding_method' => ['nullable', Rule::enum(BreedingMethod::class)],
+            'bred_place' => ['nullable', 'string', 'max:150'],
+            'bred_handler' => ['nullable', 'string', 'max:150'],
+            'stud_fee' => ['nullable', 'integer', 'min:0', 'max:100000'],
+            'stud_fee_paid_on' => ['nullable', 'date', 'before_or_equal:today'],
+            'stillborn_count' => ['nullable', 'integer', 'min:0', 'max:30'],
+            'akc_applied_on' => ['nullable', 'date', 'before_or_equal:today'],
+            'akc_litter_number' => ['nullable', 'string', 'max:40'],
         ], [
             'sire_id.different' => 'The sire and the dam must be two different dogs.',
         ]);
@@ -136,6 +147,10 @@ class LitterController extends Controller
 
             if (in_array($in['status'] ?? null, [LitterStatus::OnGround->value, LitterStatus::AllHome->value], true) && ! $born) {
                 $v->errors()->add('born_on', 'Add the date the puppies were born, because this litter is marked as born.');
+            }
+
+            if ($born && filled($in['akc_applied_on'] ?? null) && Carbon::parse($in['akc_applied_on'])->lt($born)) {
+                $v->errors()->add('akc_applied_on', 'The AKC application cannot be sent before the puppies were born.');
             }
 
             if (filled($in['price'] ?? null) && filled($in['deposit'] ?? null) && (int) $in['deposit'] > (int) $in['price']) {

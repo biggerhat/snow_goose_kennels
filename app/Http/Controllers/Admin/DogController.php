@@ -11,6 +11,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Contact;
 use App\Models\Dog;
 use App\Models\Litter;
+use App\Support\AkcChecks;
 use App\Support\Pedigree;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -84,6 +85,7 @@ class DogController extends Controller
         return Inertia::render('admin/dogs/Edit', [
             'dog' => $dog->load(['healthTests', 'heatCycles', 'photos']),
             'pedigree' => Pedigree::build($dog, 3),
+            'akc' => AkcChecks::forDog($dog),
             'litters' => Litter::where('sire_id', $dog->id)->orWhere('dam_id', $dog->id)
                 ->withCount('puppies')->orderByDesc('born_on')->orderByDesc('due_on')->get()
                 ->map(fn (Litter $l) => ['id' => $l->id, 'slug' => $l->slug, 'title' => $l->title, 'status' => $l->status->value, 'born_on' => $l->born_on?->toDateString(), 'due_on' => $l->due_on?->toDateString(), 'puppies_count' => $l->puppies_count]),

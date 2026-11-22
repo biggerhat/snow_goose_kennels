@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Enums\BreedingMethod;
 use App\Enums\LitterStatus;
 use App\Models\Concerns\HasSlug;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
@@ -11,7 +12,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
 
-#[Fillable(['name', 'sire_id', 'dam_id', 'status', 'bred_on', 'due_on', 'born_on', 'go_home_on', 'price', 'deposit', 'expected_count', 'description', 'is_public', 'private_notes'])]
+#[Fillable(['name', 'sire_id', 'dam_id', 'status', 'bred_on', 'due_on', 'born_on', 'go_home_on', 'price', 'deposit', 'expected_count', 'description', 'is_public', 'private_notes', 'breeding_method', 'bred_place', 'bred_handler', 'stud_fee', 'stud_fee_paid_on', 'stillborn_count', 'akc_applied_on', 'akc_litter_number'])]
 class Litter extends Model
 {
     use HasSlug;
@@ -24,6 +25,9 @@ class Litter extends Model
             'due_on' => 'date:Y-m-d',
             'born_on' => 'date:Y-m-d',
             'go_home_on' => 'date:Y-m-d',
+            'stud_fee_paid_on' => 'date:Y-m-d',
+            'akc_applied_on' => 'date:Y-m-d',
+            'breeding_method' => BreedingMethod::class,
             'is_public' => 'boolean',
         ];
     }

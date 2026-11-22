@@ -1,6 +1,8 @@
 <script setup lang="ts">
 import { Head, Link, router, useForm, usePage } from '@inertiajs/vue3';
 import { computed, ref, watch } from 'vue';
+import AkcChecklist from '@/components/admin/AkcChecklist.vue';
+import type { AkcItem } from '@/components/admin/AkcChecklist.vue';
 import ConfirmDelete from '@/components/admin/ConfirmDelete.vue';
 import Field from '@/components/admin/Field.vue';
 import NativeSelect from '@/components/admin/NativeSelect.vue';
@@ -32,6 +34,7 @@ const props = defineProps<{
     litter: Litter | null;
     dogs: Pick<Dog, 'id' | 'name' | 'sex' | 'is_ours'>[];
     contacts?: { id: number; name: string }[];
+    akc?: { items: AkcItem[]; todo: number; warn: number };
 }>();
 const options = computed(() => usePage().props.options as Options);
 
@@ -54,6 +57,14 @@ const form = useForm({
     description: props.litter?.description ?? '',
     is_public: props.litter?.is_public ?? true,
     private_notes: props.litter?.private_notes ?? '',
+    breeding_method: props.litter?.breeding_method ?? null,
+    bred_place: props.litter?.bred_place ?? '',
+    bred_handler: props.litter?.bred_handler ?? '',
+    stud_fee: props.litter?.stud_fee ?? null,
+    stud_fee_paid_on: props.litter?.stud_fee_paid_on ?? '',
+    stillborn_count: props.litter?.stillborn_count ?? null,
+    akc_applied_on: props.litter?.akc_applied_on ?? '',
+    akc_litter_number: props.litter?.akc_litter_number ?? '',
 });
 
 useUnsavedWarning(() => form.isDirty);
@@ -307,6 +318,117 @@ const summary = computed(() => {
                             Use {{ formatDate(suggestedHome) }} (8 weeks old)
                         </button></Field
                     >
+                </div>
+            </section>
+
+            <section class="space-y-4 rounded-xl border bg-card p-5">
+                <div>
+                    <h2 class="font-serif text-lg font-semibold">
+                        Breeding &amp; AKC
+                        <span class="text-sm font-normal text-muted-foreground"
+                            >(private)</span
+                        >
+                    </h2>
+                    <p class="text-sm text-muted-foreground">
+                        AKC asks you to keep a record of every mating and every
+                        litter. Fill in what you know; the checklist below shows
+                        what is still missing.
+                    </p>
+                </div>
+                <div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+                    <Field
+                        label="How they were bred"
+                        :error="form.errors.breeding_method"
+                        help="Natural mating is the usual way. Artificial insemination needs extra AKC paperwork and a DNA profile for the sire."
+                    >
+                        <NativeSelect
+                            v-model="form.breeding_method"
+                            :options="options.breedingMethod"
+                            placeholder="Not recorded"
+                        />
+                    </Field>
+                    <Field
+                        label="Where"
+                        :error="form.errors.bred_place"
+                        for="bred_place"
+                        hint="Town or kennel where the mating took place."
+                    >
+                        <Input id="bred_place" v-model="form.bred_place" />
+                    </Field>
+                    <Field
+                        label="Who handled the mating"
+                        :error="form.errors.bred_handler"
+                        for="bred_handler"
+                    >
+                        <Input id="bred_handler" v-model="form.bred_handler" />
+                    </Field>
+                    <Field
+                        label="Stud fee ($)"
+                        :error="form.errors.stud_fee"
+                        for="stud_fee"
+                        help="Money paid for the stud’s services, either to the other kennel for their stud or to you for yours. Leave empty if there was none. Keep the signed stud agreement under Documents."
+                        hint="Whole dollars."
+                    >
+                        <Input
+                            id="stud_fee"
+                            v-model="form.stud_fee"
+                            type="number"
+                            inputmode="numeric"
+                            min="0"
+                        />
+                    </Field>
+                    <Field
+                        label="Stud fee paid on"
+                        :error="form.errors.stud_fee_paid_on"
+                        for="stud_fee_paid_on"
+                    >
+                        <Input
+                            id="stud_fee_paid_on"
+                            v-model="form.stud_fee_paid_on"
+                            type="date"
+                        />
+                    </Field>
+                    <Field
+                        label="Puppies born not alive"
+                        :error="form.errors.stillborn_count"
+                        for="stillborn_count"
+                        hint="Only if any were stillborn or died soon after birth."
+                    >
+                        <Input
+                            id="stillborn_count"
+                            v-model="form.stillborn_count"
+                            type="number"
+                            inputmode="numeric"
+                            min="0"
+                        />
+                    </Field>
+                    <Field
+                        label="AKC application sent on"
+                        :error="form.errors.akc_applied_on"
+                        for="akc_applied_on"
+                        help="The date you sent in the Application for Litter Registration. AKC wants it within 6 months of the birth date."
+                    >
+                        <Input
+                            id="akc_applied_on"
+                            v-model="form.akc_applied_on"
+                            type="date"
+                        />
+                    </Field>
+                    <Field
+                        label="AKC litter number"
+                        :error="form.errors.akc_litter_number"
+                        for="akc_litter_number"
+                        hint="Printed on the papers AKC sends back."
+                    >
+                        <Input
+                            id="akc_litter_number"
+                            v-model="form.akc_litter_number"
+                        />
+                    </Field>
+                </div>
+                <div v-if="litter && akc" class="space-y-2">
+                    <h3 class="font-medium">AKC checklist</h3>
+                    <AkcChecklist :akc="akc" />
                 </div>
             </section>
 

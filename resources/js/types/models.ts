@@ -9,6 +9,8 @@ export type Options = {
     contactType: Option[];
     waitlistStatus: Option[];
     leftReason: Option[];
+    breedingMethod: Option[];
+    registrationType: Option[];
 };
 
 export type Photo = {
@@ -90,6 +92,12 @@ export type Puppy = {
     contact_id: number | null;
     sale_price: number | null;
     notes: string | null;
+    microchip?: string | null;
+    registration_type?: string | null;
+    akc_number?: string | null;
+    papers_given_on?: string | null;
+    went_home_on?: string | null;
+    vet_checked_on?: string | null;
     buyer?: { id: number; name: string } | null;
     weights?: { id: number; weighed_on: string; weight_g: number }[];
 };
@@ -140,6 +148,14 @@ export type Litter = {
     description: string | null;
     is_public: boolean;
     private_notes: string | null;
+    breeding_method?: string | null;
+    bred_place?: string | null;
+    bred_handler?: string | null;
+    stud_fee?: number | null;
+    stud_fee_paid_on?: string | null;
+    stillborn_count?: number | null;
+    akc_applied_on?: string | null;
+    akc_litter_number?: string | null;
     puppies_count?: number;
     waitlist_entries_count?: number;
     puppies?: Puppy[];

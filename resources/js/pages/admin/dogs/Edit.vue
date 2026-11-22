@@ -1,6 +1,8 @@
 <script setup lang="ts">
 import { Head, Link, router, useForm, usePage } from '@inertiajs/vue3';
 import { computed, ref, watch } from 'vue';
+import AkcChecklist from '@/components/admin/AkcChecklist.vue';
+import type { AkcItem } from '@/components/admin/AkcChecklist.vue';
 import ConfirmDelete from '@/components/admin/ConfirmDelete.vue';
 import Field from '@/components/admin/Field.vue';
 import NativeSelect from '@/components/admin/NativeSelect.vue';
@@ -40,6 +42,7 @@ const props = defineProps<{
     }[];
     contacts: { id: number; name: string }[];
     pedigree?: PedigreeNode | null;
+    akc?: { items: AkcItem[]; todo: number; warn: number };
     litters?: {
         id: number;
         slug: string;
@@ -667,6 +670,13 @@ const suggestions = [
                         >Add test</Button
                     >
                 </form>
+            </section>
+
+            <section v-if="akc" class="space-y-3 rounded-xl border bg-card p-5">
+                <h2 class="font-serif text-lg font-semibold">
+                    AKC record for this dog
+                </h2>
+                <AkcChecklist :akc="akc" />
             </section>
 
             <section class="space-y-3 rounded-xl border bg-card p-5">

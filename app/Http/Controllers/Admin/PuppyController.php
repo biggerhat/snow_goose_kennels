@@ -6,6 +6,7 @@ use App\Enums\CoatColor;
 use App\Enums\DogSex;
 use App\Enums\LitterStatus;
 use App\Enums\PuppyStatus;
+use App\Enums\RegistrationType;
 use App\Http\Controllers\Admin\Concerns\CleansInput;
 use App\Http\Controllers\Controller;
 use App\Models\Litter;
@@ -64,6 +65,7 @@ class PuppyController extends Controller
     private function validated(Request $request): array
     {
         $this->cleanMoney($request, ['sale_price', 'birth_weight_g']);
+        $this->cleanDigits($request, ['microchip']);
 
         return $request->validate([
             'name' => ['nullable', 'string', 'max:100'],
@@ -75,7 +77,14 @@ class PuppyController extends Controller
             'contact_id' => ['nullable', 'exists:contacts,id'],
             'sale_price' => ['nullable', 'integer', 'min:0', 'max:100000'],
             'notes' => ['nullable', 'string', 'max:2000'],
+            'microchip' => ['nullable', 'regex:/^[0-9]{9,15}$/'],
+            'registration_type' => ['nullable', Rule::enum(RegistrationType::class)],
+            'akc_number' => ['nullable', 'string', 'max:40'],
+            'papers_given_on' => ['nullable', 'date', 'before_or_equal:today'],
+            'went_home_on' => ['nullable', 'date', 'before_or_equal:today'],
+            'vet_checked_on' => ['nullable', 'date', 'before_or_equal:today'],
         ], [
+            'microchip.regex' => 'A microchip number is 9 to 15 digits, with no letters. Check the number on the vet paperwork.',
             'birth_weight_g.min' => 'That birth weight looks too small. Newborn Labs are usually 6 to 20 ounces (170 to 570 grams).',
             'birth_weight_g.max' => 'That birth weight looks too big. Newborn Labs are usually 6 to 20 ounces (170 to 570 grams).',
         ]);

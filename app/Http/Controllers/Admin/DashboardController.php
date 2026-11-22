@@ -10,8 +10,11 @@ use App\Models\Contact;
 use App\Models\ContactNote;
 use App\Models\Dog;
 use App\Models\Litter;
+use App\Models\Photo;
 use App\Models\Puppy;
+use App\Models\Setting;
 use App\Models\WaitlistEntry;
+use App\Support\SiteContent;
 use Inertia\Inertia;
 use Inertia\Response;
 
@@ -22,6 +25,7 @@ class DashboardController extends Controller
         $litter = fn ($q) => $q->with(['sire:id,name', 'dam:id,name'])->withCount('puppies');
 
         return Inertia::render('admin/Dashboard', [
+            'setup' => $this->setup(),
             'stats' => [
                 'dogs' => Dog::count(),
                 'contacts' => Contact::count(),
@@ -51,5 +55,23 @@ class DashboardController extends Controller
                 ->sortBy('date')->values(),
             'recentNotes' => ContactNote::with('contact:id,name')->latest('noted_at')->limit(5)->get(),
         ]);
+    }
+
+    /**
+     * A short first-run checklist so a brand new kennel knows where to start.
+     *
+     * @return list<array{key: string, title: string, hint: string, done: bool, href: string}>
+     */
+    private function setup(): array
+    {
+        $contact = Setting::contact();
+
+        return [
+            ['key' => 'contact', 'title' => 'Add your phone, email and town', 'hint' => 'So visitors can reach you.', 'done' => filled($contact['phone'] ?? null) || filled($contact['email'] ?? null), 'href' => route('admin.site.edit')],
+            ['key' => 'dogs', 'title' => 'Add your dogs', 'hint' => 'Mothers, fathers, and retired dogs.', 'done' => Dog::exists(), 'href' => route('admin.dogs.create')],
+            ['key' => 'litter', 'title' => 'Add a litter', 'hint' => 'One that is planned, expected or on the ground.', 'done' => Litter::exists(), 'href' => route('admin.litters.create')],
+            ['key' => 'photos', 'title' => 'Put a photo on the website', 'hint' => 'Add one to a dog or litter, or in the Photos library.', 'done' => Photo::where('is_public', true)->exists(), 'href' => route('admin.photos.index')],
+            ['key' => 'text', 'title' => 'Write how it works (optional)', 'hint' => 'Deposits, go-home age and so on, in your own words.', 'done' => SiteContent::hasAny(), 'href' => route('admin.site.edit')],
+        ];
     }
 }

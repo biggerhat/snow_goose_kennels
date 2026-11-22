@@ -140,6 +140,8 @@ class PhotoController extends Controller
             'in_gallery' => ['boolean'],
         ]));
 
+        Inertia::flash('toast', ['type' => 'success', 'message' => 'Saved.']);
+
         return back();
     }
 

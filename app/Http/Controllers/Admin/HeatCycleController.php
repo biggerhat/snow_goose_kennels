@@ -7,6 +7,7 @@ use App\Models\Dog;
 use App\Models\HeatCycle;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Inertia\Inertia;
 
 class HeatCycleController extends Controller
 {
@@ -19,12 +20,16 @@ class HeatCycleController extends Controller
             'notes' => ['nullable', 'string', 'max:2000'],
         ]));
 
+        Inertia::flash('toast', ['type' => 'success', 'message' => 'Heat cycle added.']);
+
         return back();
     }
 
     public function destroy(HeatCycle $heatCycle): RedirectResponse
     {
         $heatCycle->delete();
+
+        Inertia::flash('toast', ['type' => 'success', 'message' => 'Heat cycle removed.']);
 
         return back();
     }

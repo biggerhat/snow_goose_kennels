@@ -23,12 +23,15 @@ class PuppyController extends Controller
     {
         $litter->puppies()->create($this->validated($request));
 
+        Inertia::flash('toast', ['type' => 'success', 'message' => 'Puppy added.']);
+
         return back();
     }
 
     public function update(Request $request, Puppy $puppy): RedirectResponse
     {
         $puppy->update($this->validated($request));
+        Inertia::flash('toast', ['type' => 'success', 'message' => 'Puppy saved.']);
         $this->syncLitterStatus($puppy->litter);
 
         return back();
@@ -38,6 +41,7 @@ class PuppyController extends Controller
     {
         $litter = $puppy->litter;
         $puppy->delete();
+        Inertia::flash('toast', ['type' => 'success', 'message' => 'Puppy removed.']);
         $this->syncLitterStatus($litter);
 
         return back();

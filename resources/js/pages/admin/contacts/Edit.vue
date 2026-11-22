@@ -9,6 +9,7 @@ import StatusBadge from '@/components/admin/StatusBadge.vue';
 import TextArea from '@/components/admin/TextArea.vue';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
+import { useUnsavedWarning } from '@/composables/useUnsavedWarning';
 import { formatDateTime, labelFor, money } from '@/lib/format';
 import {
     destroy as destroyNote,
@@ -41,6 +42,8 @@ const form = useForm({
     notes: props.contact?.notes ?? '',
 });
 
+useUnsavedWarning(() => form.isDirty);
+
 function submit() {
     if (props.contact) {
         form.put(update.url(props.contact.id), { preserveScroll: true });
@@ -70,8 +73,15 @@ function addNote() {
             :description="
                 contact
                     ? labelFor(options.contactType, contact.type)
-                    : undefined
+                    : 'Anyone you talk to: buyers, your vet, friends. Only the name is needed.'
             "
+            :help="[
+                'Contacts is your address book. Everyone who calls, texts or applies can live here, with a running log of what you talked about.',
+                'Add a person here, or just add them from the Waitlist page and they appear here automatically.',
+                'After you save, use Conversation notes at the bottom to jot down each call or text, with the date.',
+                'Nothing here is ever shown on the website.',
+            ]"
+            help-title="Contacts"
         >
             <template v-if="contact">
                 <Button v-if="contact.phone" as-child variant="outline"
@@ -82,7 +92,7 @@ function addNote() {
                 >
                 <ConfirmDelete
                     label="Delete"
-                    :message="`Delete ${contact.name}? Their waitlist entries go too.`"
+                    :message="`Delete ${contact.name}? Their conversation notes and waitlist entries are deleted too, and any puppy they bought will show no buyer. This cannot be undone.`"
                     @confirm="router.delete(destroy.url(contact.id))"
                 />
             </template>
@@ -91,15 +101,26 @@ function addNote() {
         <form class="space-y-6" @submit.prevent="submit">
             <section class="space-y-4 rounded-xl border bg-card p-5">
                 <div class="grid gap-4 sm:grid-cols-2">
-                    <Field label="Name" :error="form.errors.name" for="name"
+                    <Field
+                        label="Name"
+                        required
+                        :error="form.errors.name"
+                        for="name"
                         ><Input id="name" v-model="form.name" required
                     /></Field>
-                    <Field label="Type" :error="form.errors.type"
+                    <Field
+                        label="Type"
+                        :error="form.errors.type"
+                        help="Why this person is in your book, such as a puppy buyer, your vet, or the owner of a stud dog. It only helps you search."
                         ><NativeSelect
                             v-model="form.type"
                             :options="options.contactType"
                     /></Field>
-                    <Field label="Phone" :error="form.errors.phone" for="phone"
+                    <Field
+                        label="Phone"
+                        :error="form.errors.phone"
+                        hint="With area code, like (208) 555-0123."
+                        for="phone"
                         ><Input
                             id="phone"
                             v-model="form.phone"

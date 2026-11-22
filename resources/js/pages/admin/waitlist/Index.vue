@@ -51,6 +51,12 @@ function prefs(e: WaitlistEntry): string {
         <PageHeader
             title="Waitlist"
             description="Everyone waiting on a puppy, by litter."
+            :help="[
+                'People are grouped by the litter they want. “New application” means someone filled in the form on your website and you have not answered yet.',
+                'Tap a person to change their status, record a deposit or set the pick order (who chooses first).',
+                'You can also add people here yourself when they call or text.',
+            ]"
+            help-title="The waitlist"
         >
             <Button as-child
                 ><Link :href="create()">Add to waitlist</Link></Button

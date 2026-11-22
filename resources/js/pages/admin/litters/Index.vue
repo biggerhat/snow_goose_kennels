@@ -42,6 +42,12 @@ const groups = computed(() =>
         <PageHeader
             title="Litters"
             description="Planned, expected and past litters."
+            :help="[
+                'A litter is one set of puppies from the same mother. They are grouped by where they are: planned or expected, on the ground (born), and all gone home.',
+                'Tap a litter to add its puppies, weigh them, post updates and see who is waiting.',
+                'Litters you untick “Show on the website” for stay private.',
+            ]"
+            help-title="Your litters"
         >
             <Button as-child><Link :href="create()">New litter</Link></Button>
         </PageHeader>

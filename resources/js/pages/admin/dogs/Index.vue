@@ -22,6 +22,12 @@ const options = computed(() => usePage().props.options as Options);
         <PageHeader
             title="Dogs"
             description="Your studs, dams and retired family members."
+            :help="[
+                'Every dog you keep or breed is listed here. Tap a dog to see or change its details, photos and health tests.',
+                'A dam is a mother and a stud is a father. Retired dogs are no longer bred.',
+                'Dogs that are not shown on the website are marked Private.',
+            ]"
+            help-title="Your dogs"
         >
             <Button as-child><Link :href="create()">Add a dog</Link></Button>
         </PageHeader>

@@ -6,6 +6,7 @@ import StatusBadge from '@/components/admin/StatusBadge.vue';
 import { Button } from '@/components/ui/button';
 import { countdown, formatDate, labelFor } from '@/lib/format';
 import { dashboard } from '@/routes';
+import { help } from '@/routes/admin';
 import { edit as editContact } from '@/routes/admin/contacts';
 import {
     create as newLitter,
@@ -18,7 +19,14 @@ defineOptions({
     layout: { breadcrumbs: [{ title: 'Dashboard', href: dashboard() }] },
 });
 
-defineProps<{
+const props = defineProps<{
+    setup: {
+        key: string;
+        title: string;
+        hint: string;
+        done: boolean;
+        href: string;
+    }[];
     stats: {
         dogs: number;
         contacts: number;
@@ -38,6 +46,8 @@ defineProps<{
 }>();
 
 const options = computed(() => usePage().props.options as Options);
+const doneCount = computed(() => props.setup.filter((s) => s.done).length);
+const allDone = computed(() => doneCount.value === props.setup.length);
 </script>
 
 <template>
@@ -55,6 +65,52 @@ const options = computed(() => usePage().props.options as Options);
                 ><Link :href="newWaitlist()">Add to waitlist</Link></Button
             >
         </PageHeader>
+
+        <section
+            v-if="!allDone"
+            class="space-y-3 rounded-xl border border-primary/30 bg-primary/5 p-5"
+        >
+            <div class="flex flex-wrap items-baseline justify-between gap-2">
+                <h2 class="font-serif text-xl font-semibold">
+                    Getting started
+                </h2>
+                <p class="text-sm text-muted-foreground">
+                    {{ doneCount }} of {{ setup.length }} done. Not sure what
+                    something means? Open
+                    <Link :href="help()" class="underline">Help</Link>.
+                </p>
+            </div>
+            <ul class="grid gap-2 sm:grid-cols-2">
+                <li v-for="s in setup" :key="s.key">
+                    <Link
+                        :href="s.href"
+                        :class="[
+                            'flex items-start gap-3 rounded-lg border bg-card p-3 transition-colors hover:bg-muted/50',
+                            s.done && 'opacity-60',
+                        ]"
+                    >
+                        <span
+                            :class="[
+                                'mt-0.5 flex size-5 shrink-0 items-center justify-center rounded-full border text-xs',
+                                s.done
+                                    ? 'border-emerald-600 bg-emerald-600 text-white'
+                                    : 'border-muted-foreground',
+                            ]"
+                            aria-hidden="true"
+                            >{{ s.done ? '✓' : '' }}</span
+                        >
+                        <span>
+                            <span class="block text-sm font-medium">{{
+                                s.title
+                            }}</span>
+                            <span class="block text-xs text-muted-foreground">{{
+                                s.hint
+                            }}</span>
+                        </span>
+                    </Link>
+                </li>
+            </ul>
+        </section>
 
         <div class="grid grid-cols-2 gap-3 lg:grid-cols-4">
             <div

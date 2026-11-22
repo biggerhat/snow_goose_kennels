@@ -230,6 +230,14 @@ const subjectLabel: Record<string, string> = {
         <PageHeader
             title="Photo library"
             description="Your private photo box. Keep everything here, sort it into albums, and choose which photos visitors can see."
+            :help="[
+                'This is where all your photos live. A photo is private until you choose Show on the website, so you can keep vet photos, records and family pictures here safely.',
+                'Tap the box to add photos from your phone or computer. You can add many at once. They are shrunk automatically so the website stays fast.',
+                'Albums are folders for you. Make one like Vet visits, then pick it when you add photos or move photos into it. Visitors never see albums.',
+                'Tick the little box on several photos to move them, show them on the website, make them private or delete them all at once.',
+                'To show a photo on a particular dog or litter page, add it from that dog’s or litter’s own page.',
+            ]"
+            help-title="The photo library"
         />
 
         <!-- Totals -->

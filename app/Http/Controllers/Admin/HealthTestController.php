@@ -7,12 +7,15 @@ use App\Models\Dog;
 use App\Models\HealthTest;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Inertia\Inertia;
 
 class HealthTestController extends Controller
 {
     public function store(Request $request, Dog $dog): RedirectResponse
     {
         $dog->healthTests()->create($this->validated($request));
+
+        Inertia::flash('toast', ['type' => 'success', 'message' => 'Health test added.']);
 
         return back();
     }
@@ -21,12 +24,16 @@ class HealthTestController extends Controller
     {
         $healthTest->update($this->validated($request));
 
+        Inertia::flash('toast', ['type' => 'success', 'message' => 'Saved.']);
+
         return back();
     }
 
     public function destroy(HealthTest $healthTest): RedirectResponse
     {
         $healthTest->delete();
+
+        Inertia::flash('toast', ['type' => 'success', 'message' => 'Health test removed.']);
 
         return back();
     }

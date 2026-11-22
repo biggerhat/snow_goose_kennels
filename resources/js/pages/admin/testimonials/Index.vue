@@ -58,6 +58,12 @@ function submit() {
         <PageHeader
             title="Happy families"
             description="Kind words from buyers. Add them only with the person's permission; first names are plenty."
+            :help="[
+                'Type or paste something a puppy family said about you, such as from a text, an email or a Facebook comment.',
+                'Ask their permission first. A first name or family name is plenty; you do not need their full name.',
+                'Stories you add appear on the Happy families page and a few on the home page. Untick Show on the website to hide one without deleting it.',
+            ]"
+            help-title="Happy families"
         />
 
         <form
@@ -68,7 +74,11 @@ function submit() {
                 {{ editing ? 'Edit story' : 'Add a story' }}
             </h2>
             <div class="grid gap-4 sm:grid-cols-3">
-                <Field label="Name" :error="form.errors.name"
+                <Field
+                    label="Name"
+                    required
+                    :error="form.errors.name"
+                    hint="First names or a family name are fine."
                     ><Input
                         v-model="form.name"
                         required
@@ -81,7 +91,11 @@ function submit() {
                     ><Input v-model="form.puppy_name" placeholder="Maggie"
                 /></Field>
             </div>
-            <Field label="What they said" :error="form.errors.body"
+            <Field
+                label="What they said"
+                required
+                :error="form.errors.body"
+                hint="Copy it as they wrote it. Fix typos only."
                 ><TextArea v-model="form.body" :rows="4"
             /></Field>
             <ToggleField v-model="form.is_public" label="Show on the website" />
@@ -131,7 +145,7 @@ function submit() {
                         >
                         <ConfirmDelete
                             icon
-                            message="Delete this story?"
+                            message="Delete this story? You can hide it instead by editing it and unticking Show on the website."
                             @confirm="
                                 router.delete(destroy.url(t.id), {
                                     preserveScroll: true,

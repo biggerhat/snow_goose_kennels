@@ -6,6 +6,7 @@ import PageHeader from '@/components/admin/PageHeader.vue';
 import TextArea from '@/components/admin/TextArea.vue';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
+import { useUnsavedWarning } from '@/composables/useUnsavedWarning';
 import { exportMethod } from '@/routes/admin';
 import { edit, update } from '@/routes/admin/site';
 
@@ -31,6 +32,9 @@ const state = reactive<Record<string, string>>({
     ...Object.fromEntries(props.sections.map((s) => [s.key, s.body])),
 });
 
+const snapshot = ref(JSON.stringify(state));
+useUnsavedWarning(() => JSON.stringify(state) !== snapshot.value);
+
 const get = (key: string): string => state[key] ?? '';
 const set = (key: string, value: unknown): void => {
     state[key] = String(value ?? '');
@@ -51,6 +55,7 @@ function save() {
             preserveScroll: true,
             onStart: () => (processing.value = true),
             onFinish: () => (processing.value = false),
+            onSuccess: () => (snapshot.value = JSON.stringify(state)),
         },
     );
 }
@@ -63,6 +68,13 @@ function save() {
         <PageHeader
             title="Website text"
             description="What visitors read on the Contact page and the How it works page. Leave a box empty and it will not appear."
+            :help="[
+                'Fill in your phone, email and town first. They show on the Contact page and the bottom of the home page.',
+                'The boxes under How it works and policies are optional. Write them the way you would explain it on the phone. Only boxes with text appear on the website, so it is fine to leave some empty.',
+                'Tap Save at the bottom when you finish. Changes show on the website straight away.',
+                'The site never makes up rules for you. Only what you write is shown.',
+            ]"
+            help-title="Website text"
         />
 
         <form class="space-y-8" @submit.prevent="save">

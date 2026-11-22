@@ -44,6 +44,12 @@ watch([q, type], () => {
         <PageHeader
             title="Contacts"
             description="Buyers, vets, stud owners and everyone else."
+            :help="[
+                'Your address book. Search by name, phone, email or city.',
+                'Tap a person to see their details and the log of everything you have talked about.',
+                'Nothing in Contacts is ever shown on the website.',
+            ]"
+            help-title="Your contacts"
         >
             <Button as-child><Link :href="create()">Add contact</Link></Button>
         </PageHeader>
@@ -66,8 +72,12 @@ watch([q, type], () => {
 
         <EmptyState
             v-if="!contacts.length"
-            title="No contacts found"
-            description="Add buyers and everyone you work with so their info is in one place."
+            :title="q || type ? 'Nobody matches that' : 'No contacts yet'"
+            :description="
+                q || type
+                    ? 'Try a shorter search, or clear the type filter.'
+                    : 'Add buyers and everyone you work with so their info is in one place.'
+            "
         >
             <Button as-child
                 ><Link :href="create()">Add a contact</Link></Button

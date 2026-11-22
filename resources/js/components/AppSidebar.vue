@@ -4,6 +4,7 @@ import {
     Baby,
     BookUser,
     Dog,
+    CircleHelp,
     ExternalLink,
     ImageIcon,
     LayoutGrid,
@@ -25,6 +26,7 @@ import {
     SidebarMenuItem,
 } from '@/components/ui/sidebar';
 import { dashboard, home } from '@/routes';
+import { help } from '@/routes/admin';
 import { index as contacts } from '@/routes/admin/contacts';
 import { index as dogs } from '@/routes/admin/dogs';
 import { index as litters } from '@/routes/admin/litters';
@@ -46,6 +48,7 @@ const mainNavItems: NavItem[] = [
 ];
 
 const footerNavItems: NavItem[] = [
+    { title: 'Help', href: help(), icon: CircleHelp },
     { title: 'View website', href: home(), icon: ExternalLink },
 ];
 </script>

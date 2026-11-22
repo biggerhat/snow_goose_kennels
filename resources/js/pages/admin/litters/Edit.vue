@@ -13,6 +13,7 @@ import TextArea from '@/components/admin/TextArea.vue';
 import ToggleField from '@/components/admin/ToggleField.vue';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
+import { useUnsavedWarning } from '@/composables/useUnsavedWarning';
 import { formatDate, labelFor, money } from '@/lib/format';
 import {
     destroy as destroyDiary,
@@ -52,6 +53,24 @@ const form = useForm({
     description: props.litter?.description ?? '',
     is_public: props.litter?.is_public ?? true,
     private_notes: props.litter?.private_notes ?? '',
+});
+
+useUnsavedWarning(() => form.isDirty);
+
+function addDays(iso: string, days: number): string {
+    const [y, m, d] = iso.split('-').map(Number);
+
+    return new Date(y, m - 1, d + days).toLocaleDateString('en-CA');
+}
+
+// Labs carry puppies about 63 days; puppies are usually ready at 8 weeks.
+const suggestedDue = computed(() =>
+    form.bred_on && !form.due_on ? addDays(form.bred_on, 63) : null,
+);
+const suggestedHome = computed(() => {
+    const base = form.born_on || form.due_on;
+
+    return base && !form.go_home_on ? addDays(base, 56) : null;
 });
 
 const litterSummary = computed(() => {
@@ -138,11 +157,18 @@ const summary = computed(() => {
                     ? `${litterSummary}`
                     : 'Pick the pairing and the dates. You can fill in the rest later.'
             "
+            :help="[
+                'Start with the mother (dam), the father (sire) and the status. Everything else can be added later.',
+                'Change the status as things happen: Planned, then Expected, then On the ground when puppies are born.',
+                'Once the litter exists, scroll down to add each puppy, record weights, post updates for families, and see who is waiting.',
+                'Untick Show on the website to hide a litter while you decide. Nothing is lost.',
+            ]"
+            help-title="How a litter works"
         >
             <ConfirmDelete
                 v-if="litter"
                 label="Delete litter"
-                message="Delete this litter and its puppies? This cannot be undone."
+                :message="`Delete this litter? This also deletes its ${litter.puppies?.length ?? 0} puppies, their weights and the puppy diary. People on the waitlist stay, but lose this litter. Photos stay in your Photos library. This cannot be undone.`"
                 @confirm="router.delete(destroy.url(litter.slug))"
             />
         </PageHeader>
@@ -153,21 +179,34 @@ const summary = computed(() => {
                     Pairing &amp; dates
                 </h2>
                 <div class="grid gap-4 sm:grid-cols-2">
-                    <Field label="Dam (mother)" :error="form.errors.dam_id">
+                    <Field
+                        label="Dam (mother)"
+                        :error="form.errors.dam_id"
+                        help="The mother of the puppies. Only female dogs are listed. Add her on the Dogs page first if she is missing."
+                    >
                         <NativeSelect
                             v-model="form.dam_id"
                             :options="females"
                             placeholder="Choose…"
                         />
                     </Field>
-                    <Field label="Sire (father)" :error="form.errors.sire_id">
+                    <Field
+                        label="Sire (father)"
+                        :error="form.errors.sire_id"
+                        help="The father of the puppies. Only male dogs are listed. If he belongs to someone else, add him on the Dogs page anyway."
+                    >
                         <NativeSelect
                             v-model="form.sire_id"
                             :options="males"
                             placeholder="Choose…"
                         />
                     </Field>
-                    <Field label="Status" :error="form.errors.status">
+                    <Field
+                        label="Status"
+                        required
+                        :error="form.errors.status"
+                        help="Planned: thinking about it. Expected: the mother is bred and you are waiting. On the ground: puppies are born. All gone home: every puppy has left. It switches to All gone home by itself when you mark the last puppy as gone home."
+                    >
                         <NativeSelect
                             v-model="form.status"
                             :options="options.litterStatus"
@@ -190,6 +229,7 @@ const summary = computed(() => {
                     <Field
                         label="Bred on"
                         :error="form.errors.bred_on"
+                        hint="The day of the mating."
                         for="bred_on"
                         ><Input id="bred_on" v-model="form.bred_on" type="date"
                     /></Field>
@@ -197,11 +237,21 @@ const summary = computed(() => {
                         label="Due date"
                         :error="form.errors.due_on"
                         for="due_on"
-                        ><Input id="due_on" v-model="form.due_on" type="date"
-                    /></Field>
+                        ><Input id="due_on" v-model="form.due_on" type="date" />
+                        <button
+                            v-if="suggestedDue"
+                            type="button"
+                            class="text-left text-xs text-primary underline underline-offset-2"
+                            @click="form.due_on = suggestedDue"
+                        >
+                            Use {{ formatDate(suggestedDue) }} (63 days after
+                            breeding)
+                        </button></Field
+                    >
                     <Field
                         label="Born on"
                         :error="form.errors.born_on"
+                        hint="Fill in once the puppies arrive."
                         for="born_on"
                         ><Input id="born_on" v-model="form.born_on" type="date"
                     /></Field>
@@ -209,11 +259,21 @@ const summary = computed(() => {
                         label="Go-home date"
                         :error="form.errors.go_home_on"
                         for="go_home_on"
+                        help="The day puppies leave for their new homes. Most breeders wait until they are 8 weeks old."
                         ><Input
                             id="go_home_on"
                             v-model="form.go_home_on"
                             type="date"
-                    /></Field>
+                        />
+                        <button
+                            v-if="suggestedHome"
+                            type="button"
+                            class="text-left text-xs text-primary underline underline-offset-2"
+                            @click="form.go_home_on = suggestedHome"
+                        >
+                            Use {{ formatDate(suggestedHome) }} (8 weeks old)
+                        </button></Field
+                    >
                 </div>
             </section>
 
@@ -226,33 +286,42 @@ const summary = computed(() => {
                 </h2>
                 <div class="grid gap-4 sm:grid-cols-3">
                     <Field
-                        label="Price ($)"
+                        label="Price per puppy ($)"
                         :error="form.errors.price"
+                        hint="Whole dollars, like 1500."
                         for="price"
                         ><Input
                             id="price"
                             v-model="form.price"
                             type="number"
+                            inputmode="numeric"
                             min="0"
+                            placeholder="1500"
                     /></Field>
                     <Field
                         label="Deposit ($)"
                         :error="form.errors.deposit"
+                        help="The amount a buyer pays up front to hold a place on the list. It is usually taken off the price."
+                        hint="Whole dollars, like 300."
                         for="deposit"
                         ><Input
                             id="deposit"
                             v-model="form.deposit"
                             type="number"
+                            inputmode="numeric"
                             min="0"
+                            placeholder="300"
                     /></Field>
                     <Field
                         label="Expected pups"
                         :error="form.errors.expected_count"
+                        hint="A rough number is fine."
                         for="expected_count"
                         ><Input
                             id="expected_count"
                             v-model="form.expected_count"
                             type="number"
+                            inputmode="numeric"
                             min="0"
                     /></Field>
                 </div>
@@ -271,7 +340,7 @@ const summary = computed(() => {
                 <ToggleField
                     v-model="form.is_public"
                     label="Show on the website"
-                    hint="Turn off while you are still deciding."
+                    hint="Tick to show this litter on the Litters page. Untick to keep it private while you decide."
                 />
             </section>
 
@@ -319,14 +388,14 @@ const summary = computed(() => {
                             variant="secondary"
                             size="sm"
                             @click="addPuppy('female')"
-                            >+ Female</Button
+                            >+ Add girl puppy</Button
                         >
                         <Button
                             type="button"
                             variant="secondary"
                             size="sm"
                             @click="addPuppy('male')"
-                            >+ Male</Button
+                            >+ Add boy puppy</Button
                         >
                     </div>
                 </div>
@@ -334,8 +403,9 @@ const summary = computed(() => {
                     v-if="!litter.puppies?.length"
                     class="text-sm text-muted-foreground"
                 >
-                    No puppies yet. Add them as they are born and give each a
-                    collar colour.
+                    No puppies yet. Tap “Add girl puppy” or “Add boy puppy” once
+                    for each pup as they are born, then give each a collar
+                    colour so you can tell them apart.
                 </p>
                 <div class="space-y-2">
                     <PuppyRow

@@ -10,6 +10,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Dog;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
 use Inertia\Inertia;
 use Inertia\Response;
@@ -70,7 +71,7 @@ class DogController extends Controller
     {
         $this->cleanDigits($request, ['microchip']);
 
-        return $request->validate([
+        $validator = Validator::make($request->all(), [
             'name' => ['required', 'string', 'max:100', Rule::unique('dogs', 'name')->ignore($request->route('dog'))],
             'registered_name' => ['nullable', 'string', 'max:200'],
             'sex' => ['required', Rule::enum(DogSex::class)],
@@ -86,5 +87,19 @@ class DogController extends Controller
             'name.unique' => 'You already have a dog with that name. Add something to tell them apart, like a last initial.',
             'microchip.regex' => 'A microchip number is 9 to 15 digits, with no letters. Check the number on the vet paperwork.',
         ]);
+
+        $validator->after(function ($v) {
+            $in = $v->getData();
+
+            if (($in['role'] ?? null) === DogRole::Stud->value && ($in['sex'] ?? null) === DogSex::Female->value) {
+                $v->errors()->add('role', 'A stud is a father, so the dog must be male. Change the sex, or choose another role.');
+            }
+
+            if (($in['role'] ?? null) === DogRole::Dam->value && ($in['sex'] ?? null) === DogSex::Male->value) {
+                $v->errors()->add('role', 'A dam is a mother, so the dog must be female. Change the sex, or choose another role.');
+            }
+        });
+
+        return $validator->validate();
     }
 }

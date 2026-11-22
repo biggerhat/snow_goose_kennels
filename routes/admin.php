@@ -47,6 +47,8 @@ Route::middleware('auth')->prefix('admin')->name('admin.')->group(function () {
     Route::get('site', [SiteSettingsController::class, 'edit'])->name('site.edit');
     Route::put('site', [SiteSettingsController::class, 'update'])->name('site.update');
 
+    Route::inertia('help', 'admin/Help')->name('help');
+
     Route::post('photos/bulk', [PhotoController::class, 'bulk'])->name('photos.bulk');
     Route::resource('photos', PhotoController::class)->only(['index', 'store', 'update', 'destroy']);
     Route::resource('albums', AlbumController::class)->only(['store', 'update', 'destroy']);

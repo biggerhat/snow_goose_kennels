@@ -97,8 +97,11 @@ class WaitlistController extends Controller
 
     private function litters()
     {
+        $next = WaitlistEntry::query()->whereNotNull('litter_id')->groupBy('litter_id')
+            ->selectRaw('litter_id, max(pick_order) as top')->pluck('top', 'litter_id');
+
         return Litter::with(['sire:id,name', 'dam:id,name'])->latest('due_on')->get()
-            ->map(fn ($l) => ['id' => $l->id, 'title' => $l->title]);
+            ->map(fn ($l) => ['id' => $l->id, 'title' => $l->title, 'next_pick' => ((int) ($next[$l->id] ?? 0)) + 1]);
     }
 
     /** @return array<string, mixed> */

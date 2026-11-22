@@ -16,7 +16,7 @@ const props = defineProps<{
     showGalleryToggle?: boolean;
     /** Upload into this album (photo library only). */
     albumId?: number | null;
-    /** Offer a "Show on website" choice for new uploads, starting off. */
+    /** Offer a "Show on the website" choice for new uploads, starting off. */
     askPublish?: boolean;
     /** Hide the photo grid; the parent draws its own. */
     uploadOnly?: boolean;
@@ -173,7 +173,7 @@ function remove(photo: Photo) {
                         <div class="space-y-1.5">
                             <ToggleField
                                 :model-value="photo.is_public"
-                                label="Show on website"
+                                label="Show on the website"
                                 @update:model-value="
                                     save(photo, { is_public: $event })
                                 "

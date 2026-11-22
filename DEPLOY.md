@@ -61,8 +61,7 @@ Generate the app key from the Forge environment page or run `php artisan key:gen
 
 **Mail note.** New applications and the daily reminder go out by email, and `MAIL_MAILER=log` only writes them
 to a file. DigitalOcean blocks the usual SMTP ports on droplets (25, and often 465 and 587 on newer accounts), so
-use a mail service with an HTTP API (Postmark, Resend, Mailgun or Amazon SES) or an SMTP port they allow, such as
-2525. Each API mailer needs one small composer package; tell me which service she will use and I will wire it up.
+use a mail service with an HTTP API (Postmark, Resend, Mailgun or Amazon SES) or an SMTP port they allow, such as 2525. Each API mailer needs one small composer package; tell me which service she will use and I will wire it up.
 
 ## 5. PHP upload limits (the one that bites)
 

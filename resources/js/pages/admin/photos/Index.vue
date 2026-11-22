@@ -485,7 +485,7 @@ const subjectLabel: Record<string, string> = {
                     variant="outline"
                     @click="bulkDo('show')"
                 >
-                    <Globe class="size-4" /> Show on website
+                    <Globe class="size-4" /> Show on the website
                 </Button>
                 <Button
                     type="button"
@@ -622,7 +622,7 @@ const subjectLabel: Record<string, string> = {
                             </label>
                             <ToggleField
                                 :model-value="photo.is_public"
-                                label="Show on website"
+                                label="Show on the website"
                                 @update:model-value="
                                     save(photo, { is_public: $event })
                                 "

@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { Head, router, useForm, usePage } from '@inertiajs/vue3';
-import { computed } from 'vue';
+import { computed, watch } from 'vue';
 import ConfirmDelete from '@/components/admin/ConfirmDelete.vue';
 import Field from '@/components/admin/Field.vue';
 import NativeSelect from '@/components/admin/NativeSelect.vue';
@@ -10,6 +10,8 @@ import TextArea from '@/components/admin/TextArea.vue';
 import ToggleField from '@/components/admin/ToggleField.vue';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
+import { useUnsavedWarning } from '@/composables/useUnsavedWarning';
+import { formatDate } from '@/lib/format';
 import { destroy, index, store, update } from '@/routes/admin/dogs';
 import {
     destroy as destroyHeat,
@@ -39,6 +41,20 @@ const form = useForm({
     microchip: props.dog?.microchip ?? '',
     private_notes: props.dog?.private_notes ?? '',
 });
+
+useUnsavedWarning(() => form.isDirty);
+
+// Keep role and sex in step so the obvious mistake cannot happen.
+watch(
+    () => form.sex,
+    (sex) => {
+        if (sex === 'male' && form.role === 'dam') {
+            form.role = 'stud';
+        } else if (sex === 'female' && form.role === 'stud') {
+            form.role = 'dam';
+        }
+    },
+);
 
 function submit() {
     if (props.dog) {
@@ -136,11 +152,18 @@ const suggestions = [
                     ? (dog.registered_name ?? undefined)
                     : 'Add the basics now; photos and health tests come after saving.'
             "
+            :help="[
+                'Add each dog you keep or breed: the mothers (dams), the fathers (studs), and retired dogs.',
+                'Only name, sex and role are needed. Add a photo and a short description to make the dog’s page on the website nicer.',
+                'After you save, you can add health tests, heat cycles (for females) and photos further down this page.',
+                'Untick Show on the website to keep a dog private. Registration, microchip and private notes are never shown to visitors.',
+            ]"
+            help-title="Adding a dog"
         >
             <ConfirmDelete
                 v-if="dog"
                 label="Delete dog"
-                :message="`Delete ${dog.name}? This cannot be undone.`"
+                :message="`Delete ${dog.name}? Her health tests and heat cycles are deleted too. Litters she was in stay, but show no mother or father. Photos stay in your Photos library. This cannot be undone.`"
                 @confirm="router.delete(destroy.url(dog.slug))"
             />
         </PageHeader>
@@ -154,7 +177,13 @@ const suggestions = [
                     >
                 </h2>
                 <div class="grid gap-4 sm:grid-cols-2">
-                    <Field label="Name" :error="form.errors.name" for="name">
+                    <Field
+                        label="Name"
+                        required
+                        :error="form.errors.name"
+                        for="name"
+                        hint="The everyday name you call the dog."
+                    >
                         <Input
                             id="name"
                             v-model="form.name"
@@ -166,6 +195,7 @@ const suggestions = [
                         label="Registered name"
                         :error="form.errors.registered_name"
                         for="registered_name"
+                        help="The long official name on the dog’s registration papers, such as the AKC certificate. Leave empty if there is none."
                     >
                         <Input
                             id="registered_name"
@@ -173,19 +203,28 @@ const suggestions = [
                             placeholder="Snow Goose's Bella of the Marsh"
                         />
                     </Field>
-                    <Field label="Sex" :error="form.errors.sex">
+                    <Field label="Sex" required :error="form.errors.sex">
                         <NativeSelect
                             v-model="form.sex"
                             :options="options.sex"
                         />
                     </Field>
-                    <Field label="Role" :error="form.errors.role">
+                    <Field
+                        label="Role"
+                        required
+                        :error="form.errors.role"
+                        help="Dam: a mother you breed. Stud: a father you breed. Retired: no longer bred. Other: anything else, like a family pet."
+                    >
                         <NativeSelect
                             v-model="form.role"
                             :options="options.role"
                         />
                     </Field>
-                    <Field label="Coat colour" :error="form.errors.color">
+                    <Field
+                        label="Coat colour"
+                        :error="form.errors.color"
+                        help="Black, chocolate, yellow, or fox red (a deep red-gold yellow)."
+                    >
                         <NativeSelect
                             v-model="form.color"
                             :options="options.color"
@@ -219,7 +258,7 @@ const suggestions = [
                 <ToggleField
                     v-model="form.is_public"
                     label="Show on the website"
-                    hint="Turn off to keep this dog private."
+                    hint="Tick to show this dog on the Our Dogs page. Untick to keep the dog private."
                 />
             </section>
 
@@ -237,6 +276,7 @@ const suggestions = [
                         label="Registration number"
                         :error="form.errors.registry_number"
                         for="registry_number"
+                        hint="From the registry papers, such as AKC."
                     >
                         <Input
                             id="registry_number"
@@ -244,11 +284,17 @@ const suggestions = [
                         />
                     </Field>
                     <Field
-                        label="Microchip"
+                        label="Microchip number"
                         :error="form.errors.microchip"
                         for="microchip"
+                        hint="9 to 15 digits, from the vet paperwork. Spaces are fine."
                     >
-                        <Input id="microchip" v-model="form.microchip" />
+                        <Input
+                            id="microchip"
+                            v-model="form.microchip"
+                            inputmode="numeric"
+                            placeholder="985112345678901"
+                        />
                     </Field>
                 </div>
                 <Field
@@ -279,8 +325,10 @@ const suggestions = [
                 </h2>
                 <div class="space-y-1.5">
                     <p class="text-xs text-muted-foreground">
-                        The Labrador Retriever Club's minimum is hips, elbows,
-                        eyes, EIC and D-locus; the rest are recommended.
+                        Health tests show buyers you care about the puppies’
+                        health. Green means done. The Labrador Retriever Club
+                        suggests at least hips, elbows, eyes, EIC and D-locus;
+                        the rest are extra.
                     </p>
                     <ul class="flex flex-wrap gap-1.5 text-xs">
                         <li
@@ -314,7 +362,7 @@ const suggestions = [
                             <span
                                 v-if="t.tested_on"
                                 class="text-muted-foreground"
-                                >· {{ t.tested_on }}</span
+                                >· {{ formatDate(t.tested_on) }}</span
                             >
                             <span
                                 v-if="t.certificate_number"
@@ -337,7 +385,7 @@ const suggestions = [
                         </div>
                         <ConfirmDelete
                             icon
-                            message="Remove this test?"
+                            message="Remove this health test? You can add it again later."
                             @confirm="
                                 router.delete(destroyTest.url(t.id), {
                                     preserveScroll: true,
@@ -354,7 +402,12 @@ const suggestions = [
                     class="grid items-end gap-3 sm:grid-cols-[1fr_1fr_9rem_auto]"
                     @submit.prevent="addTest"
                 >
-                    <Field label="Test" :error="testForm.errors.name">
+                    <Field
+                        label="Test"
+                        required
+                        :error="testForm.errors.name"
+                        help="Pick one from the list or type your own. Hips and elbows are graded by OFA; the DNA tests (EIC, CNM, PRA) say Clear, Carrier or Affected."
+                    >
                         <Input
                             v-model="testForm.name"
                             list="test-names"
@@ -369,7 +422,12 @@ const suggestions = [
                             />
                         </datalist>
                     </Field>
-                    <Field label="Result" :error="testForm.errors.result">
+                    <Field
+                        label="Result"
+                        required
+                        :error="testForm.errors.result"
+                        hint="For example Good, Excellent, Normal or Clear."
+                    >
                         <Input
                             v-model="testForm.result"
                             placeholder="Good"
@@ -399,11 +457,16 @@ const suggestions = [
                             placeholder="https://ofa.org/…"
                         />
                     </Field>
+                    <ToggleField
+                        v-model="testForm.is_public"
+                        label="Show on the website"
+                        class="sm:col-span-2"
+                    />
                     <Button
                         type="submit"
                         variant="secondary"
                         :disabled="testForm.processing"
-                        >Add</Button
+                        >Add test</Button
                     >
                 </form>
             </section>
@@ -429,12 +492,13 @@ const suggestions = [
                         class="flex items-center justify-between gap-3 py-2"
                     >
                         <span>
-                            Started <strong>{{ h.started_on }}</strong>
+                            Started
+                            <strong>{{ formatDate(h.started_on) }}</strong>
                             <span v-if="h.ended_on">
-                                · ended {{ h.ended_on }}</span
+                                · ended {{ formatDate(h.ended_on) }}</span
                             >
                             <span v-if="h.bred_on">
-                                · bred {{ h.bred_on }}</span
+                                · bred {{ formatDate(h.bred_on) }}</span
                             >
                             <span v-if="h.notes" class="text-muted-foreground">
                                 · {{ h.notes }}</span
@@ -442,7 +506,7 @@ const suggestions = [
                         </span>
                         <ConfirmDelete
                             icon
-                            message="Remove this entry?"
+                            message="Remove this heat cycle entry?"
                             @confirm="
                                 router.delete(destroyHeat.url(h.id), {
                                     preserveScroll: true,
@@ -455,13 +519,19 @@ const suggestions = [
                     class="grid items-end gap-3 sm:grid-cols-2 lg:grid-cols-4"
                     @submit.prevent="addHeat"
                 >
-                    <Field label="Started" :error="heatForm.errors.started_on"
+                    <Field
+                        label="First day of heat"
+                        required
+                        :error="heatForm.errors.started_on"
+                        help="The first day you saw signs of heat, such as spotting. Labs usually cycle about every 6 to 8 months, and it lasts about 3 weeks."
                         ><Input
                             v-model="heatForm.started_on"
                             type="date"
                             required
                     /></Field>
-                    <Field label="Ended" :error="heatForm.errors.ended_on"
+                    <Field
+                        label="Last day of heat"
+                        :error="heatForm.errors.ended_on"
                         ><Input v-model="heatForm.ended_on" type="date"
                     /></Field>
                     <Field label="Bred on" :error="heatForm.errors.bred_on"
@@ -474,7 +544,7 @@ const suggestions = [
                         type="submit"
                         variant="secondary"
                         :disabled="heatForm.processing"
-                        >Add</Button
+                        >Add heat cycle</Button
                     >
                 </form>
             </section>

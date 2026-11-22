@@ -2,40 +2,19 @@
 import { router } from '@inertiajs/vue3';
 import { computed, reactive, ref } from 'vue';
 import ConfirmDelete from '@/components/admin/ConfirmDelete.vue';
+import InputError from '@/components/InputError.vue';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
+import { useWeightUnit } from '@/composables/useWeightUnit';
 import { formatDate } from '@/lib/format';
 import { destroy, store } from '@/routes/admin/weigh-ins';
 import type { Puppy } from '@/types';
 
 const props = defineProps<{ slug: string; puppies: Puppy[] }>();
 
-const G_PER_OZ = 28.3495;
-const stored = (() => {
-    try {
-        return localStorage.getItem('weight_unit');
-    } catch {
-        return null;
-    }
-})();
-const unit = ref<'oz' | 'g'>(stored === 'g' ? 'g' : 'oz');
+const { unit, setUnit, toDisplay, toGrams } = useWeightUnit();
 
-function setUnit(u: 'oz' | 'g') {
-    unit.value = u;
-
-    try {
-        localStorage.setItem('weight_unit', u);
-    } catch {
-        // ignore
-    }
-}
-
-const show = (g: number | null | undefined) =>
-    g == null
-        ? '—'
-        : unit.value === 'oz'
-          ? (g / G_PER_OZ).toFixed(1)
-          : String(g);
+const show = (g: number | null | undefined) => toDisplay(g) || '—';
 
 const today = () => {
     const d = new Date();
@@ -46,6 +25,13 @@ const today = () => {
 const date = ref(today());
 const entries = reactive<Record<number, string>>({});
 const saving = ref(false);
+const errors = ref<Record<string, string>>({});
+const firstWeightError = computed(
+    () =>
+        Object.entries(errors.value).find(([k]) =>
+            k.startsWith('weights'),
+        )?.[1],
+);
 
 const dates = computed(() =>
     [
@@ -67,12 +53,10 @@ function save() {
     const weights: Record<number, number> = {};
 
     for (const [id, raw] of Object.entries(entries)) {
-        const n = parseFloat(raw);
+        const grams = toGrams(raw);
 
-        if (!Number.isNaN(n) && n > 0) {
-            weights[Number(id)] = Math.round(
-                unit.value === 'oz' ? n * G_PER_OZ : n,
-            );
+        if (grams !== null) {
+            weights[Number(id)] = grams;
         }
     }
 
@@ -83,8 +67,11 @@ function save() {
             preserveScroll: true,
             onStart: () => (saving.value = true),
             onFinish: () => (saving.value = false),
-            onSuccess: () =>
-                Object.keys(entries).forEach((k) => delete entries[Number(k)]),
+            onError: (e) => (errors.value = e),
+            onSuccess: () => {
+                errors.value = {};
+                Object.keys(entries).forEach((k) => delete entries[Number(k)]);
+            },
         },
     );
 }
@@ -94,8 +81,10 @@ function save() {
     <div class="space-y-4">
         <div class="flex flex-wrap items-center justify-between gap-3">
             <p class="text-sm text-muted-foreground">
-                Weigh everyone, type the numbers in, save. Leave a box empty to
-                skip that puppy.
+                Weigh the puppies, type each weight in, then tap Save weights.
+                Leave a box empty to skip a puppy. Weighing every week or so
+                shows who is growing well; a puppy that stops gaining is worth a
+                call to the vet.
             </p>
             <div class="inline-flex rounded-lg bg-muted p-1 text-sm">
                 <button
@@ -130,6 +119,7 @@ function save() {
                     class="w-44"
                 />
             </div>
+            <InputError :message="errors.weighed_on" />
             <div class="grid gap-2 sm:grid-cols-2 lg:grid-cols-3">
                 <label
                     v-for="p in puppies"
@@ -149,6 +139,7 @@ function save() {
                     />
                 </label>
             </div>
+            <InputError :message="firstWeightError" />
             <Button type="submit" size="sm" :disabled="saving"
                 >Save weights</Button
             >

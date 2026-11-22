@@ -71,6 +71,9 @@ class PuppyController extends Controller
             'contact_id' => ['nullable', 'exists:contacts,id'],
             'sale_price' => ['nullable', 'integer', 'min:0', 'max:100000'],
             'notes' => ['nullable', 'string', 'max:2000'],
+        ], [
+            'birth_weight_g.min' => 'That birth weight looks too small. Newborn Labs are usually 6 to 20 ounces (170 to 570 grams).',
+            'birth_weight_g.max' => 'That birth weight looks too big. Newborn Labs are usually 6 to 20 ounces (170 to 570 grams).',
         ]);
     }
 }

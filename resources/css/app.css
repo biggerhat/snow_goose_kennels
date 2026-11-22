@@ -141,3 +141,10 @@
         }
     }
 }
+
+/* A field with a problem: make the box itself red, not just the message. */
+.field-error :is(input, select, textarea) {
+    border-color: var(--destructive);
+    box-shadow: 0 0 0 3px
+        color-mix(in oklch, var(--destructive) 20%, transparent);
+}

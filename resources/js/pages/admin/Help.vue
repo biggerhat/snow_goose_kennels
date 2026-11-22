@@ -132,9 +132,9 @@ const jobs = [
     {
         q: 'Get ready for an AKC inspection',
         a: [
-            'Open Records and look at Inspection readiness. The green bar shows how much is ready. Under it is what would catch your eye first: dog records with gaps, litter records with gaps, overdue vaccines, and no emergency plan.',
+            'Open Records. The Check-up tab opens first and shows Inspection readiness. The green bar shows how much is ready. Under it is what would catch your eye first: dog records with gaps, litter records with gaps, overdue vaccines, and no emergency plan.',
             'Under Kennel papers, print the emergency plan worksheet, fill it in, and add a copy of the signed plan as a document. You will be reminded to review it once a year.',
-            'Tap Print everything to print every dog and litter record in one go.',
+            'The Dogs and Litters tabs have a Print button for each one. Tap Print everything at the top to print every dog and litter record in one go.',
         ],
     },
     {

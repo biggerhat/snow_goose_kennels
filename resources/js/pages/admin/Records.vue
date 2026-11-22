@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { Head, Link } from '@inertiajs/vue3';
+import { onMounted, ref } from 'vue';
 import { Download, Printer } from '@lucide/vue';
 import PageHeader from '@/components/admin/PageHeader.vue';
 import { Button } from '@/components/ui/button';
@@ -19,7 +20,7 @@ defineOptions({
     layout: { breadcrumbs: [{ title: 'Records', href: records() }] },
 });
 
-defineProps<{
+const props = defineProps<{
     readiness: {
         todo: number;
         items: {
@@ -58,6 +59,39 @@ defineProps<{
     }[];
 }>();
 
+const tabs = [
+    { key: 'checkup', label: 'Check-up' },
+    { key: 'dogs', label: 'Dogs' },
+    { key: 'litters', label: 'Litters' },
+    { key: 'papers', label: 'Kennel papers' },
+    { key: 'sheets', label: 'Spreadsheets' },
+] as const;
+type TabKey = (typeof tabs)[number]['key'];
+const tab = ref<TabKey>('checkup');
+
+function pick(key: TabKey) {
+    tab.value = key;
+    history.replaceState(null, '', `#${key}`);
+}
+
+function count(key: TabKey): number | null {
+    return key === 'dogs'
+        ? props.dogs.length
+        : key === 'litters'
+          ? props.litters.length
+          : key === 'checkup' && props.readiness.todo
+            ? props.readiness.todo
+            : null;
+}
+
+onMounted(() => {
+    const h = location.hash.slice(1) as TabKey;
+
+    if (tabs.some((t) => t.key === h)) {
+        tab.value = h;
+    }
+});
+
 const sheets = [
     ['dogs', 'Dogs'],
     ['litters', 'Litters'],
@@ -77,6 +111,7 @@ const sheets = [
             title="Records"
             description="Printable breeding and ownership records, ready if AKC ever asks to see them."
             :help="[
+                'The tabs along the top split this page up: Check-up (what to tidy), Dogs, Litters, Kennel papers and Spreadsheets. A number on a tab is how many things are in it, or how many need tidying.',
                 'AKC asks breeders to keep an ownership record for each adult dog and a record for each litter, and to keep them for 5 years after a dog dies, is sold or is given away.',
                 'You do not need to write these. They are built from what you have already entered on the Dogs and Litters pages, so the more you fill in there, the more complete they are.',
                 'Inspection readiness lists what would catch your eye first if AKC asked to see your records: gaps in dog or litter records, overdue vaccines, and a missing emergency plan. The green bar shows how much is ready.',
@@ -93,7 +128,48 @@ const sheets = [
             </Button>
         </PageHeader>
 
-        <section class="space-y-3">
+        <div
+            role="tablist"
+            aria-label="Parts of the record book"
+            class="sticky top-0 z-10 -mx-4 flex gap-1 overflow-x-auto border-b bg-background px-4 md:mx-0 md:px-0"
+        >
+            <button
+                v-for="t in tabs"
+                :id="`tab-${t.key}`"
+                :key="t.key"
+                type="button"
+                role="tab"
+                :aria-selected="tab === t.key"
+                :aria-controls="`panel-${t.key}`"
+                :class="[
+                    'inline-flex shrink-0 items-center gap-1.5 border-b-2 px-3 py-3 text-sm font-medium whitespace-nowrap',
+                    tab === t.key
+                        ? 'border-primary text-foreground'
+                        : 'border-transparent text-muted-foreground hover:text-foreground',
+                ]"
+                @click="pick(t.key)"
+            >
+                {{ t.label }}
+                <span
+                    v-if="count(t.key) !== null"
+                    :class="[
+                        'rounded-full px-1.5 text-xs',
+                        t.key === 'checkup'
+                            ? 'bg-amber-500/20 text-amber-900 dark:text-amber-200'
+                            : 'bg-muted text-muted-foreground',
+                    ]"
+                    >{{ count(t.key) }}</span
+                >
+            </button>
+        </div>
+
+        <section
+            v-show="tab === 'dogs'"
+            id="panel-dogs"
+            role="tabpanel"
+            aria-labelledby="tab-dogs"
+            class="space-y-3"
+        >
             <h2 class="font-serif text-xl font-semibold">Dog records</h2>
             <p class="text-sm text-muted-foreground">
                 Identification, ownership, matings, health tests and vaccines
@@ -150,7 +226,13 @@ const sheets = [
             </div>
         </section>
 
-        <section class="space-y-3">
+        <section
+            v-show="tab === 'litters'"
+            id="panel-litters"
+            role="tabpanel"
+            aria-labelledby="tab-litters"
+            class="space-y-3"
+        >
             <h2 class="font-serif text-xl font-semibold">Litter records</h2>
             <p class="text-sm text-muted-foreground">
                 The mating, whelping, puppies, buyers and AKC details for each
@@ -205,7 +287,13 @@ const sheets = [
             </div>
         </section>
 
-        <section class="space-y-3">
+        <section
+            v-show="tab === 'checkup'"
+            id="panel-checkup"
+            role="tabpanel"
+            aria-labelledby="tab-checkup"
+            class="space-y-3"
+        >
             <h2 class="font-serif text-xl font-semibold">
                 Inspection readiness
             </h2>
@@ -276,7 +364,13 @@ const sheets = [
             </ul>
         </section>
 
-        <section class="space-y-3">
+        <section
+            v-show="tab === 'papers'"
+            id="panel-papers"
+            role="tabpanel"
+            aria-labelledby="tab-papers"
+            class="space-y-3"
+        >
             <h2 class="font-serif text-xl font-semibold">Kennel papers</h2>
             <p class="text-sm text-muted-foreground">
                 Papers that belong to the whole kennel: your written emergency
@@ -296,7 +390,13 @@ const sheets = [
             />
         </section>
 
-        <section class="space-y-3 rounded-xl border border-dashed bg-card p-5">
+        <section
+            v-show="tab === 'sheets'"
+            id="panel-sheets"
+            role="tabpanel"
+            aria-labelledby="tab-sheets"
+            class="space-y-3 rounded-xl border border-dashed bg-card p-5"
+        >
             <h2 class="font-serif text-xl font-semibold">Spreadsheets</h2>
             <p class="text-sm text-muted-foreground">
                 Extra copies you can open in Excel or Google Sheets. A good

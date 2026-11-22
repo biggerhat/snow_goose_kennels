@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Admin\AkcApplicationController;
+use App\Http\Controllers\Admin\AkcProgramsController;
 use App\Http\Controllers\Admin\AlbumController;
 use App\Http\Controllers\Admin\AttentionSnoozeController;
 use App\Http\Controllers\Admin\ContactController;
@@ -82,6 +83,7 @@ Route::middleware('auth')->prefix('admin')->name('admin.')->group(function () {
     Route::post('expenses', [ExpenseController::class, 'store'])->name('expenses.store');
     Route::put('expenses/{expense}', [ExpenseController::class, 'update'])->name('expenses.update');
     Route::delete('expenses/{expense}', [ExpenseController::class, 'destroy'])->name('expenses.destroy');
+    Route::put('akc-programs', [AkcProgramsController::class, 'update'])->name('akc-programs.update');
     Route::get('records', [RecordsController::class, 'index'])->name('records');
     Route::get('records/emergency-plan', [RecordsController::class, 'emergencyPlan'])->name('records.emergency-plan');
     Route::get('records/all', [RecordsController::class, 'all'])->name('records.all');

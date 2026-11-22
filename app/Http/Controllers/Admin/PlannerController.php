@@ -7,6 +7,7 @@ use App\Models\Dog;
 use App\Models\Litter;
 use App\Support\AkcChecks;
 use App\Support\Inbreeding;
+use App\Support\LitterHistory;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Inertia\Response;
@@ -45,6 +46,7 @@ class PlannerController extends Controller
         return [
             'inbreeding' => Inbreeding::forMating($sire, $dam),
             'parents' => [$this->summary($sire), $this->summary($dam)],
+            'damHistory' => LitterHistory::forDam($dam),
             'checks' => $checks->values()->all(),
         ];
     }

@@ -30,6 +30,7 @@ const props = defineProps<{
             clearances: { label: string; done: boolean }[];
         }[];
         checks: AkcItem[];
+        damHistory: { text: string } | null;
     } | null;
 }>();
 
@@ -187,6 +188,14 @@ const tone = computed(() => {
                     </ul>
                 </section>
             </div>
+
+            <p
+                v-if="result.damHistory"
+                class="rounded-xl border bg-card p-4 text-sm"
+            >
+                <strong>The mother’s litters:</strong>
+                {{ result.damHistory.text }}
+            </p>
 
             <section class="space-y-3 rounded-xl border bg-card p-5">
                 <h2 class="font-serif text-lg font-semibold">

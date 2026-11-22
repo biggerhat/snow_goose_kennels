@@ -8,6 +8,7 @@ use App\Models\Dog;
 use App\Models\KennelProfile;
 use App\Models\Litter;
 use App\Models\Puppy;
+use App\Support\AkcPrograms;
 use App\Support\Kennel;
 use App\Support\Readiness;
 use Illuminate\Contracts\View\View;
@@ -24,6 +25,7 @@ class RecordsController extends Controller
 
         return Inertia::render('admin/Records', [
             'readiness' => Readiness::report(),
+            'programs' => AkcPrograms::report(),
             'kennelId' => $kennel->id,
             'kennelDocuments' => $kennel->documents()->get(),
             'dogs' => Dog::withTrashed()->with('ownerContact:id,name')->orderBy('name')

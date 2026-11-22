@@ -12,6 +12,7 @@ use App\Models\Dog;
 use App\Models\Litter;
 use App\Support\AkcChecks;
 use App\Support\Inbreeding;
+use App\Support\LitterHistory;
 use App\Support\PuppySchedule;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -68,6 +69,7 @@ class LitterController extends Controller
             'dogs' => $this->dogs(),
             'contacts' => Contact::orderBy('name')->get(['id', 'name']),
             'akc' => AkcChecks::forLitter($litter),
+            'damHistory' => LitterHistory::forDam($litter->dam, $litter),
             'inbreeding' => $litter->sire && $litter->dam ? Inbreeding::forMating($litter->sire, $litter->dam) : null,
         ]);
     }

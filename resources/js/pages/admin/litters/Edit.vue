@@ -55,6 +55,7 @@ const props = defineProps<{
     dogs: Pick<Dog, 'id' | 'name' | 'sex' | 'is_ours'>[];
     contacts?: { id: number; name: string }[];
     akc?: { items: AkcItem[]; todo: number; warn: number };
+    damHistory?: { text: string } | null;
     preset?: { sire: number | null; dam: number | null };
     inbreeding?: {
         percent: number;
@@ -367,6 +368,13 @@ const summary = computed(() => {
                         />
                     </Field>
                 </div>
+                <p
+                    v-if="damHistory"
+                    class="rounded-lg border bg-background/50 p-3 text-sm"
+                >
+                    <strong>The mother’s litters:</strong>
+                    {{ damHistory.text }}
+                </p>
                 <p
                     v-if="inbreeding"
                     class="rounded-lg border bg-background/50 p-3 text-sm"

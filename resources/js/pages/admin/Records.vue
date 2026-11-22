@@ -6,6 +6,7 @@ import PageHeader from '@/components/admin/PageHeader.vue';
 import { Button } from '@/components/ui/button';
 import { formatDate } from '@/lib/format';
 import { exportMethod, records } from '@/routes/admin';
+import AkcProgramsPanel from '@/components/admin/AkcProgramsPanel.vue';
 import DocumentManager from '@/components/admin/DocumentManager.vue';
 import { emergencyPlan } from '@/routes/admin/records';
 import type { DocumentFile } from '@/types';
@@ -21,6 +22,7 @@ defineOptions({
 });
 
 const props = defineProps<{
+    programs: InstanceType<typeof AkcProgramsPanel>['$props']['programs'];
     readiness: {
         todo: number;
         items: {
@@ -63,6 +65,7 @@ const tabs = [
     { key: 'checkup', label: 'Check-up' },
     { key: 'dogs', label: 'Dogs' },
     { key: 'litters', label: 'Litters' },
+    { key: 'programs', label: 'AKC programs' },
     { key: 'papers', label: 'Kennel papers' },
     { key: 'sheets', label: 'Spreadsheets' },
 ] as const;
@@ -112,7 +115,7 @@ const sheets = [
             title="Records"
             description="Printable breeding and ownership records, ready if AKC ever asks to see them."
             :help="[
-                'The tabs along the top split this page up: Check-up (what to tidy), Dogs, Litters, Kennel papers and Spreadsheets. A number on a tab is how many things are in it, or how many need tidying.',
+                'The tabs along the top split this page up: Check-up (what to tidy), Dogs, Litters, AKC programs, Kennel papers and Spreadsheets. A number on a tab is how many things are in it, or how many need tidying.',
                 'AKC asks breeders to keep an ownership record for each adult dog and a record for each litter, and to keep them for 5 years after a dog dies, is sold or is given away.',
                 'You do not need to write these. They are built from what you have already entered on the Dogs and Litters pages, so the more you fill in there, the more complete they are.',
                 'Inspection readiness lists what would catch your eye first if AKC asked to see your records: gaps in dog or litter records, overdue vaccines, and a missing emergency plan. The green bar shows how much is ready.',
@@ -363,6 +366,15 @@ const sheets = [
                     </div>
                 </li>
             </ul>
+        </section>
+
+        <section
+            v-show="tab === 'programs'"
+            id="panel-programs"
+            role="tabpanel"
+            aria-labelledby="tab-programs"
+        >
+            <AkcProgramsPanel :programs="programs" />
         </section>
 
         <section

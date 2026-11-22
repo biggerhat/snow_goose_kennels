@@ -94,7 +94,7 @@ function href(n: PedigreeNode): string | null {
                 :class="
                     c.node
                         ? 'bg-card'
-                        : 'border-dashed text-muted-foreground/60'
+                        : 'border-dashed text-muted-foreground'
                 "
                 :style="{
                     gridColumn: c.col,

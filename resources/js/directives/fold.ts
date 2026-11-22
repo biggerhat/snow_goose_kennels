@@ -31,12 +31,15 @@ export const vFold: Directive<HTMLElement, FoldOptions> = {
         }
 
         head.classList.add('fold-head');
-        head.setAttribute('role', 'button');
-        head.tabIndex = 0;
+
+        // Only the heading itself is the button; the row around it may hold other buttons and links.
+        const trigger: HTMLElement = h2 ?? head;
+        trigger.setAttribute('role', 'button');
+        trigger.tabIndex = 0;
 
         const set = (open: boolean) => {
             el.toggleAttribute('data-collapsed', !open);
-            head.setAttribute('aria-expanded', String(open));
+            trigger.setAttribute('aria-expanded', String(open));
         };
         const toggle = () => set(el.hasAttribute('data-collapsed'));
         const onClick = (e: Event) => {
@@ -50,7 +53,7 @@ export const vFold: Directive<HTMLElement, FoldOptions> = {
             toggle();
         };
         const onKey = (e: KeyboardEvent) => {
-            if ((e.key === 'Enter' || e.key === ' ') && e.target === head) {
+            if ((e.key === 'Enter' || e.key === ' ') && e.target === trigger) {
                 e.preventDefault();
                 toggle();
             }

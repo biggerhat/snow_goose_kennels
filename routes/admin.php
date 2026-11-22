@@ -15,6 +15,7 @@ use App\Http\Controllers\Admin\HealthTestController;
 use App\Http\Controllers\Admin\HeatCycleController;
 use App\Http\Controllers\Admin\LitterController;
 use App\Http\Controllers\Admin\LitterTaskController;
+use App\Http\Controllers\Admin\PaperworkController;
 use App\Http\Controllers\Admin\PhotoController;
 use App\Http\Controllers\Admin\PlannerController;
 use App\Http\Controllers\Admin\PuppyController;
@@ -79,6 +80,10 @@ Route::middleware('auth')->prefix('admin')->name('admin.')->group(function () {
     Route::get('records', [RecordsController::class, 'index'])->name('records');
     Route::get('records/emergency-plan', [RecordsController::class, 'emergencyPlan'])->name('records.emergency-plan');
     Route::get('records/all', [RecordsController::class, 'all'])->name('records.all');
+    Route::get('records/puppies/{puppy}/packet', [PaperworkController::class, 'packet'])->name('records.packet');
+    Route::get('records/puppies/{puppy}/agreement', [PaperworkController::class, 'agreement'])->name('records.agreement');
+    Route::get('records/waitlist/{waitlist}/receipt', [PaperworkController::class, 'receipt'])->name('records.receipt');
+    Route::get('records/litters/{litter}/stud-agreement', [PaperworkController::class, 'stud'])->withTrashed()->name('records.stud');
     Route::get('records/dogs/{dog}', [RecordsController::class, 'dog'])->withTrashed()->name('records.dog');
     Route::get('records/litters/{litter}', [RecordsController::class, 'litter'])->withTrashed()->name('records.litter');
 

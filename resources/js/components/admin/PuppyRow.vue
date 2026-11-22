@@ -12,6 +12,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { useWeightUnit } from '@/composables/useWeightUnit';
 import { destroy, update } from '@/routes/admin/puppies';
+import { agreement, packet } from '@/routes/admin/records';
 import type { Option, Options, Puppy } from '@/types';
 
 const props = defineProps<{
@@ -42,6 +43,9 @@ const form = useForm({
     went_home_on: props.puppy.went_home_on ?? '',
     vet_checked_on: props.puppy.vet_checked_on ?? '',
     reunite_enrolled_on: props.puppy.reunite_enrolled_on ?? '',
+    born_time: props.puppy.born_time ?? '',
+    birth_order: props.puppy.birth_order ?? null,
+    birth_notes: props.puppy.birth_notes ?? '',
 });
 
 // The day a puppy is marked as gone home is the go-home date, unless she says otherwise.
@@ -287,7 +291,61 @@ function save() {
                     </Field>
                 </div>
             </details>
+
+            <details v-show="shown" class="rounded-lg border bg-card/50 p-3">
+                <summary class="cursor-pointer text-sm font-medium select-none">
+                    Birth details
+                    <span class="font-normal text-muted-foreground"
+                        >(the whelping log: order and time born)</span
+                    >
+                </summary>
+                <div class="mt-3 grid gap-3 sm:grid-cols-3">
+                    <Field
+                        label="Born number"
+                        :error="form.errors.birth_order"
+                        hint="1 for the first puppy born, 2 for the second…"
+                    >
+                        <Input
+                            v-model="form.birth_order"
+                            type="number"
+                            min="1"
+                            max="30"
+                            inputmode="numeric"
+                        />
+                    </Field>
+                    <Field
+                        label="Time born"
+                        :error="form.errors.born_time"
+                        hint="Roughly is fine."
+                    >
+                        <Input v-model="form.born_time" type="time" />
+                    </Field>
+                    <Field
+                        label="Notes"
+                        :error="form.errors.birth_notes"
+                        hint="Needed help, slow to start, anything to remember."
+                    >
+                        <Input v-model="form.birth_notes" />
+                    </Field>
+                </div>
+            </details>
         </form>
+
+        <div v-show="shown" class="flex flex-wrap gap-2">
+            <Button as-child size="sm" variant="outline"
+                ><a :href="packet.url(puppy.id)" target="_blank" rel="noopener"
+                    >Print go-home packet</a
+                ></Button
+            >
+            <Button as-child size="sm" variant="outline"
+                ><a
+                    :href="agreement.url(puppy.id)"
+                    target="_blank"
+                    rel="noopener"
+                    >Print sales agreement</a
+                ></Button
+            >
+        </div>
 
         <details v-show="shown" class="rounded-lg border bg-card/50 p-3">
             <summary class="cursor-pointer text-sm font-medium select-none">

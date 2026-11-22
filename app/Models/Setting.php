@@ -17,6 +17,12 @@ class Setting extends Model
         static::deleted(fn () => self::$cache = null);
     }
 
+    /** Forget the remembered settings so the next read comes from the database. */
+    public static function flush(): void
+    {
+        self::$cache = null;
+    }
+
     /** @return array<string, string|null> */
     public static function values(): array
     {

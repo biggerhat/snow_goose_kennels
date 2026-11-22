@@ -32,10 +32,11 @@
         <p class="muted">None recorded.</p>
     @else
         <table class="grid">
-            <tr><th>Puppy</th><th>Sex / color</th><th>Birth wt</th><th>Microchip</th><th>Papers</th><th>Buyer</th><th>Went home</th></tr>
+            <tr><th>Puppy</th><th>Born</th><th>Sex / color</th><th>Birth wt</th><th>Microchip</th><th>Papers</th><th>Buyer</th><th>Went home</th></tr>
             @foreach ($litter->puppies as $p)
                 <tr>
                     <td>{{ $p->name ?: ($p->collar ? $p->collar.' collar' : 'Puppy '.$p->id) }}<br><span class="muted">{{ $p->status->label() }}</span></td>
+                    <td>{{ $p->birth_order ? '#'.$p->birth_order : '—' }}<br><span class="muted">{{ $p->born_time }} {{ $p->birth_notes }}</span></td>
                     <td>{{ $p->sex->label() }}<br>{{ $p->color?->label() }}</td>
                     <td>{{ $p->birth_weight_g ? round($p->birth_weight_g / 28.3495, 1).' oz' : '—' }}</td>
                     <td>{{ $val($p->microchip) }}</td>

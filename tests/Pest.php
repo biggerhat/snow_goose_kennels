@@ -1,5 +1,6 @@
 <?php
 
+use App\Models\Setting;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
@@ -16,6 +17,8 @@ use Tests\TestCase;
 
 pest()->extend(TestCase::class)
  // ->use(RefreshDatabase::class)
+    // Settings are cached in memory for the request; a new test starts with a clean slate.
+    ->beforeEach(fn () => Setting::flush())
     ->in('Feature');
 
 /*

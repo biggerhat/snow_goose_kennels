@@ -5,6 +5,7 @@ import AkcChecklist from '@/components/admin/AkcChecklist.vue';
 import ArchivedBanner from '@/components/admin/ArchivedBanner.vue';
 import type { AkcItem } from '@/components/admin/AkcChecklist.vue';
 import ConfirmDelete from '@/components/admin/ConfirmDelete.vue';
+import { stud as studAgreement } from '@/routes/admin/records';
 import LitterSchedule from '@/components/admin/LitterSchedule.vue';
 import PageTabs from '@/components/admin/PageTabs.vue';
 import type { PageTab } from '@/components/admin/PageTabs.vue';
@@ -251,7 +252,7 @@ const summary = computed(() => {
                 'Change the status as things happen: Planned, then Expected, then On the ground when puppies are born.',
                 'Once the litter exists, scroll down to add each puppy, record weights, post updates for families, and see who is waiting.',
                 'Breeding & AKC keeps the paperwork side: how and where they were bred, any stud fee, and when the AKC application went in. The AKC checklist on that tab tells you what is still missing.',
-                'The “Fill in the AKC litter application” button in Breeding & AKC lines up everything AKC asks for and fills in AKC’s own PDF form for you.',
+                'The “Print a stud agreement” button makes a paper for the owners of the sire and dam to sign. The “Fill in the AKC litter application” button in Breeding & AKC lines up everything AKC asks for and fills in AKC’s own PDF form for you.',
                 'If the father belongs to another kennel, pick “not in the list?” under the Sire box to add him. Keep the signed stud agreement on the Papers & photos tab.',
                 'Untick Show on the website to hide a litter while you decide. Nothing is lost.',
             ]"
@@ -594,6 +595,14 @@ const summary = computed(() => {
                     <Button as-child variant="secondary" size="sm">
                         <Link :href="akcApplication.url(litter.slug)"
                             >Fill in the AKC litter application</Link
+                        >
+                    </Button>
+                    <Button as-child variant="secondary" size="sm">
+                        <a
+                            :href="studAgreement.url(litter.slug)"
+                            target="_blank"
+                            rel="noopener"
+                            >Print a stud agreement</a
                         >
                     </Button>
                 </div>

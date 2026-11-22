@@ -159,6 +159,9 @@ export type Puppy = {
     went_home_on?: string | null;
     vet_checked_on?: string | null;
     reunite_enrolled_on?: string | null;
+    born_time?: string | null;
+    birth_order?: number | null;
+    birth_notes?: string | null;
     buyer?: { id: number; name: string } | null;
     documents?: DocumentFile[];
     health_records?: HealthRecord[];

@@ -25,6 +25,7 @@ const props = defineProps<{
         facebook: string | null;
     };
     sections: { key: string; title: string; hint: string; body: string }[];
+    papers: { key: string; title: string; hint: string; body: string }[];
     owner: Record<string, string>;
 }>();
 
@@ -35,6 +36,7 @@ const state = reactive<Record<string, string>>({
     facebook: props.contact.facebook ?? '',
     ...props.owner,
     ...Object.fromEntries(props.sections.map((s) => [s.key, s.body])),
+    ...Object.fromEntries(props.papers.map((s) => [s.key, s.body])),
 });
 
 const snapshot = ref(JSON.stringify(state));
@@ -53,6 +55,7 @@ const tabs: PageTab[] = [
     { key: 'contact', label: 'Contact details' },
     { key: 'how', label: 'How it works' },
     { key: 'owner', label: 'Kennel owner' },
+    { key: 'papers', label: 'Buyer papers' },
 ];
 const tab = usePageTabs(
     tabs.map((t) => t.key),
@@ -80,7 +83,9 @@ function save() {
                     ? 'owner'
                     : ['phone', 'email', 'location', 'facebook'].includes(k)
                       ? 'contact'
-                      : 'how';
+                      : props.papers.some((s) => s.key === k)
+                        ? 'papers'
+                        : 'how';
             },
         },
     );
@@ -307,6 +312,41 @@ function save() {
                         :model-value="get(s.key)"
                         @update:model-value="set(s.key, $event)"
                         :rows="4"
+                    />
+                </Field>
+            </section>
+
+            <section
+                v-show="tab === 'papers'"
+                class="space-y-5 rounded-xl border border-dashed bg-card p-5"
+            >
+                <div>
+                    <h2 class="font-serif text-lg font-semibold">
+                        Buyer papers
+                        <span class="text-sm font-normal text-muted-foreground"
+                            >(private)</span
+                        >
+                    </h2>
+                    <p class="text-sm text-muted-foreground">
+                        Your own wording for the papers you print for buyers:
+                        the go-home packet, sales agreement, deposit receipt and
+                        stud agreement. These are never shown on the website. A
+                        printed paper only contains what you write here.
+                    </p>
+                </div>
+                <Field
+                    v-for="s in papers"
+                    :key="s.key"
+                    :label="s.title"
+                    :error="fieldErrors[s.key]"
+                    :hint="s.hint"
+                    :for="s.key"
+                >
+                    <TextArea
+                        :id="s.key"
+                        :model-value="get(s.key)"
+                        :rows="4"
+                        @update:model-value="set(s.key, $event)"
                     />
                 </Field>
             </section>

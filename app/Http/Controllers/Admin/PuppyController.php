@@ -84,6 +84,9 @@ class PuppyController extends Controller
             'went_home_on' => ['nullable', 'date', 'before_or_equal:today'],
             'vet_checked_on' => ['nullable', 'date', 'before_or_equal:today'],
             'reunite_enrolled_on' => ['nullable', 'date', 'before_or_equal:today'],
+            'born_time' => ['nullable', 'date_format:H:i'],
+            'birth_order' => ['nullable', 'integer', 'min:1', 'max:30'],
+            'birth_notes' => ['nullable', 'string', 'max:500'],
         ], [
             'microchip.regex' => 'A microchip number is 9 to 15 digits, with no letters. Check the number on the vet paperwork.',
             'birth_weight_g.min' => 'That birth weight looks too small. Newborn Labs are usually 6 to 20 ounces (170 to 570 grams).',

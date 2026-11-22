@@ -20,6 +20,12 @@
         th { font-weight: 600; width: 28%; color: #333; }
         table.grid th { width: auto; font-size: 11px; text-transform: uppercase; letter-spacing: .04em; }
         .muted { color: #666; }
+        .sign { display: flex; gap: 36px; margin-top: 38px; }
+        .sign div { flex: 1; border-top: 1px solid #111; padding-top: 4px; font-size: 11px; color: #444; }
+        .terms p { margin: 4px 0 8px; white-space: pre-line; }
+        .terms h3 { font-size: 12px; margin: 10px 0 2px; }
+        .blank { display: inline-block; min-width: 2.2in; border-bottom: 1px solid #111; height: 1em; }
+        .notice { margin-top: 18px; padding: 6px 10px; border: 1px solid #bbb; background: #faf7ef; font-size: 11px; color: #444; }
         .foot { margin-top: 22px; font-size: 11px; color: #666; border-top: 1px solid #ccc; padding-top: 6px; }
         @media print {
             body { background: #fff; }
@@ -31,7 +37,7 @@
 </head>
 <body>
     <div class="toolbar">
-        <a href="{{ route('admin.records') }}">← Back to Records</a>
+        <a href="{{ $back ?? route('admin.records') }}">← {{ $backLabel ?? 'Back to Records' }}</a>
         <button onclick="window.print()">Print or save as PDF</button>
         <span style="margin-left:auto;opacity:.7">{{ $title }}</span>
     </div>

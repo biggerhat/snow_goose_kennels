@@ -19,6 +19,7 @@ class SiteSettingsController extends Controller
             'contact' => Setting::contact(),
             'owner' => collect(Kennel::OWNER_KEYS)->mapWithKeys(fn ($k) => [$k => Setting::get($k) ?? ''])->all(),
             'sections' => array_map(fn ($s) => [...$s, 'body' => Setting::get($s['key']) ?? ''], SiteContent::SECTIONS),
+            'papers' => array_map(fn ($s) => [...$s, 'body' => Setting::get($s['key']) ?? ''], SiteContent::PAPERS),
         ]);
     }
 
@@ -39,7 +40,7 @@ class SiteSettingsController extends Controller
             'owner_email' => ['nullable', 'email', 'max:200'],
         ];
 
-        foreach (SiteContent::SECTIONS as $s) {
+        foreach ([...SiteContent::SECTIONS, ...SiteContent::PAPERS] as $s) {
             $rules[$s['key']] = ['nullable', 'string', 'max:6000'];
         }
 

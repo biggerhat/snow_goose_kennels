@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { Head, router, useForm, usePage } from '@inertiajs/vue3';
 import { computed, ref, watch } from 'vue';
+import { receipt } from '@/routes/admin/records';
 import ConfirmDelete from '@/components/admin/ConfirmDelete.vue';
 import Field from '@/components/admin/Field.vue';
 import MoneyInput from '@/components/admin/MoneyInput.vue';
@@ -104,6 +105,7 @@ function submit() {
                 'Choose the person (or type a new one), the litter they want, and whether they prefer a boy or a girl or a colour.',
                 'Change the status as things move along. When they pay a deposit, set Deposit paid and fill in the amount.',
                 'The pick order says who chooses first when the puppies are old enough to pick. Pick 1 chooses first.',
+                'Once a deposit amount is filled in, tap Print deposit receipt to give the buyer a receipt.',
             ]"
             help-title="About this page"
         >
@@ -112,6 +114,14 @@ function submit() {
             >
             <Button v-if="entry?.contact?.email" as-child variant="outline"
                 ><a :href="`mailto:${entry.contact.email}`">Email</a></Button
+            >
+            <Button
+                v-if="entry && entry.deposit_amount"
+                as-child
+                variant="outline"
+                ><a :href="receipt.url(entry.id)" target="_blank" rel="noopener"
+                    >Print deposit receipt</a
+                ></Button
             >
             <ConfirmDelete
                 v-if="entry"

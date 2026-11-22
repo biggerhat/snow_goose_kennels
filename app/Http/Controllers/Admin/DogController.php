@@ -116,7 +116,7 @@ class DogController extends Controller
     {
         $dog->delete();
 
-        Inertia::flash('toast', ['type' => 'success', 'message' => "{$dog->name} archived. Their records are kept, and you can bring them back from the Dogs page."]);
+        Inertia::flash('toast', ['type' => 'success', 'message' => "{$dog->name} archived. Their records are kept.", 'action' => ['label' => 'Undo', 'url' => route('admin.dogs.restore', $dog)]]);
 
         return to_route('admin.dogs.index');
     }

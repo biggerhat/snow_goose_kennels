@@ -3,6 +3,7 @@ import { Head, Link, router } from '@inertiajs/vue3';
 import { FolderPlus, Globe, Lock, Pencil } from '@lucide/vue';
 import { computed, reactive, ref, watch } from 'vue';
 import ConfirmDelete from '@/components/admin/ConfirmDelete.vue';
+import ConfirmDialog from '@/components/admin/ConfirmDialog.vue';
 import EmptyState from '@/components/admin/EmptyState.vue';
 import NativeSelect from '@/components/admin/NativeSelect.vue';
 import PageHeader from '@/components/admin/PageHeader.vue';
@@ -188,10 +189,9 @@ function bulkDo(action: 'move' | 'show' | 'hide' | 'delete') {
     );
 }
 
+const confirmDelete = ref(false);
 function removeSelected() {
-    if (window.confirm(`Delete ${selected.value.length} photo(s) for good?`)) {
-        bulkDo('delete');
-    }
+    confirmDelete.value = true;
 }
 
 // ---- single photo edits ------------------------------------------------------
@@ -522,6 +522,13 @@ const subjectLabel: Record<string, string> = {
                 </Button>
             </template>
         </div>
+
+        <ConfirmDialog
+            v-model:open="confirmDelete"
+            :message="`Delete ${selected.length} photo(s) for good? This cannot be undone.`"
+            confirm-label="Delete photos"
+            @confirm="bulkDo('delete')"
+        />
 
         <!-- Grid -->
         <ul

@@ -11,6 +11,22 @@ export function initializeFlashToast(): void {
             return;
         }
 
-        toast[data.type](data.message);
+        toast[data.type](data.message, {
+            // Errors stay until dismissed; a phone user who looked away should not miss them.
+            duration:
+                data.type === 'error' ? Infinity : data.action ? 12000 : 4000,
+            closeButton: data.type === 'error',
+            action: data.action
+                ? {
+                      label: data.action.label,
+                      onClick: () =>
+                          router.post(
+                              data.action!.url,
+                              {},
+                              { preserveScroll: true },
+                          ),
+                  }
+                : undefined,
+        });
     });
 }

@@ -84,7 +84,7 @@ class LitterController extends Controller
     {
         $litter->delete();
 
-        Inertia::flash('toast', ['type' => 'success', 'message' => 'Litter archived. Its records are kept, and you can bring it back from the Litters page.']);
+        Inertia::flash('toast', ['type' => 'success', 'message' => 'Litter archived. Its records are kept.', 'action' => ['label' => 'Undo', 'url' => route('admin.litters.restore', $litter)]]);
 
         return to_route('admin.litters.index');
     }

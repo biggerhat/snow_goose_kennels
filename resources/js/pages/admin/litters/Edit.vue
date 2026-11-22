@@ -4,6 +4,7 @@ import { computed, ref, watch } from 'vue';
 import AkcChecklist from '@/components/admin/AkcChecklist.vue';
 import type { AkcItem } from '@/components/admin/AkcChecklist.vue';
 import ConfirmDelete from '@/components/admin/ConfirmDelete.vue';
+import DocumentManager from '@/components/admin/DocumentManager.vue';
 import Field from '@/components/admin/Field.vue';
 import NativeSelect from '@/components/admin/NativeSelect.vue';
 import PageHeader from '@/components/admin/PageHeader.vue';
@@ -194,7 +195,7 @@ const summary = computed(() => {
             <ConfirmDelete
                 v-if="litter"
                 label="Delete litter"
-                :message="`Delete this litter? This also deletes its ${litter.puppies?.length ?? 0} puppies, their weights and the puppy diary. People on the waitlist stay, but lose this litter. Photos stay in your Photos library. This cannot be undone.`"
+                :message="`Delete this litter? This also deletes its ${litter.puppies?.length ?? 0} puppies, their weights, documents and the puppy diary. People on the waitlist stay, but lose this litter. Photos stay in your Photos library. This cannot be undone.`"
                 @confirm="router.delete(destroy.url(litter.slug))"
             />
         </PageHeader>
@@ -704,6 +705,28 @@ const summary = computed(() => {
                         </Link>
                     </li>
                 </ul>
+            </section>
+
+            <section class="space-y-3 rounded-xl border bg-card p-5">
+                <div>
+                    <h2 class="font-serif text-lg font-semibold">
+                        Litter documents
+                        <span class="text-sm font-normal text-muted-foreground"
+                            >(private)</span
+                        >
+                    </h2>
+                    <p class="text-sm text-muted-foreground">
+                        The stud agreement, a copy of the AKC litter
+                        application, vet records for the whole litter. For one
+                        puppy’s bill of sale, use that puppy’s details above.
+                    </p>
+                </div>
+                <DocumentManager
+                    type="litter"
+                    :id="litter.id"
+                    :documents="litter.documents ?? []"
+                    category="stud_agreement"
+                />
             </section>
 
             <section class="space-y-4 rounded-xl border bg-card p-5">

@@ -6,6 +6,7 @@ use App\Enums\CoatColor;
 use App\Enums\DogSex;
 use App\Enums\PuppyStatus;
 use App\Enums\RegistrationType;
+use App\Models\Concerns\HasDocuments;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -15,6 +16,8 @@ use Illuminate\Database\Eloquent\Relations\MorphMany;
 #[Fillable(['name', 'collar', 'sex', 'color', 'birth_weight_g', 'status', 'contact_id', 'sale_price', 'notes', 'microchip', 'registration_type', 'akc_number', 'papers_given_on', 'went_home_on', 'vet_checked_on'])]
 class Puppy extends Model
 {
+    use HasDocuments;
+
     /** Editing a puppy refreshes the litter's "last updated" date. */
     protected $touches = ['litter'];
 

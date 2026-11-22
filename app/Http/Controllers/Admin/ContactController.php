@@ -48,7 +48,7 @@ class ContactController extends Controller
 
     public function edit(Contact $contact): Response
     {
-        $contact->load(['contactNotes', 'waitlistEntries.litter.sire:id,name', 'waitlistEntries.litter.dam:id,name', 'puppies.litter']);
+        $contact->load(['contactNotes', 'waitlistEntries.litter.sire:id,name', 'waitlistEntries.litter.dam:id,name', 'puppies.litter', 'documents']);
         $contact->waitlistEntries->each(fn ($e) => $e->litter?->append('title'));
         $contact->puppies->each(fn ($p) => $p->litter?->append('title'));
 

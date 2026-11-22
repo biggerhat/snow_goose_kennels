@@ -4,6 +4,7 @@ import { computed, ref, watch } from 'vue';
 import AkcChecklist from '@/components/admin/AkcChecklist.vue';
 import type { AkcItem } from '@/components/admin/AkcChecklist.vue';
 import ConfirmDelete from '@/components/admin/ConfirmDelete.vue';
+import DocumentManager from '@/components/admin/DocumentManager.vue';
 import Field from '@/components/admin/Field.vue';
 import NativeSelect from '@/components/admin/NativeSelect.vue';
 import PageHeader from '@/components/admin/PageHeader.vue';
@@ -228,7 +229,7 @@ const suggestions = [
             <ConfirmDelete
                 v-if="dog"
                 label="Delete dog"
-                :message="`Delete ${dog.name}? Her health tests and heat cycles are deleted too. Litters she was in stay, but show no mother or father. Photos stay in your Photos library. This cannot be undone.`"
+                :message="`Delete ${dog.name}? Her health tests, heat cycles and documents are deleted too. If this dog was sold or passed away, use “Left the kennel” in the private details instead, so your records stay complete. Litters she was in stay, but show no mother or father. Photos stay in your Photos library. This cannot be undone.`"
                 @confirm="router.delete(destroy.url(dog.slug))"
             />
         </PageHeader>
@@ -677,6 +678,28 @@ const suggestions = [
                     AKC record for this dog
                 </h2>
                 <AkcChecklist :akc="akc" />
+            </section>
+
+            <section class="space-y-3 rounded-xl border bg-card p-5">
+                <div>
+                    <h2 class="font-serif text-lg font-semibold">
+                        Papers &amp; documents
+                        <span class="text-sm font-normal text-muted-foreground"
+                            >(private)</span
+                        >
+                    </h2>
+                    <p class="text-sm text-muted-foreground">
+                        Keep a copy of this dog’s registration certificate,
+                        pedigree, OFA and DNA reports and vet records. Only you
+                        can open them.
+                    </p>
+                </div>
+                <DocumentManager
+                    type="dog"
+                    :id="dog?.id ?? 0"
+                    :documents="dog?.documents ?? []"
+                    category="registration"
+                />
             </section>
 
             <section class="space-y-3 rounded-xl border bg-card p-5">

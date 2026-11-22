@@ -5,6 +5,7 @@ namespace App\Support;
 use App\Enums\BreedingMethod;
 use App\Enums\CoatColor;
 use App\Enums\ContactType;
+use App\Enums\DocumentCategory;
 use App\Enums\DogLeftReason;
 use App\Enums\DogRole;
 use App\Enums\DogSex;
@@ -22,6 +23,7 @@ class Options
             'sex' => DogSex::options(),
             'role' => DogRole::options(),
             'leftReason' => DogLeftReason::options(),
+            'documentCategory' => DocumentCategory::options(),
             'breedingMethod' => BreedingMethod::options(),
             'registrationType' => RegistrationType::options(),
             'color' => CoatColor::options(),

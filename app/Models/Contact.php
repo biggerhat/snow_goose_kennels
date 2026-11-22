@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Enums\ContactType;
+use App\Models\Concerns\HasDocuments;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -10,6 +11,8 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 #[Fillable(['name', 'type', 'email', 'phone', 'address', 'city', 'state', 'postal_code', 'notes'])]
 class Contact extends Model
 {
+    use HasDocuments;
+
     protected function casts(): array
     {
         return ['type' => ContactType::class];

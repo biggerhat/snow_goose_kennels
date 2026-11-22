@@ -4,6 +4,7 @@ namespace App\Models;
 
 use App\Enums\BreedingMethod;
 use App\Enums\LitterStatus;
+use App\Models\Concerns\HasDocuments;
 use App\Models\Concerns\HasSlug;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Casts\Attribute;
@@ -15,6 +16,7 @@ use Illuminate\Database\Eloquent\Relations\MorphMany;
 #[Fillable(['name', 'sire_id', 'dam_id', 'status', 'bred_on', 'due_on', 'born_on', 'go_home_on', 'price', 'deposit', 'expected_count', 'description', 'is_public', 'private_notes', 'breeding_method', 'bred_place', 'bred_handler', 'stud_fee', 'stud_fee_paid_on', 'stillborn_count', 'akc_applied_on', 'akc_litter_number'])]
 class Litter extends Model
 {
+    use HasDocuments;
     use HasSlug;
 
     protected function casts(): array
@@ -37,6 +39,7 @@ class Litter extends Model
         // Photos of the litter and its puppies stay in the library when the litter is deleted.
         static::deleting(function (Litter $litter) {
             $litter->photos()->update(['photoable_type' => null, 'photoable_id' => null]);
+            Document::where('documentable_type', 'puppy')->whereIn('documentable_id', $litter->puppies()->select('id'))->get()->each->delete();
             Photo::where('photoable_type', 'puppy')
                 ->whereIn('photoable_id', $litter->puppies()->select('id'))
                 ->update(['photoable_type' => null, 'photoable_id' => null]);

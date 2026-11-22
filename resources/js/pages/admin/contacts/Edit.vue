@@ -2,6 +2,7 @@
 import { Head, Link, router, useForm, usePage } from '@inertiajs/vue3';
 import { computed } from 'vue';
 import ConfirmDelete from '@/components/admin/ConfirmDelete.vue';
+import DocumentManager from '@/components/admin/DocumentManager.vue';
 import Field from '@/components/admin/Field.vue';
 import NativeSelect from '@/components/admin/NativeSelect.vue';
 import PageHeader from '@/components/admin/PageHeader.vue';
@@ -237,6 +238,30 @@ function addNote() {
                         >
                     </li>
                 </ul>
+            </section>
+
+            <section
+                v-if="contact"
+                class="space-y-3 rounded-xl border bg-card p-5"
+            >
+                <div>
+                    <h2 class="font-serif text-lg font-semibold">
+                        Agreements &amp; papers
+                        <span class="text-sm font-normal text-muted-foreground"
+                            >(private)</span
+                        >
+                    </h2>
+                    <p class="text-sm text-muted-foreground">
+                        A signed stud agreement, a bill of sale or anything else
+                        to do with this person.
+                    </p>
+                </div>
+                <DocumentManager
+                    type="contact"
+                    :id="contact.id"
+                    :documents="contact.documents ?? []"
+                    category="sale"
+                />
             </section>
 
             <section class="space-y-4 rounded-xl border bg-card p-5">

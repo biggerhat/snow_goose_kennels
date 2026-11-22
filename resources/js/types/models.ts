@@ -11,6 +11,20 @@ export type Options = {
     leftReason: Option[];
     breedingMethod: Option[];
     registrationType: Option[];
+    documentCategory: Option[];
+};
+
+export type DocumentFile = {
+    id: number;
+    category: string;
+    title: string;
+    original_name: string;
+    mime: string;
+    size: number;
+    issued_on: string | null;
+    expires_on: string | null;
+    notes: string | null;
+    url: string;
 };
 
 export type Photo = {
@@ -71,6 +85,7 @@ export type Dog = {
     left_reason?: string | null;
     age_label?: string | null;
     photos?: Photo[];
+    documents?: DocumentFile[];
     health_tests?: HealthTest[];
     heat_cycles?: {
         id: number;
@@ -99,6 +114,7 @@ export type Puppy = {
     went_home_on?: string | null;
     vet_checked_on?: string | null;
     buyer?: { id: number; name: string } | null;
+    documents?: DocumentFile[];
     weights?: { id: number; weighed_on: string; weight_g: number }[];
 };
 
@@ -119,6 +135,7 @@ export type Contact = {
     puppies?: (Puppy & {
         litter?: { id: number; slug: string; title: string };
     })[];
+    documents?: DocumentFile[];
 };
 
 export type LitterLite = {
@@ -160,6 +177,7 @@ export type Litter = {
     waitlist_entries_count?: number;
     puppies?: Puppy[];
     photos?: Photo[];
+    documents?: DocumentFile[];
     diary?: {
         id: number;
         posted_on: string;

@@ -4,6 +4,7 @@ use App\Http\Controllers\Admin\AlbumController;
 use App\Http\Controllers\Admin\ContactController;
 use App\Http\Controllers\Admin\ContactNoteController;
 use App\Http\Controllers\Admin\DiaryEntryController;
+use App\Http\Controllers\Admin\DocumentController;
 use App\Http\Controllers\Admin\DogController;
 use App\Http\Controllers\Admin\ExportController;
 use App\Http\Controllers\Admin\HealthTestController;
@@ -53,4 +54,5 @@ Route::middleware('auth')->prefix('admin')->name('admin.')->group(function () {
     Route::post('photos/bulk', [PhotoController::class, 'bulk'])->name('photos.bulk');
     Route::resource('photos', PhotoController::class)->only(['index', 'store', 'update', 'destroy']);
     Route::resource('albums', AlbumController::class)->only(['store', 'update', 'destroy']);
+    Route::resource('documents', DocumentController::class)->only(['store', 'update', 'show', 'destroy']);
 });

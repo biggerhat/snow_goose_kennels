@@ -6,6 +6,7 @@ use App\Enums\CoatColor;
 use App\Enums\DogLeftReason;
 use App\Enums\DogRole;
 use App\Enums\DogSex;
+use App\Models\Concerns\HasDocuments;
 use App\Models\Concerns\HasSlug;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Casts\Attribute;
@@ -17,6 +18,7 @@ use Illuminate\Database\Eloquent\Relations\MorphMany;
 #[Fillable(['name', 'registered_name', 'sex', 'role', 'color', 'birth_date', 'bio', 'is_public', 'registry_number', 'microchip', 'private_notes', 'sort_order', 'sire_id', 'dam_id', 'is_ours', 'owner_contact_id', 'titles', 'dna_profile', 'acquired_on', 'left_on', 'left_reason'])]
 class Dog extends Model
 {
+    use HasDocuments;
     use HasSlug;
 
     protected $attributes = ['is_ours' => true];

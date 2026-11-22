@@ -50,3 +50,22 @@ test('every owner page still opens', function () {
 
     $this->get(route('admin.dogs.edit', $dog))->assertOk();
 });
+
+test('every public page tells crawlers and link previews what it is', function () {
+    $dog = Dog::create(['name' => 'Bella', 'registered_name' => 'Snow Goose Bella', 'sex' => 'female', 'role' => 'dam', 'color' => 'black', 'is_public' => true, 'bio' => 'Loves the water.']);
+
+    $html = $this->get(route('site.dog', $dog))->getContent();
+    expect($html)->toMatch('/<title[^>]*>\s*Bella - /')->toContain('name="description"')->toContain('Loves the water.')
+        ->toContain('property="og:title"')->toContain('rel="canonical"');
+
+    foreach (['/', '/litters', '/our-dogs', '/gallery', '/how-it-works', '/happy-families', '/contact', '/apply'] as $url) {
+        expect($this->get($url)->getContent())->toContain('name="description"')->toContain('og:description');
+    }
+});
+
+test('the owner area is kept out of search engines', function () {
+    $this->actingAs(User::factory()->create());
+
+    expect($this->get(route('dashboard'))->getContent())->toContain('noindex')->not->toContain('og:title');
+    expect($this->get('/')->getContent())->not->toContain('noindex');
+});

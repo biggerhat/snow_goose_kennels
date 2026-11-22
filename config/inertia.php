@@ -16,7 +16,9 @@ return [
     */
 
     'ssr' => [
-        'enabled' => true,
+        // The dev server renders pages for us; on the live server there is no render service,
+        // so the head tags come from the root view (resources/views/app.blade.php).
+        'enabled' => env('INERTIA_SSR_ENABLED', env('APP_ENV') !== 'production'),
         'url' => 'http://127.0.0.1:13714',
         // 'bundle' => base_path('bootstrap/ssr/ssr.mjs'),
 

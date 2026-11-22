@@ -49,6 +49,7 @@ APP_ENV=production
 APP_DEBUG=false
 APP_URL=https://snowgoosekennels.example
 APP_TIMEZONE=America/Boise          # her local time zone: dates and the 8:00 reminder follow it
+INERTIA_SSR_ENABLED=false           # no page-rendering service on this server
 SESSION_LIFETIME=480                # stay logged in for 8 hours
 SESSION_SECURE_COOKIE=true          # the site is https, so cookies are https-only
 

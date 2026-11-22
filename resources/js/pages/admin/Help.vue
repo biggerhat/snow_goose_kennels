@@ -63,6 +63,48 @@ const jobs = [
         ],
     },
     {
+        q: 'Fill in the AKC litter application',
+        a: [
+            'First go to Website text and fill in Kennel owner (your name and mailing address). They are private and only used on AKC forms.',
+            'Open the litter, go to Breeding & AKC and tap Fill in the AKC litter application. It lines up everything AKC asks for and lists anything still missing.',
+            'Tap Download filled-in AKC form to get AKC’s own PDF with your answers in the boxes. Check every box, print it, sign it in black ink and mail it with a check or money order. Or tap Register online and use the copy buttons.',
+            'The sire’s owner has to sign too, and so does every owner of the dam. Write the dates they signed on the litter page.',
+            'When you have sent it, enter the date on the litter page. When AKC sends back the litter number, enter that too.',
+        ],
+    },
+    {
+        q: 'Plan a pairing before the litter',
+        a: [
+            'Open Pairing planner in the menu and choose a sire and a dam.',
+            'It shows how closely related they are (worked out from the family trees you have entered), what health tests each has, and the AKC points to watch, like age and DNA.',
+            'It only knows the ancestors you have entered, so fill in the family trees first. It is a planning aid, not advice.',
+            'If you like the pairing, tap Plan this litter to start a litter with both dogs filled in.',
+        ],
+    },
+    {
+        q: 'Add a dog’s titles',
+        a: [
+            'Open the dog and find Titles & awards. Tap Add a title or award, type the letters (like MH), what it stands for, the date and the event.',
+            'The letters appear after the dog’s name on your website and in the pedigree, in date order. Once you list titles here, the Titles box fills itself in.',
+        ],
+    },
+    {
+        q: 'Archive a dog or a litter',
+        a: [
+            'Open the dog or litter and tap Archive. It disappears from your lists and the website, but its records, papers and family tree are kept.',
+            'AKC asks breeders to keep records for 5 years after a dog dies, is sold or is given away, so a dog or litter cannot be erased for good until 5 years have passed. A dog or litter you added by mistake can be erased right away.',
+            'To see archived ones, look under Archived at the bottom of the Dogs or Litters page. Tap Bring back to restore one.',
+        ],
+    },
+    {
+        q: 'Get ready for an AKC inspection',
+        a: [
+            'Open Records and look at Inspection readiness. It lists what would catch your eye first: dog records with gaps, litter records with gaps, overdue vaccines, and no emergency plan.',
+            'Under Kennel papers, print the emergency plan worksheet, fill it in, and add a copy of the signed plan as a document. You will be reminded to review it once a year.',
+            'Tap Print everything to print every dog and litter record in one go.',
+        ],
+    },
+    {
         q: 'Use a stud or mother from another kennel',
         a: [
             'On the litter, open the Sire (father) or Dam (mother) box. If the dog is not in the list, tap the link under the box to add a dog from another kennel. Fill in the name, registered name, registration number and the owner.',
@@ -136,6 +178,22 @@ const jobs = [
 ];
 
 const glossary = [
+    [
+        'Archive',
+        'Hides a dog or litter from your lists and website without erasing it. Its records stay, as AKC asks.',
+    ],
+    [
+        'Co-owner',
+        'Someone who owns a dog with you, or leases her. AKC wants them on the litter application and they have to sign it.',
+    ],
+    [
+        'Inbreeding percentage',
+        'How much of a puppy’s genes would come from the same ancestors on both sides. Higher means the parents are more closely related. First cousins would be 6.25%.',
+    ],
+    [
+        'Emergency plan',
+        'A written plan for fires, floods, power cuts and illness, with phone numbers and where the dogs would go. AKC asks breeders to have one.',
+    ],
     [
         'AKC',
         'The American Kennel Club, the main registry for purebred dogs. A registered puppy gets papers from AKC.',
@@ -308,8 +366,10 @@ const glossary = [
                         <li>Microchip, registration and DNA numbers</li>
                         <li>Documents, vaccines and vet records</li>
                         <li>
-                            Stud fees, AKC details, and dogs from other kennels
+                            Stud fees, AKC details, signatures, and dogs from
+                            other kennels
                         </li>
+                        <li>Your kennel owner name and address</li>
                     </ul>
                 </div>
             </div>

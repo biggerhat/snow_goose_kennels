@@ -74,6 +74,7 @@ function save() {
                 'Fill in your phone, email and town first. They show on the Contact page and the bottom of the home page.',
                 'The boxes under How it works and policies are optional. Write them the way you would explain it on the phone. Only boxes with text appear on the website, so it is fine to leave some empty.',
                 'Tap Save at the bottom when you finish. Changes show on the website straight away.',
+                'Kennel owner is private. It is only used to fill in AKC forms for you and is never shown on the website.',
                 'The site never makes up rules for you. Only what you write is shown.',
             ]"
             help-title="Website text"

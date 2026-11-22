@@ -73,6 +73,7 @@ class DashboardController extends Controller
             ['key' => 'dogs', 'title' => 'Add your dogs', 'hint' => 'Mothers, fathers, and retired dogs.', 'done' => Dog::exists(), 'href' => route('admin.dogs.create')],
             ['key' => 'litter', 'title' => 'Add a litter', 'hint' => 'One that is planned, expected or on the ground.', 'done' => Litter::exists(), 'href' => route('admin.litters.create')],
             ['key' => 'photos', 'title' => 'Put a photo on the website', 'hint' => 'Add one to a dog or litter, or in the Photos library.', 'done' => Photo::where('is_public', true)->exists(), 'href' => route('admin.photos.index')],
+            ['key' => 'papers', 'title' => 'Write your buyer papers (optional)', 'hint' => 'How buyers pay, what the puppies eat, and your vet, for the go-home packet and agreements.', 'done' => collect(SiteContent::PAPERS)->contains(fn ($s) => filled(Setting::get($s['key']))), 'href' => route('admin.site.edit').'#papers'],
             ['key' => 'text', 'title' => 'Write how it works (optional)', 'hint' => 'Deposits, go-home age and so on, in your own words.', 'done' => SiteContent::hasAny(), 'href' => route('admin.site.edit')],
         ];
     }

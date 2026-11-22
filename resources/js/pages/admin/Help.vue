@@ -188,6 +188,80 @@ const jobs = [
         ],
     },
     {
+        q: 'Follow the puppy schedule',
+        a: [
+            'When you enter a litter’s birth date and save, a puppy schedule is made for you. You can also open the litter, tap the Health & diary tab and tap Make the puppy schedule.',
+            'It lists the usual steps counted from the birth date: weekly weigh-ins, deworming at 2, 4, 6 and 8 weeks, starting solid food, the first vaccines, the vet check and microchips, sending the AKC application, and go-home day.',
+            'Tick a step when it is done. A step that is due soon or late shows on your dashboard under Needs attention, and in the morning email.',
+            'It is a typical schedule, not vet advice. Tap the small date box to move a step, tap the bin to remove one, or add your own step at the bottom. Ask your vet about vaccines and worming.',
+        ],
+    },
+    {
+        q: 'Email everyone waiting for a litter',
+        a: [
+            'Open the litter, tap the Waitlist tab and find Send an update by email.',
+            'Tick who to send to (everyone with an email address is ticked), write a subject and your message, and tap Send. Each person gets their own email, so nobody sees anyone else’s address. Replies come to your own email.',
+            'People who are already Placed or have Passed are left out, and anyone without an email address cannot be reached by email: call or text them.',
+            'Every email you send is kept under Sent so far, and a note is added to each person’s Conversations on their contact page.',
+        ],
+    },
+    {
+        q: 'Print the go-home packet for a buyer',
+        a: [
+            'First go to Website text and open the Buyer papers tab. Write what the puppies eat, your first-weeks tips and your vet’s name. Leave a box empty and it is left out of the packet.',
+            'Open the litter, go to the Puppies tab and tap the puppy’s line to open it. Tap Print go-home packet.',
+            'The packet shows the puppy’s details, registration and microchip, every vaccine and worming you recorded and what is due next, plus your food and care notes. It is only as complete as what you have entered, so fill in the puppy first.',
+        ],
+    },
+    {
+        q: 'Print a sales agreement and a deposit receipt',
+        a: [
+            'On the Puppies tab of the litter, open the puppy and tap Print sales agreement. It fills in you, the buyer, the puppy, the price, any deposit received and the balance.',
+            'The terms come from what you wrote yourself: the Deposits, Refunds, Health guarantee, Spay / neuter and Take-back boxes under Website text → How it works, plus Extra terms under Buyer papers. If you wrote nothing, it says so and prints no terms. The site never makes up rules for you.',
+            'It is not legal advice. Have someone who knows your state’s rules read it before you rely on it. Both of you sign and each keep a copy.',
+            'For a deposit receipt, open the person’s Waitlist entry, fill in the deposit amount and date, and tap Print deposit receipt.',
+        ],
+    },
+    {
+        q: 'Print a stud agreement',
+        a: [
+            'Open the litter, go to the Breeding & AKC tab and tap Print a stud agreement.',
+            'It lists the sire, the dam and their owners, the date and place of the breeding and the stud fee. Write your usual terms under Website text → Buyer papers → Terms for the stud agreement and they print on it. Otherwise there is room to write them by hand.',
+            'AKC still needs the sire’s owner to sign the litter application. This paper does not replace that.',
+        ],
+    },
+    {
+        q: 'Keep a whelping log',
+        a: [
+            'When puppies are born, open each puppy on the litter’s Puppies tab and open Birth details. Write the order it was born (1 for the first), roughly what time, and a note if it needed help.',
+            'It is printed on the litter’s record under Records. AKC may ask to see your whelping records.',
+        ],
+    },
+    {
+        q: 'Keep track of money',
+        a: [
+            'Open Money in the menu. Puppy sales and stud fees show up by themselves, from the price on each puppy marked Gone home and the stud fee on each litter.',
+            'On the Expenses tab, tap Add expense for each bill: the date, what kind, the amount and who you paid. Choose a litter if it was for one, and it counts toward that litter.',
+            'The Summary tab adds it up for a year you choose: what came in, what you spent, and what was left over, by kind of expense and by litter. Tap Expenses spreadsheet to save a copy for your tax preparer.',
+            'This is a simple record, not tax advice. Keep your receipts.',
+        ],
+    },
+    {
+        q: 'Check yourself against the AKC breeder programs',
+        a: [
+            'Open Records and tap the AKC programs tab. It shows AKC Bred with H.E.A.R.T. and AKC Breeder of Merit, and ticks off what your records already show: a recent AKC litter, health tests on your breeding dogs, and how many puppies have an AKC number.',
+            'Fill in the parts only you know at the bottom: years in AKC events, your breed club, good standing and your last breeder course.',
+            'It is only a checklist. AKC decides who qualifies, and its rules change, so tap AKC’s requirements to read them.',
+        ],
+    },
+    {
+        q: 'See how many litters a mother has had',
+        a: [
+            'On a litter, under Pairing & dates, a line under the parents says how many earlier litters the mother has had and how long ago the last was. The Pairing planner shows the same.',
+            'It is information, not a rule. Ask your vet how long to rest her between litters.',
+        ],
+    },
+    {
         q: 'Hide something from the website',
         a: [
             'Dogs and litters have a Show on the website box. Untick it and they disappear from the public site, but nothing is deleted.',
@@ -316,6 +390,34 @@ const glossary = [
         'A rice-grain-sized chip under the skin with a 15-digit number, put in by the vet.',
     ],
     [
+        'Puppy schedule',
+        'A checklist of the usual steps for raising a litter, counted from the birth date: weigh-ins, deworming, vaccines, the vet check and go-home day.',
+    ],
+    [
+        'Whelping log',
+        'A record of the birth: the order the puppies were born in, the time, and any notes.',
+    ],
+    [
+        'Go-home packet',
+        'One printed page per puppy for the new family: details, registration, microchip, vaccines and worming, and your food and care notes.',
+    ],
+    [
+        'Sales agreement',
+        'A signed paper between you and the buyer with the puppy, the price, the deposit and your terms.',
+    ],
+    [
+        'Stud agreement',
+        'A signed paper between the owners of the sire and the dam about the breeding, the fee and what happens if there are no puppies.',
+    ],
+    [
+        'Bred with H.E.A.R.T.',
+        'An AKC program for breeders who health test their breeding dogs, keep up with education and have a recent AKC litter. It is a checklist on the AKC programs tab.',
+    ],
+    [
+        'Breeder of Merit',
+        'An AKC program that recognises breeders with years in AKC events, titled dogs, health testing and every puppy registered.',
+    ],
+    [
         'Heat cycle',
         'When a female can be bred, about every 6 to 8 months, lasting about 3 weeks. The Dogs page helps you track it.',
     ],
@@ -419,8 +521,17 @@ onMounted(() => {
                     choose which ones the website shows.
                 </li>
                 <li>
+                    <strong>Buyer papers</strong> (optional): under Website
+                    text, write how buyers pay, what the puppies eat and your
+                    vet, so the go-home packet and agreements are filled in.
+                </li>
+                <li>
                     <strong>Records</strong>: print your AKC dog and litter
                     records whenever you need them.
+                </li>
+                <li>
+                    <strong>Money</strong>: add what you spend, and see how each
+                    litter did.
                 </li>
             </ol>
             <p class="text-sm text-muted-foreground">
@@ -451,6 +562,11 @@ onMounted(() => {
                         <li>Photos marked <em>Show on the website</em></li>
                         <li>Puppy diary entries marked public</li>
                         <li>Your phone, email and town from Website text</li>
+                        <li>
+                            A Health testing page listing the clearances you
+                            marked public for your studs and dams
+                        </li>
+                        <li>A short Privacy page about the application form</li>
                     </ul>
                 </div>
                 <div class="rounded-xl border bg-card p-4">
@@ -468,6 +584,12 @@ onMounted(() => {
                             other kennels
                         </li>
                         <li>Your kennel owner name and address</li>
+                        <li>Expenses and your money summary</li>
+                        <li>
+                            Buyer papers wording, printed agreements and
+                            receipts
+                        </li>
+                        <li>Emails you send to people on the waitlist</li>
                     </ul>
                 </div>
             </div>

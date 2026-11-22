@@ -62,7 +62,7 @@ MAIL_FROM_ADDRESS="hello@snowgoosekennels.example"
 
 Generate the app key from the Forge environment page or run `php artisan key:generate --force` once.
 
-**Mail note.** New applications and the daily reminder go out by email, and `MAIL_MAILER=log` only writes them
+**Mail note.** New applications, the daily reminder and the litter update emails she sends to her waitlist (Litter → Waitlist tab) go out by email, and `MAIL_MAILER=log` only writes them
 to a file. DigitalOcean blocks the usual SMTP ports on droplets (25, and often 465 and 587 on newer accounts), so
 use a mail service with an HTTP API (Postmark, Resend, Mailgun or Amazon SES) or an SMTP port they allow, such as 2525. Each API mailer needs one small composer package; tell me which service she will use and I will wire it up.
 
@@ -127,8 +127,8 @@ rclone copy "$DEST/database.sqlite" space:kennel-backups/db/$(date +%F)/
 find /home/forge/backups -maxdepth 1 -mtime +14 -exec rm -rf {} +                   # keep two weeks locally
 ```
 
-She can also download spreadsheets of dogs, puppies, contacts and the waitlist from **Website text → Download
-your records**. A handy extra copy, but not a full backup (no photos).
+She can also download spreadsheets of dogs, puppies, contacts, the waitlist and expenses from **Records → Spreadsheets**
+(and the expenses file from **Money**). A handy extra copy, but not a full backup (no photos).
 
 ## 9. Before you hand it over
 
@@ -145,10 +145,44 @@ Everything should say OK. WARN lines are decisions (for example mail), FAIL line
 - [ ] Settle the policy text with her (deposits, go-home age, health guarantee, contracts). The site never
       invents policies, so those sections stay hidden until she writes them.
 - [ ] Submit a test application at `/apply` and confirm the email arrives.
+- [ ] Send a test litter update: add yourself to a litter's waitlist with your own email, open the litter's
+      **Waitlist** tab and use **Send an update by email**. Confirm it arrives and replies come to the kennel
+      email. Replies go to the **Kennel owner** email under Website text (or the contact email if blank).
+- [ ] Read the public **/privacy** page with her. It says only that the site collects what the application
+      form asks, shares nothing, uses one form-security cookie, no analytics, and loads fonts from Bunny Fonts.
+      Change the wording in `resources/js/pages/public/Privacy.vue` if any of that stops being true (for
+      example if you add analytics or a mailing-list service).
+- [ ] In **Website text → Buyer papers**, help her write how buyers pay, what the puppies eat, her vet, and any
+      extra terms. Printed agreements and receipts contain only wording she wrote.
+- [ ] Mark each stud's and dam's clearances **Show on the website** on the dog's Health tab, so the public
+      **Health testing** page has something to show. The menu link appears once one is public.
 - [ ] Check whether iPhone HEIC photos are supported (`kennel:check` says). If not, tell iPhone users to use
       Settings → Camera → Formats → Most Compatible.
 - [ ] Submit `https://snowgoosekennels.example/sitemap.xml` in Google Search Console, and paste the home page
       into a Facebook post to check the share image.
+
+## What was added on the `breeder-tools` branch
+
+No new environment values and no new scheduled jobs. Deploying runs one new migration
+(`create_breeder_tools_tables`: puppy schedule steps, expenses, litter update emails, and whelping-log columns
+on puppies). The new features and where she finds them:
+
+| Feature | Where |
+| --- | --- |
+| Puppy schedule (builds itself from the birth date, shows on the dashboard) | Litter → Health & diary |
+| Email everyone waiting for a litter | Litter → Waitlist |
+| Go-home packet, sales agreement | Litter → Puppies → open a puppy |
+| Deposit receipt | Waitlist entry |
+| Stud agreement | Litter → Breeding & AKC |
+| Whelping log | Litter → Puppies → open a puppy → Birth details |
+| Money (expenses, yearly summary, per-litter results) | Menu → Money |
+| AKC programs checklist | Records → AKC programs |
+| Mother's litter history | Litter → Details, and the Pairing planner |
+| Privacy and Health testing pages | Public site (footer, and menu once a clearance is public) |
+
+Online payments are not built in. Buyers pay however she says (check, Venmo, Zelle). Her instructions print on
+deposit receipts and sales agreements (**Website text → Buyer papers → How buyers pay**). A card-payment
+integration would need a payment account (for example Stripe) and its keys.
 
 ## Updating later
 

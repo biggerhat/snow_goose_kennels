@@ -97,6 +97,14 @@ const shownAttention = computed(() =>
         <PageHeader
             title="Good to see you"
             description="Here is what is happening at the kennel."
+            :help="[
+                'This is your home page. It shows what needs you today.',
+                'Needs attention lists things that are due or running out: vaccines, papers, steps in a litter’s puppy schedule and AKC deadlines. Tap a card to go to it, or tap Remind me in a week to put it off.',
+                'The quick buttons at the top start the things you do most: a new litter, someone on the waitlist, a dog, photos.',
+                'Everything else is in the menu: Dogs, Litters, Contacts, Photos, Records, Money and Website text. On a phone, tap More at the bottom.',
+                'Stuck? Tap Help in the menu. It has step-by-step answers and explains the words.',
+            ]"
+            help-title="Your home page"
         >
             <Button as-child
                 ><Link :href="newLitter()">New litter</Link></Button

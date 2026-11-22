@@ -162,3 +162,13 @@ test('saving a puppy confirms with a message', function () {
     $this->put(route('admin.puppies.update', $puppy), ['sex' => 'male', 'status' => 'reserved', 'birth_weight_g' => 10])
         ->assertSessionHasErrors(['birth_weight_g' => 'That birth weight looks too small. Newborn Labs are usually 6 to 20 ounces (170 to 570 grams).']);
 });
+
+test('the dashboard checklist offers buyer papers and ticks it once any wording is written', function () {
+    $steps = fn () => collect($this->get(route('dashboard'))->viewData('page')['props']['setup'])->pluck('done', 'key')->all();
+
+    expect($steps())->toMatchArray(['papers' => false]);
+
+    \App\Models\Setting::put('packet_food', 'Purina Pro Plan');
+
+    expect($steps())->toMatchArray(['papers' => true]);
+});

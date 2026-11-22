@@ -252,7 +252,9 @@ const summary = computed(() => {
             :help="[
                 'Start with the mother (dam), the father (sire) and the status. Everything else can be added later.',
                 'Change the status as things happen: Planned, then Expected, then On the ground when puppies are born.',
-                'Once the litter exists, scroll down to add each puppy, record weights, post updates for families, and see who is waiting.',
+                'Once the litter exists, use the tabs along the top: Puppies (one line each; tap to open and print the go-home packet or sales agreement), Waitlist (who is waiting, and an email to send them news), Health & diary (the puppy schedule, weights and diary), Breeding & AKC, and Papers & photos.',
+                'When you enter a birth date and save, a puppy schedule is made for you on the Health & diary tab. Steps that are due show on your dashboard.',
+                'Under Pairing & dates you will see how many earlier litters the mother has had and when the last was. It is information for you and your vet, not a rule.',
                 'Breeding & AKC keeps the paperwork side: how and where they were bred, any stud fee, and when the AKC application went in. The AKC checklist on that tab tells you what is still missing.',
                 'The “Print a stud agreement” button makes a paper for the owners of the sire and dam to sign. The “Fill in the AKC litter application” button in Breeding & AKC lines up everything AKC asks for and fills in AKC’s own PDF form for you.',
                 'If the father belongs to another kennel, pick “not in the list?” under the Sire box to add him. Keep the signed stud agreement on the Papers & photos tab.',

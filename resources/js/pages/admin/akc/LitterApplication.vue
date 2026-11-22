@@ -104,6 +104,7 @@ async function download() {
                 'After you send it, go back to the litter and enter the date you sent it. When AKC replies, enter the AKC litter number.',
             ]"
             help-title="The AKC litter application"
+            help-topic="Fill in the AKC litter application"
         >
             <Button as-child variant="outline">
                 <Link :href="edit(litter.slug)">← Back to the litter</Link>

@@ -2,11 +2,14 @@
 import { Link } from '@inertiajs/vue3';
 import { CircleHelp, X } from '@lucide/vue';
 import { computed, ref } from 'vue';
+import { topicId } from '@/lib/helpTopic';
 import { help } from '@/routes/admin';
 
 const props = defineProps<{
     title?: string;
     steps: string[];
+    /** The Help page how-to that goes with this page, by its question. */
+    topic?: string;
 }>();
 
 // Always starts closed: the owner opens it when she wants it. The first thing a new
@@ -57,8 +60,14 @@ const shown = computed(() =>
                 >
                     {{ all ? 'Show less' : `Show ${steps.length - 3} more` }}
                 </button>
-                <Link :href="help()" class="underline underline-offset-2"
-                    >Open the full Help page</Link
+                <Link
+                    :href="topic ? `${help().url}#${topicId(topic)}` : help()"
+                    class="underline underline-offset-2"
+                    >{{
+                        topic
+                            ? 'See the step-by-step help'
+                            : 'Open the full Help page'
+                    }}</Link
                 >
             </p>
         </aside>

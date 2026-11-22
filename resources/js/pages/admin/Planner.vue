@@ -81,6 +81,7 @@ const tone = computed(() => {
                 'When you like a pairing, tap Plan this litter to start a litter with both dogs filled in.',
             ]"
             help-title="Planning a pairing"
+            help-topic="Plan a pairing before the litter"
         />
 
         <div class="grid gap-4 rounded-xl border bg-card p-5 sm:grid-cols-2">

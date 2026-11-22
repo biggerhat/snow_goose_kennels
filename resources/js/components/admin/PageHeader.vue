@@ -7,6 +7,8 @@ defineProps<{
     /** Plain-language steps shown under the title. */
     help?: string[];
     helpTitle?: string;
+    /** Question of the matching how-to on the Help page. */
+    helpTopic?: string;
 }>();
 </script>
 
@@ -28,6 +30,11 @@ defineProps<{
                 <slot />
             </div>
         </div>
-        <PageHelp v-if="help?.length" :title="helpTitle" :steps="help" />
+        <PageHelp
+            v-if="help?.length"
+            :title="helpTitle"
+            :steps="help"
+            :topic="helpTopic"
+        />
     </div>
 </template>

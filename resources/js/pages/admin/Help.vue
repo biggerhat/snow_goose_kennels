@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { Head } from '@inertiajs/vue3';
 import { computed, nextTick, onMounted, ref } from 'vue';
+import { topicId as slugOf } from '@/lib/helpTopic';
 import PageHeader from '@/components/admin/PageHeader.vue';
 import { help } from '@/routes/admin';
 
@@ -290,16 +291,6 @@ const glossary = [
 
 const query = ref('');
 const openId = ref<string | null>(null);
-
-export function slugOf(text: string): string {
-    return (
-        'topic-' +
-        text
-            .toLowerCase()
-            .replace(/[^a-z0-9]+/g, '-')
-            .replace(/^-|-$/g, '')
-    );
-}
 
 const matches = (text: string) =>
     text.toLowerCase().includes(query.value.trim().toLowerCase());

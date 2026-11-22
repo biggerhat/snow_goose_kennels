@@ -238,6 +238,7 @@ const subjectLabel: Record<string, string> = {
                 'To show a photo on a particular dog or litter page, add it from that dog’s or litter’s own page.',
             ]"
             help-title="The photo library"
+            help-topic="Add photos"
         />
 
         <!-- Totals -->

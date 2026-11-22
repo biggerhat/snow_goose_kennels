@@ -84,6 +84,7 @@ const sheets = [
                 'The spreadsheets are extra copies you can open in Excel or Google Sheets. They do not include photos or documents, only their details.',
             ]"
             help-title="Your record book"
+            help-topic="Print my records for AKC"
         >
             <Button as-child>
                 <a :href="printAll.url()" target="_blank" rel="noopener">

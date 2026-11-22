@@ -28,6 +28,12 @@ class Dog extends Model
         ];
     }
 
+    protected static function booted(): void
+    {
+        // Photos are kept in the library when a dog is deleted.
+        static::deleting(fn (Dog $dog) => $dog->photos()->update(['photoable_type' => null, 'photoable_id' => null]));
+    }
+
     protected function slugSource(): string
     {
         return $this->name;

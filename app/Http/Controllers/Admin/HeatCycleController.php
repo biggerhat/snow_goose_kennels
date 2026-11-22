@@ -13,9 +13,9 @@ class HeatCycleController extends Controller
     public function store(Request $request, Dog $dog): RedirectResponse
     {
         $dog->heatCycles()->create($request->validate([
-            'started_on' => ['required', 'date'],
+            'started_on' => ['required', 'date', 'before_or_equal:today'],
             'ended_on' => ['nullable', 'date', 'after_or_equal:started_on'],
-            'bred_on' => ['nullable', 'date'],
+            'bred_on' => ['nullable', 'date', 'after_or_equal:started_on'],
             'notes' => ['nullable', 'string', 'max:2000'],
         ]));
 

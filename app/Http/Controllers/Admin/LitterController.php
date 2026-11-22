@@ -2,19 +2,25 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Enums\DogSex;
 use App\Enums\LitterStatus;
+use App\Http\Controllers\Admin\Concerns\CleansInput;
 use App\Http\Controllers\Controller;
 use App\Models\Contact;
 use App\Models\Dog;
 use App\Models\Litter;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
 use Inertia\Inertia;
 use Inertia\Response;
 
 class LitterController extends Controller
 {
+    use CleansInput;
+
     public function index(): Response
     {
         return Inertia::render('admin/litters/Index', [
@@ -80,14 +86,16 @@ class LitterController extends Controller
     /** @return array<string, mixed> */
     private function validated(Request $request): array
     {
-        return $request->validate([
+        $this->cleanMoney($request, ['price', 'deposit']);
+
+        $validator = Validator::make($request->all(), [
             'name' => ['nullable', 'string', 'max:150'],
-            'sire_id' => ['nullable', 'exists:dogs,id'],
+            'sire_id' => ['nullable', 'exists:dogs,id', 'different:dam_id'],
             'dam_id' => ['nullable', 'exists:dogs,id'],
             'status' => ['required', Rule::enum(LitterStatus::class)],
-            'bred_on' => ['nullable', 'date'],
+            'bred_on' => ['nullable', 'date', 'before_or_equal:today'],
             'due_on' => ['nullable', 'date'],
-            'born_on' => ['nullable', 'date'],
+            'born_on' => ['nullable', 'date', 'before_or_equal:today'],
             'go_home_on' => ['nullable', 'date'],
             'price' => ['nullable', 'integer', 'min:0', 'max:100000'],
             'deposit' => ['nullable', 'integer', 'min:0', 'max:100000'],
@@ -95,6 +103,45 @@ class LitterController extends Controller
             'description' => ['nullable', 'string', 'max:5000'],
             'is_public' => ['boolean'],
             'private_notes' => ['nullable', 'string', 'max:10000'],
+        ], [
+            'sire_id.different' => 'The sire and the dam must be two different dogs.',
         ]);
+
+        $validator->after(function ($v) {
+            $in = $v->getData();
+            $date = fn (string $k) => filled($in[$k] ?? null) ? Carbon::parse($in[$k]) : null;
+
+            foreach (['sire_id' => [DogSex::Male, 'sire (father)', 'male'], 'dam_id' => [DogSex::Female, 'dam (mother)', 'female']] as $key => [$sex, $label, $word]) {
+                $dog = filled($in[$key] ?? null) ? Dog::find($in[$key]) : null;
+
+                if ($dog && $dog->sex !== $sex) {
+                    $v->errors()->add($key, "{$dog->name} is marked as {$dog->sex->value}, but the {$label} should be a {$word} dog. Pick another dog, or fix the dog's sex on its page.");
+                }
+            }
+
+            [$bred, $due, $born, $home] = [$date('bred_on'), $date('due_on'), $date('born_on'), $date('go_home_on')];
+
+            if ($bred && $due && $due->lt($bred)) {
+                $v->errors()->add('due_on', 'The due date cannot be before the date bred.');
+            }
+
+            if ($bred && $born && $born->lt($bred)) {
+                $v->errors()->add('born_on', 'Puppies cannot be born before the date bred.');
+            }
+
+            if ($born && $home && $home->lt($born)) {
+                $v->errors()->add('go_home_on', 'The go-home date cannot be before the puppies were born.');
+            }
+
+            if (in_array($in['status'] ?? null, [LitterStatus::OnGround->value, LitterStatus::AllHome->value], true) && ! $born) {
+                $v->errors()->add('born_on', 'Add the date the puppies were born, because this litter is marked as born.');
+            }
+
+            if (filled($in['price'] ?? null) && filled($in['deposit'] ?? null) && (int) $in['deposit'] > (int) $in['price']) {
+                $v->errors()->add('deposit', 'The deposit is more than the price. Check both amounts.');
+            }
+        });
+
+        return $validator->validate();
     }
 }

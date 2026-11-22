@@ -80,12 +80,14 @@ class ContactController extends Controller
             'name' => ['required', 'string', 'max:150'],
             'type' => ['required', Rule::enum(ContactType::class)],
             'email' => ['nullable', 'email', 'max:200'],
-            'phone' => ['nullable', 'string', 'max:50'],
+            'phone' => ['nullable', 'string', 'max:50', 'regex:/^(?:\D*\d){7,}\D*$/'],
             'address' => ['nullable', 'string', 'max:200'],
             'city' => ['nullable', 'string', 'max:100'],
             'state' => ['nullable', 'string', 'max:50'],
             'postal_code' => ['nullable', 'string', 'max:20'],
             'notes' => ['nullable', 'string', 'max:10000'],
+        ], [
+            'phone.regex' => 'That phone number looks too short. Include the area code, like (208) 555-0123.',
         ]);
     }
 }

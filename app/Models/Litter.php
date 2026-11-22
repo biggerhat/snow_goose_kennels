@@ -28,6 +28,17 @@ class Litter extends Model
         ];
     }
 
+    protected static function booted(): void
+    {
+        // Photos of the litter and its puppies stay in the library when the litter is deleted.
+        static::deleting(function (Litter $litter) {
+            $litter->photos()->update(['photoable_type' => null, 'photoable_id' => null]);
+            Photo::where('photoable_type', 'puppy')
+                ->whereIn('photoable_id', $litter->puppies()->select('id'))
+                ->update(['photoable_type' => null, 'photoable_id' => null]);
+        });
+    }
+
     protected function slugSource(): string
     {
         return $this->title;

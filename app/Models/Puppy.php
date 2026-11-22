@@ -22,6 +22,11 @@ class Puppy extends Model
         return ['sex' => DogSex::class, 'color' => CoatColor::class, 'status' => PuppyStatus::class];
     }
 
+    protected static function booted(): void
+    {
+        static::deleting(fn (Puppy $puppy) => $puppy->photos()->update(['photoable_type' => null, 'photoable_id' => null]));
+    }
+
     public function litter(): BelongsTo
     {
         return $this->belongsTo(Litter::class);

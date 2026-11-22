@@ -37,7 +37,7 @@ class HealthTestController extends Controller
         return $request->validate([
             'name' => ['required', 'string', 'max:100'],
             'result' => ['required', 'string', 'max:100'],
-            'tested_on' => ['nullable', 'date'],
+            'tested_on' => ['nullable', 'date', 'before_or_equal:today'],
             'certificate_number' => ['nullable', 'string', 'max:100'],
             'verification_url' => ['nullable', 'url:http,https', 'max:500'],
             'is_public' => ['boolean'],

@@ -6,6 +6,7 @@ use App\Enums\CoatColor;
 use App\Enums\DogSex;
 use App\Enums\LitterStatus;
 use App\Enums\PuppyStatus;
+use App\Http\Controllers\Admin\Concerns\CleansInput;
 use App\Http\Controllers\Controller;
 use App\Models\Litter;
 use App\Models\Puppy;
@@ -16,6 +17,8 @@ use Inertia\Inertia;
 
 class PuppyController extends Controller
 {
+    use CleansInput;
+
     public function store(Request $request, Litter $litter): RedirectResponse
     {
         $litter->puppies()->create($this->validated($request));
@@ -56,12 +59,14 @@ class PuppyController extends Controller
     /** @return array<string, mixed> */
     private function validated(Request $request): array
     {
+        $this->cleanMoney($request, ['sale_price', 'birth_weight_g']);
+
         return $request->validate([
             'name' => ['nullable', 'string', 'max:100'],
             'collar' => ['nullable', 'string', 'max:50'],
             'sex' => ['required', Rule::enum(DogSex::class)],
             'color' => ['nullable', Rule::enum(CoatColor::class)],
-            'birth_weight_g' => ['nullable', 'integer', 'min:0', 'max:2000'],
+            'birth_weight_g' => ['nullable', 'integer', 'min:50', 'max:2000'],
             'status' => ['required', Rule::enum(PuppyStatus::class)],
             'contact_id' => ['nullable', 'exists:contacts,id'],
             'sale_price' => ['nullable', 'integer', 'min:0', 'max:100000'],

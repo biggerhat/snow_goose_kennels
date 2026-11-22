@@ -7,6 +7,8 @@ use App\Models\Litter;
 use App\Models\PuppyWeight;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Carbon;
+use Illuminate\Validation\ValidationException;
 use Inertia\Inertia;
 
 class WeighInController extends Controller
@@ -19,6 +21,10 @@ class WeighInController extends Controller
             'weights' => ['required', 'array'],
             'weights.*' => ['nullable', 'integer', 'min:1', 'max:60000'],
         ]);
+
+        if ($litter->born_on && Carbon::parse($data['weighed_on'])->lt($litter->born_on)) {
+            throw ValidationException::withMessages(['weighed_on' => 'That date is before these puppies were born ('.$litter->born_on->format('M j, Y').').']);
+        }
 
         $ids = $litter->puppies()->pluck('id')->all();
         $saved = 0;

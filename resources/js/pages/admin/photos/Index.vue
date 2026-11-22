@@ -386,7 +386,11 @@ const subjectLabel: Record<string, string> = {
                 </div>
             </template>
             <form v-else class="space-y-2" @submit.prevent="saveAlbum">
-                <Input v-model="albumForm.name" placeholder="Album name" />
+                <Input
+                    v-model="albumForm.name"
+                    placeholder="Album name"
+                    aria-label="Album name"
+                />
                 <Input
                     v-model="albumForm.description"
                     placeholder="Notes (optional)"
@@ -418,6 +422,7 @@ const subjectLabel: Record<string, string> = {
                 v-model="query.q"
                 class="w-full sm:w-64"
                 placeholder="Search captions and credits"
+                aria-label="Search captions and credits"
             />
             <div class="w-full sm:w-44">
                 <NativeSelect
@@ -427,6 +432,7 @@ const subjectLabel: Record<string, string> = {
                         { value: 'private', label: 'Private' },
                     ]"
                     placeholder="Website: any"
+                    aria-label="Filter by website visibility"
                     @update:model-value="go()"
                 />
             </div>
@@ -440,6 +446,7 @@ const subjectLabel: Record<string, string> = {
                         { value: 'none', label: 'Nothing (loose)' },
                     ]"
                     placeholder="Linked to: anything"
+                    aria-label="Filter by what the photo is linked to"
                     @update:model-value="go()"
                 />
             </div>
@@ -478,6 +485,7 @@ const subjectLabel: Record<string, string> = {
                         v-model="moveTo"
                         :options="albumOptions"
                         placeholder="No album"
+                        aria-label="Move selected photos to album"
                     />
                 </div>
                 <Button
@@ -616,6 +624,7 @@ const subjectLabel: Record<string, string> = {
                                     "
                                     :options="albumOptions"
                                     placeholder="No album"
+                                    aria-label="Album"
                                     @update:model-value="
                                         (v) => {
                                             photo.album_id = v

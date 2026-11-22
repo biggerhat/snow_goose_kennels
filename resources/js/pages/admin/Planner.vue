@@ -85,8 +85,11 @@ const tone = computed(() => {
 
         <div class="grid gap-4 rounded-xl border bg-card p-5 sm:grid-cols-2">
             <div class="space-y-1.5">
-                <label class="text-sm font-medium">Sire (father)</label>
+                <label for="planner-sire" class="text-sm font-medium"
+                    >Sire (father)</label
+                >
                 <NativeSelect
+                    id="planner-sire"
                     v-model="sire"
                     :options="options('male')"
                     placeholder="Choose…"
@@ -94,8 +97,11 @@ const tone = computed(() => {
                 />
             </div>
             <div class="space-y-1.5">
-                <label class="text-sm font-medium">Dam (mother)</label>
+                <label for="planner-dam" class="text-sm font-medium"
+                    >Dam (mother)</label
+                >
                 <NativeSelect
+                    id="planner-dam"
                     v-model="dam"
                     :options="options('female')"
                     placeholder="Choose…"

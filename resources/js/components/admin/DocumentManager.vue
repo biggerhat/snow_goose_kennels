@@ -4,6 +4,7 @@ import { FilePlus, FileText } from '@lucide/vue';
 import { computed, ref } from 'vue';
 import ConfirmDelete from '@/components/admin/ConfirmDelete.vue';
 import Field from '@/components/admin/Field.vue';
+import FileInput from '@/components/admin/FileInput.vue';
 import NativeSelect from '@/components/admin/NativeSelect.vue';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -245,15 +246,9 @@ function saveEdit(d: DocumentFile) {
                 :error="form.errors.file"
                 hint="A PDF, a photo of the papers (JPG or PNG), or a Word or Excel file. Up to 25 MB. These files are private: only you can open them."
             >
-                <input
-                    type="file"
+                <FileInput
                     accept=".pdf,.jpg,.jpeg,.png,.webp,.doc,.docx,.xls,.xlsx"
-                    class="block w-full text-sm file:mr-3 file:rounded-md file:border file:bg-secondary file:px-3 file:py-1.5 file:text-sm"
-                    @change="
-                        form.file =
-                            ($event.target as HTMLInputElement).files?.[0] ??
-                            null
-                    "
+                    @change="(files) => (form.file = files?.[0] ?? null)"
                 />
             </Field>
             <div class="grid gap-3 sm:grid-cols-2">

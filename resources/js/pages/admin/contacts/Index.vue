@@ -59,6 +59,7 @@ watch([q, type], () => {
                 v-model="q"
                 type="search"
                 placeholder="Search name, phone, email or city…"
+                aria-label="Search contacts"
                 class="max-w-sm"
             />
             <div class="w-48">
@@ -66,6 +67,7 @@ watch([q, type], () => {
                     v-model="type"
                     :options="options.contactType"
                     placeholder="All types"
+                    aria-label="Filter by type"
                 />
             </div>
         </div>

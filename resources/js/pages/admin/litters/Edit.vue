@@ -216,7 +216,7 @@ const summary = computed(() => {
                 'If the father belongs to another kennel, pick “not in the list?” under the Sire box to add him. Keep the signed stud agreement under Litter documents.',
                 'Untick Show on the website to hide a litter while you decide. Nothing is lost.',
             ]"
-            help-title="How a litter works"
+            help-title="About this page"
         >
             <ConfirmDelete
                 v-if="litter && !litter.deleted_at"

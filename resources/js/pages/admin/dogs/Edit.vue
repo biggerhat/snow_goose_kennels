@@ -237,7 +237,7 @@ const suggestions = [
                 'Documents keeps a private copy of registration papers, pedigrees, OFA and DNA reports and vet records. The AKC record list shows what is still missing for this dog.',
                 'Untick Show on the website to keep a dog private. Registration, microchip and private notes are never shown to visitors.',
             ]"
-            help-title="Adding a dog"
+            help-title="About this page"
         >
             <ConfirmDelete
                 v-if="dog && !dog.deleted_at"

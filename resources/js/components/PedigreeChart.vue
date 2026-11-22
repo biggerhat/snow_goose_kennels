@@ -83,13 +83,13 @@ function href(n: PedigreeNode): string | null {
                 gridTemplateColumns: `repeat(${generations + 1}, minmax(0, 1fr))`,
                 gridTemplateRows: `repeat(${rows}, minmax(2.75rem, auto))`,
             }"
-            role="table"
+            role="list"
             aria-label="Family tree"
         >
             <div
                 v-for="(c, i) in cells"
                 :key="i"
-                role="cell"
+                role="listitem"
                 class="flex flex-col justify-center rounded-md border px-2.5 py-1 text-xs leading-tight"
                 :class="
                     c.node

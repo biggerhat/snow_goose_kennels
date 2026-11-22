@@ -100,7 +100,7 @@ function submit() {
                 'Change the status as things move along. When they pay a deposit, set Deposit paid and fill in the amount.',
                 'The pick order says who chooses first when the puppies are old enough to pick. Pick 1 chooses first.',
             ]"
-            help-title="Adding someone to the waitlist"
+            help-title="About this page"
         >
             <ConfirmDelete
                 v-if="entry"

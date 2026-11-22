@@ -82,7 +82,7 @@ function addNote() {
                 'After you save, use Conversation notes at the bottom to jot down each call or text, with the date.',
                 'Nothing here is ever shown on the website.',
             ]"
-            help-title="Contacts"
+            help-title="About this page"
         >
             <template v-if="contact">
                 <Button v-if="contact.phone" as-child variant="outline"

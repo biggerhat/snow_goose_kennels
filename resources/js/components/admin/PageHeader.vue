@@ -28,11 +28,6 @@ defineProps<{
                 <slot />
             </div>
         </div>
-        <PageHelp
-            v-if="help?.length"
-            :id="title"
-            :title="helpTitle"
-            :steps="help"
-        />
+        <PageHelp v-if="help?.length" :title="helpTitle" :steps="help" />
     </div>
 </template>

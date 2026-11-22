@@ -1,11 +1,18 @@
 <script setup lang="ts">
-defineProps<{ id?: string; rows?: number; placeholder?: string }>();
+import { useFieldId } from '@/composables/useFieldId';
+
+const props = defineProps<{
+    id?: string;
+    rows?: number;
+    placeholder?: string;
+}>();
+const fieldId = useFieldId();
 const model = defineModel<string | null>();
 </script>
 
 <template>
     <textarea
-        :id="id"
+        :id="props.id ?? fieldId ?? undefined"
         v-model="model"
         :rows="rows ?? 4"
         :placeholder="placeholder"

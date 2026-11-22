@@ -92,9 +92,7 @@ function href(n: PedigreeNode): string | null {
                 role="listitem"
                 class="flex flex-col justify-center rounded-md border px-2.5 py-1 text-xs leading-tight"
                 :class="
-                    c.node
-                        ? 'bg-card'
-                        : 'border-dashed text-muted-foreground'
+                    c.node ? 'bg-card' : 'border-dashed text-muted-foreground'
                 "
                 :style="{
                     gridColumn: c.col,

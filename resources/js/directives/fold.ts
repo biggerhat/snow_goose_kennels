@@ -15,9 +15,11 @@ const cleanups = new WeakMap<HTMLElement, () => void>();
  */
 export const vFold: Directive<HTMLElement, FoldOptions> = {
     mounted(el, { value }) {
-        el.id = value.id;
+        // Prefixed so a section never shares an id with a form box (e.g. the "price" section and the price input).
+        const sid = `sec-${value.id}`;
+        el.id = sid;
         el.classList.add('fold');
-        pageSections.push({ id: value.id, label: value.label });
+        pageSections.push({ id: sid, label: value.label });
 
         const h2 = el.querySelector('h2');
         let head: HTMLElement | null = h2;
@@ -59,7 +61,7 @@ export const vFold: Directive<HTMLElement, FoldOptions> = {
             }
         };
         const onOpen = (e: Event) => {
-            if ((e as CustomEvent<string>).detail === value.id) {
+            if ((e as CustomEvent<string>).detail === sid) {
                 set(true);
             }
         };
@@ -75,9 +77,9 @@ export const vFold: Directive<HTMLElement, FoldOptions> = {
             window.removeEventListener('section:open', onOpen);
         });
     },
-    unmounted(el, { value }) {
+    unmounted(el) {
         cleanups.get(el)?.();
-        const i = pageSections.findIndex((s) => s.id === value.id);
+        const i = pageSections.findIndex((s) => s.id === el.id);
 
         if (i >= 0) {
             pageSections.splice(i, 1);

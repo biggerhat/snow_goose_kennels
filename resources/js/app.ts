@@ -5,6 +5,7 @@ import AppLayout from '@/layouts/AppLayout.vue';
 import AuthLayout from '@/layouts/AuthLayout.vue';
 import PublicLayout from '@/layouts/public/PublicLayout.vue';
 import SettingsLayout from '@/layouts/settings/Layout.vue';
+import { vFold } from '@/directives/fold';
 import { initializeFlashToast } from '@/lib/flashToast';
 
 const appName = import.meta.env.VITE_APP_NAME || 'Laravel';
@@ -24,6 +25,7 @@ void createInertiaApp({
         }
     },
     withApp: (app) => {
+        app.directive('fold', vFold);
         app.directive('focus', {
             mounted: (el: HTMLElement, shouldFocus) => {
                 if (shouldFocus.value !== false) {

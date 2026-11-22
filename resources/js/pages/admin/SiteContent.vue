@@ -3,6 +3,7 @@ import { Head, router, usePage } from '@inertiajs/vue3';
 import { computed, reactive, ref } from 'vue';
 import Field from '@/components/admin/Field.vue';
 import PageHeader from '@/components/admin/PageHeader.vue';
+import StickySave from '@/components/admin/StickySave.vue';
 import TextArea from '@/components/admin/TextArea.vue';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -35,7 +36,11 @@ const state = reactive<Record<string, string>>({
 });
 
 const snapshot = ref(JSON.stringify(state));
-useUnsavedWarning(() => JSON.stringify(state) !== snapshot.value);
+const dirty = computed(() => JSON.stringify(state) !== snapshot.value);
+useUnsavedWarning(() => dirty.value);
+function discard() {
+    Object.assign(state, JSON.parse(snapshot.value));
+}
 
 const get = (key: string): string => state[key] ?? '';
 const set = (key: string, value: unknown): void => {
@@ -80,7 +85,7 @@ function save() {
             help-title="Website text"
         />
 
-        <form class="space-y-8" @submit.prevent="save">
+        <form id="main-form" class="space-y-8" @submit.prevent="save">
             <section class="space-y-4 rounded-xl border bg-card p-5">
                 <h2 class="font-serif text-lg font-semibold">
                     Contact details
@@ -293,5 +298,12 @@ function save() {
                 </div>
             </section>
         </form>
+
+        <StickySave
+            :dirty="dirty"
+            :processing="processing"
+            form-id="main-form"
+            @discard="discard"
+        />
     </div>
 </template>

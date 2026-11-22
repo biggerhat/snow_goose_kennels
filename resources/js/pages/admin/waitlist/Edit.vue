@@ -5,6 +5,7 @@ import ConfirmDelete from '@/components/admin/ConfirmDelete.vue';
 import Field from '@/components/admin/Field.vue';
 import NativeSelect from '@/components/admin/NativeSelect.vue';
 import PageHeader from '@/components/admin/PageHeader.vue';
+import StickySave from '@/components/admin/StickySave.vue';
 import TextArea from '@/components/admin/TextArea.vue';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -56,6 +57,9 @@ const form = useForm({
 });
 
 useUnsavedWarning(() => form.isDirty);
+const formDirty = computed(() => form.isDirty);
+const formBusy = computed(() => form.processing);
+const discardChanges = () => form.reset();
 
 const nextPick = computed(
     () => props.litters.find((l) => l.id === form.litter_id)?.next_pick ?? null,
@@ -131,7 +135,7 @@ function submit() {
             </dl>
         </section>
 
-        <form class="space-y-6" @submit.prevent="submit">
+        <form id="main-form" class="space-y-6" @submit.prevent="submit">
             <section class="space-y-4 rounded-xl border bg-card p-5">
                 <h2 class="font-serif text-lg font-semibold">Who</h2>
 
@@ -320,5 +324,12 @@ function submit() {
                 entry ? 'Save changes' : 'Add to waitlist'
             }}</Button>
         </form>
+
+        <StickySave
+            :dirty="formDirty"
+            :processing="formBusy"
+            form-id="main-form"
+            @discard="discardChanges"
+        />
     </div>
 </template>

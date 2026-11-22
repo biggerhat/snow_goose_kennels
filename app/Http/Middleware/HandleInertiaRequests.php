@@ -2,9 +2,14 @@
 
 namespace App\Http\Middleware;
 
+use App\Enums\WaitlistStatus;
+use App\Models\Testimonial;
+use App\Models\WaitlistEntry;
+use App\Support\Attention;
 use App\Support\Options;
 use App\Support\SiteContent;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Cache;
 use Inertia\Middleware;
 
 class HandleInertiaRequests extends Middleware
@@ -43,7 +48,15 @@ class HandleInertiaRequests extends Middleware
             'auth' => [
                 'user' => $request->user(),
             ],
-            'site' => ['hasProcess' => SiteContent::hasAny()],
+            'site' => [
+                'hasProcess' => SiteContent::hasAny(),
+                'hasFamilies' => Testimonial::where('is_public', true)->exists(),
+            ],
+            // Counts for the badges in the owner menu. Cached briefly so every click is not a new count.
+            'nav' => fn () => $request->user() ? [
+                'applications' => WaitlistEntry::where('status', WaitlistStatus::New)->count(),
+                'attention' => Cache::remember('nav.attention', 60, fn () => Attention::items(14)->count()),
+            ] : null,
             'options' => Options::all(),
             'sidebarOpen' => ! $request->hasCookie('sidebar_state') || $request->cookie('sidebar_state') === 'true',
         ];

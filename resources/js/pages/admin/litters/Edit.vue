@@ -5,6 +5,8 @@ import AkcChecklist from '@/components/admin/AkcChecklist.vue';
 import ArchivedBanner from '@/components/admin/ArchivedBanner.vue';
 import type { AkcItem } from '@/components/admin/AkcChecklist.vue';
 import ConfirmDelete from '@/components/admin/ConfirmDelete.vue';
+import SectionNav from '@/components/admin/SectionNav.vue';
+import StickySave from '@/components/admin/StickySave.vue';
 import DocumentManager from '@/components/admin/DocumentManager.vue';
 import Field from '@/components/admin/Field.vue';
 import HealthRecords from '@/components/admin/HealthRecords.vue';
@@ -218,13 +220,9 @@ const summary = computed(() => {
             ]"
             help-title="About this page"
         >
-            <ConfirmDelete
-                v-if="litter && !litter.deleted_at"
-                label="Archive litter"
-                :message="`Archive this litter? It is hidden from your lists and the website, but the ${litter.puppies?.length ?? 0} puppies, weights, buyers, documents and the puppy diary are all kept, as AKC asks. People on the waitlist stay. You can bring the litter back any time.`"
-                @confirm="router.delete(destroy.url(litter.slug))"
-            />
         </PageHeader>
+
+        <SectionNav v-if="litter" />
 
         <ArchivedBanner
             v-if="litter?.deleted_at"
@@ -234,8 +232,11 @@ const summary = computed(() => {
             @purge="router.delete(purge.url(litter.slug))"
         />
 
-        <form class="space-y-6" @submit.prevent="submit">
-            <section class="space-y-4 rounded-xl border bg-card p-5">
+        <form id="main-form" class="space-y-6" @submit.prevent="submit">
+            <section
+                v-fold="{ id: 'pairing', label: 'Pairing', open: true }"
+                class="space-y-4 rounded-xl border bg-card p-5"
+            >
                 <h2 class="font-serif text-lg font-semibold">
                     Pairing &amp; dates
                 </h2>
@@ -383,7 +384,10 @@ const summary = computed(() => {
                 </div>
             </section>
 
-            <section class="space-y-4 rounded-xl border bg-card p-5">
+            <section
+                v-fold="{ id: 'akc', label: 'Breeding & AKC', open: true }"
+                class="space-y-4 rounded-xl border bg-card p-5"
+            >
                 <div>
                     <h2 class="font-serif text-lg font-semibold">
                         Breeding &amp; AKC
@@ -544,7 +548,10 @@ const summary = computed(() => {
                 </div>
             </section>
 
-            <section class="space-y-4 rounded-xl border bg-card p-5">
+            <section
+                v-fold="{ id: 'price', label: 'Price & website', open: true }"
+                class="space-y-4 rounded-xl border bg-card p-5"
+            >
                 <h2 class="font-serif text-lg font-semibold">
                     Price &amp; website
                     <span class="text-sm font-normal text-muted-foreground"
@@ -612,6 +619,7 @@ const summary = computed(() => {
             </section>
 
             <section
+                v-fold="{ id: 'notes', label: 'Notes', open: false }"
                 class="space-y-3 rounded-xl border border-dashed bg-card p-5"
             >
                 <h2 class="font-serif text-lg font-semibold">
@@ -633,7 +641,10 @@ const summary = computed(() => {
         </form>
 
         <template v-if="litter">
-            <section class="space-y-4 rounded-xl border bg-card p-5">
+            <section
+                v-fold="{ id: 'puppies', label: 'Puppies', open: true }"
+                class="space-y-4 rounded-xl border bg-card p-5"
+            >
                 <div class="flex flex-wrap items-end justify-between gap-3">
                     <div>
                         <h2 class="font-serif text-lg font-semibold">
@@ -687,7 +698,10 @@ const summary = computed(() => {
                 </div>
             </section>
 
-            <section class="space-y-4 rounded-xl border bg-card p-5">
+            <section
+                v-fold="{ id: 'diary', label: 'Puppy diary', open: false }"
+                class="space-y-4 rounded-xl border bg-card p-5"
+            >
                 <div>
                     <h2 class="font-serif text-lg font-semibold">
                         Puppy diary
@@ -764,6 +778,7 @@ const summary = computed(() => {
             </section>
 
             <section
+                v-fold="{ id: 'health', label: 'Litter health', open: false }"
                 v-if="litter.puppies?.length"
                 class="space-y-3 rounded-xl border bg-card p-5"
             >
@@ -781,6 +796,7 @@ const summary = computed(() => {
             </section>
 
             <section
+                v-fold="{ id: 'weighins', label: 'Weigh-ins', open: false }"
                 v-if="litter.puppies?.length"
                 class="space-y-3 rounded-xl border bg-card p-5"
             >
@@ -788,7 +804,10 @@ const summary = computed(() => {
                 <WeighIns :slug="litter.slug" :puppies="litter.puppies" />
             </section>
 
-            <section class="space-y-3 rounded-xl border bg-card p-5">
+            <section
+                v-fold="{ id: 'waitlist', label: 'Waitlist', open: true }"
+                class="space-y-3 rounded-xl border bg-card p-5"
+            >
                 <div class="flex items-center justify-between">
                     <h2 class="font-serif text-lg font-semibold">
                         Waitlist for this litter
@@ -835,7 +854,10 @@ const summary = computed(() => {
                 </ul>
             </section>
 
-            <section class="space-y-3 rounded-xl border bg-card p-5">
+            <section
+                v-fold="{ id: 'papers', label: 'Papers', open: false }"
+                class="space-y-3 rounded-xl border bg-card p-5"
+            >
                 <div>
                     <h2 class="font-serif text-lg font-semibold">
                         Litter documents
@@ -857,7 +879,10 @@ const summary = computed(() => {
                 />
             </section>
 
-            <section class="space-y-4 rounded-xl border bg-card p-5">
+            <section
+                v-fold="{ id: 'photos', label: 'Photos', open: false }"
+                class="space-y-4 rounded-xl border bg-card p-5"
+            >
                 <h2 class="font-serif text-lg font-semibold">Litter photos</h2>
                 <PhotoManager
                     :photos="litter.photos ?? []"
@@ -865,6 +890,33 @@ const summary = computed(() => {
                     :id="litter.id"
                 />
             </section>
+
+            <section
+                v-if="litter && !litter.deleted_at"
+                v-fold="{ id: 'archive', label: 'Archive', open: false }"
+                class="space-y-3 rounded-xl border border-dashed bg-card p-5"
+            >
+                <h2 class="font-serif text-lg font-semibold">
+                    Archive this litter
+                </h2>
+                <p class="text-sm text-muted-foreground">
+                    Hides the litter from your lists and the website. The
+                    puppies, weights, buyers, documents and diary are all kept,
+                    as AKC asks, and you can bring the litter back any time.
+                </p>
+                <ConfirmDelete
+                    label="Archive litter"
+                    :message="`Archive this litter? It is hidden from your lists and the website, but the ${litter.puppies?.length ?? 0} puppies, weights, buyers, documents and the puppy diary are all kept. People on the waitlist stay. You can bring the litter back any time.`"
+                    @confirm="router.delete(destroy.url(litter.slug))"
+                />
+            </section>
         </template>
+
+        <StickySave
+            :dirty="form.isDirty"
+            :processing="form.processing"
+            form-id="main-form"
+            @discard="form.reset()"
+        />
     </div>
 </template>

@@ -6,6 +6,8 @@ import AkcChecklist from '@/components/admin/AkcChecklist.vue';
 import ArchivedBanner from '@/components/admin/ArchivedBanner.vue';
 import type { AkcItem } from '@/components/admin/AkcChecklist.vue';
 import ConfirmDelete from '@/components/admin/ConfirmDelete.vue';
+import SectionNav from '@/components/admin/SectionNav.vue';
+import StickySave from '@/components/admin/StickySave.vue';
 import DocumentManager from '@/components/admin/DocumentManager.vue';
 import Field from '@/components/admin/Field.vue';
 import HealthRecords from '@/components/admin/HealthRecords.vue';
@@ -120,6 +122,9 @@ const form = useForm({
 });
 
 useUnsavedWarning(() => form.isDirty);
+const formDirty = computed(() => form.isDirty);
+const formBusy = computed(() => form.processing);
+const discardChanges = () => form.reset();
 
 // Keep role and sex in step so the obvious mistake cannot happen.
 watch(
@@ -239,13 +244,9 @@ const suggestions = [
             ]"
             help-title="About this page"
         >
-            <ConfirmDelete
-                v-if="dog && !dog.deleted_at"
-                label="Archive dog"
-                :message="`Archive ${dog.name}? The dog is hidden from your lists and the website, but health tests, vaccines, papers, the family tree and litters are all kept, as AKC asks. You can bring the dog back any time. If the dog was sold or passed away, also fill in “Left the kennel” in the private details.`"
-                @confirm="router.delete(destroy.url(dog.slug))"
-            />
         </PageHeader>
+
+        <SectionNav v-if="dog" />
 
         <ArchivedBanner
             v-if="dog?.deleted_at"
@@ -255,8 +256,11 @@ const suggestions = [
             @purge="router.delete(purge.url(dog.slug))"
         />
 
-        <form class="space-y-6" @submit.prevent="submit">
-            <section class="space-y-4 rounded-xl border bg-card p-5">
+        <form id="main-form" class="space-y-6" @submit.prevent="submit">
+            <section
+                v-fold="{ id: 'basics', label: 'Basics', open: true }"
+                class="space-y-4 rounded-xl border bg-card p-5"
+            >
                 <h2 class="font-serif text-lg font-semibold">
                     The basics
                     <span class="text-sm font-normal text-muted-foreground"
@@ -363,7 +367,10 @@ const suggestions = [
                 />
             </section>
 
-            <section class="space-y-4 rounded-xl border bg-card p-5">
+            <section
+                v-fold="{ id: 'family', label: 'Family tree', open: true }"
+                class="space-y-4 rounded-xl border bg-card p-5"
+            >
                 <div>
                     <h2 class="font-serif text-lg font-semibold">
                         Family tree
@@ -442,6 +449,11 @@ const suggestions = [
             </section>
 
             <section
+                v-fold="{
+                    id: 'private',
+                    label: 'Private details',
+                    open: false,
+                }"
                 class="space-y-4 rounded-xl border border-dashed bg-card p-5"
             >
                 <h2 class="font-serif text-lg font-semibold">
@@ -555,7 +567,10 @@ const suggestions = [
         </form>
 
         <template v-if="dog">
-            <section class="space-y-4 rounded-xl border bg-card p-5">
+            <section
+                v-fold="{ id: 'health', label: 'Health tests', open: true }"
+                class="space-y-4 rounded-xl border bg-card p-5"
+            >
                 <h2 class="font-serif text-lg font-semibold">
                     Health tests &amp; clearances
                 </h2>
@@ -705,14 +720,21 @@ const suggestions = [
                 </form>
             </section>
 
-            <section v-if="akc" class="space-y-3 rounded-xl border bg-card p-5">
+            <section
+                v-fold="{ id: 'akc', label: 'AKC check', open: true }"
+                v-if="akc"
+                class="space-y-3 rounded-xl border bg-card p-5"
+            >
                 <h2 class="font-serif text-lg font-semibold">
                     AKC record for this dog
                 </h2>
                 <AkcChecklist :akc="akc" />
             </section>
 
-            <section class="space-y-3 rounded-xl border bg-card p-5">
+            <section
+                v-fold="{ id: 'titles', label: 'Titles', open: false }"
+                class="space-y-3 rounded-xl border bg-card p-5"
+            >
                 <div>
                     <h2 class="font-serif text-lg font-semibold">
                         Titles &amp; awards
@@ -729,6 +751,7 @@ const suggestions = [
             </section>
 
             <section
+                v-fold="{ id: 'vaccines', label: 'Vaccines', open: true }"
                 v-if="dog?.is_ours !== false"
                 class="space-y-3 rounded-xl border bg-card p-5"
             >
@@ -752,7 +775,10 @@ const suggestions = [
                 />
             </section>
 
-            <section class="space-y-3 rounded-xl border bg-card p-5">
+            <section
+                v-fold="{ id: 'papers', label: 'Papers', open: false }"
+                class="space-y-3 rounded-xl border bg-card p-5"
+            >
                 <div>
                     <h2 class="font-serif text-lg font-semibold">
                         Papers &amp; documents
@@ -774,7 +800,10 @@ const suggestions = [
                 />
             </section>
 
-            <section class="space-y-3 rounded-xl border bg-card p-5">
+            <section
+                v-fold="{ id: 'pedigree', label: 'Pedigree', open: true }"
+                class="space-y-3 rounded-xl border bg-card p-5"
+            >
                 <h2 class="font-serif text-lg font-semibold">Pedigree</h2>
                 <PedigreeChart
                     v-if="dog?.sire_id || dog?.dam_id"
@@ -790,6 +819,7 @@ const suggestions = [
             </section>
 
             <section
+                v-fold="{ id: 'litters', label: 'Litters', open: true }"
                 v-if="litters?.length"
                 class="space-y-3 rounded-xl border bg-card p-5"
             >
@@ -813,6 +843,7 @@ const suggestions = [
             </section>
 
             <section
+                v-fold="{ id: 'heat', label: 'Heat cycles', open: false }"
                 v-if="dog && dog.sex === 'female'"
                 class="space-y-4 rounded-xl border bg-card p-5"
             >
@@ -890,7 +921,11 @@ const suggestions = [
                 </form>
             </section>
 
-            <section v-if="dog" class="space-y-4 rounded-xl border bg-card p-5">
+            <section
+                v-fold="{ id: 'photos', label: 'Photos', open: true }"
+                v-if="dog"
+                class="space-y-4 rounded-xl border bg-card p-5"
+            >
                 <h2 class="font-serif text-lg font-semibold">Photos</h2>
                 <PhotoManager
                     :photos="dog.photos ?? []"
@@ -898,6 +933,35 @@ const suggestions = [
                     :id="dog.id"
                 />
             </section>
+
+            <section
+                v-if="dog && !dog.deleted_at"
+                v-fold="{ id: 'archive', label: 'Archive', open: false }"
+                class="space-y-3 rounded-xl border border-dashed bg-card p-5"
+            >
+                <h2 class="font-serif text-lg font-semibold">
+                    Archive this dog
+                </h2>
+                <p class="text-sm text-muted-foreground">
+                    Hides the dog from your lists and the website. Health tests,
+                    vaccines, papers, the family tree and litters are all kept,
+                    as AKC asks, and you can bring the dog back any time. Use
+                    this when a dog is sold or passes away, and also fill in
+                    “Left the kennel” in the private details.
+                </p>
+                <ConfirmDelete
+                    label="Archive dog"
+                    :message="`Archive ${dog.name}? The dog is hidden from your lists and the website, but all records are kept. You can bring the dog back any time.`"
+                    @confirm="router.delete(destroy.url(dog.slug))"
+                />
+            </section>
         </template>
+
+        <StickySave
+            :dirty="formDirty"
+            :processing="formBusy"
+            form-id="main-form"
+            @discard="discardChanges"
+        />
     </div>
 </template>

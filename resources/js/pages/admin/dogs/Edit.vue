@@ -1,17 +1,21 @@
 <script setup lang="ts">
-import { Head, router, useForm, usePage } from '@inertiajs/vue3';
-import { computed, watch } from 'vue';
+import { Head, Link, router, useForm, usePage } from '@inertiajs/vue3';
+import { computed, ref, watch } from 'vue';
 import ConfirmDelete from '@/components/admin/ConfirmDelete.vue';
 import Field from '@/components/admin/Field.vue';
 import NativeSelect from '@/components/admin/NativeSelect.vue';
 import PageHeader from '@/components/admin/PageHeader.vue';
 import PhotoManager from '@/components/admin/PhotoManager.vue';
+import QuickDog from '@/components/admin/QuickDog.vue';
 import TextArea from '@/components/admin/TextArea.vue';
 import ToggleField from '@/components/admin/ToggleField.vue';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { useUnsavedWarning } from '@/composables/useUnsavedWarning';
-import { formatDate } from '@/lib/format';
+import PedigreeChart from '@/components/PedigreeChart.vue';
+import type { PedigreeNode } from '@/components/PedigreeChart.vue';
+import { formatDate, labelFor } from '@/lib/format';
+import { edit as editLitter } from '@/routes/admin/litters';
 import { destroy, index, store, update } from '@/routes/admin/dogs';
 import {
     destroy as destroyHeat,
@@ -23,8 +27,57 @@ import {
 } from '@/routes/admin/health-tests';
 import type { Dog, Options } from '@/types';
 
-const props = defineProps<{ dog: Dog | null }>();
+const props = defineProps<{
+    dog: Dog | null;
+    /** Opened from "Add a dog from another kennel". */
+    outside?: boolean;
+    parents: {
+        id: number;
+        name: string;
+        sex: string;
+        is_ours: boolean;
+        registered_name: string | null;
+    }[];
+    contacts: { id: number; name: string }[];
+    pedigree?: PedigreeNode | null;
+    litters?: {
+        id: number;
+        slug: string;
+        title: string;
+        status: string;
+        born_on: string | null;
+        due_on: string | null;
+        puppies_count: number;
+    }[];
+}>();
 const options = computed(() => usePage().props.options as Options);
+
+const fromElsewhere = computed({
+    get: () => !form.is_ours,
+    set: (v: boolean) => (form.is_ours = !v),
+});
+const parentOptions = (sex: string) =>
+    props.parents
+        .filter((d) => d.sex === sex)
+        .map((d) => ({
+            value: String(d.id),
+            label: d.is_ours ? d.name : `${d.name} (another kennel)`,
+        }));
+
+// Select a dog the moment it has been added from the quick form.
+const justAdded = ref<{ key: 'sire_id' | 'dam_id'; name: string } | null>(null);
+watch(
+    () => props.parents,
+    (list) => {
+        const pending = justAdded.value;
+        const dog = pending && list.find((d) => d.name === pending.name);
+
+        if (pending && dog) {
+            form[pending.key] = dog.id;
+            justAdded.value = null;
+        }
+    },
+);
 
 defineOptions({ layout: { breadcrumbs: [{ title: 'Dogs', href: index() }] } });
 
@@ -32,7 +85,16 @@ const form = useForm({
     name: props.dog?.name ?? '',
     registered_name: props.dog?.registered_name ?? '',
     sex: props.dog?.sex ?? 'female',
-    role: props.dog?.role ?? 'dam',
+    role: props.dog?.role ?? (props.outside ? 'other' : 'dam'),
+    is_ours: props.dog?.is_ours ?? !props.outside,
+    owner_contact_id: props.dog?.owner_contact_id ?? null,
+    sire_id: props.dog?.sire_id ?? null,
+    dam_id: props.dog?.dam_id ?? null,
+    titles: props.dog?.titles ?? '',
+    dna_profile: props.dog?.dna_profile ?? '',
+    acquired_on: props.dog?.acquired_on ?? '',
+    left_on: props.dog?.left_on ?? '',
+    left_reason: props.dog?.left_reason ?? null,
     color: props.dog?.color ?? null,
     birth_date: props.dog?.birth_date ?? '',
     bio: props.dog?.bio ?? '',
@@ -203,6 +265,19 @@ const suggestions = [
                             placeholder="Snow Goose's Bella of the Marsh"
                         />
                     </Field>
+                    <Field
+                        label="Titles"
+                        :error="form.errors.titles"
+                        for="titles"
+                        help="Letters earned in dog sports or shows, like MH (Master Hunter), SH (Senior Hunter) or CH (Champion). They are shown on the website."
+                        hint="Optional. For example MH, SH."
+                    >
+                        <Input
+                            id="titles"
+                            v-model="form.titles"
+                            placeholder="MH, SH"
+                        />
+                    </Field>
                     <Field label="Sex" required :error="form.errors.sex">
                         <NativeSelect
                             v-model="form.sex"
@@ -262,6 +337,84 @@ const suggestions = [
                 />
             </section>
 
+            <section class="space-y-4 rounded-xl border bg-card p-5">
+                <div>
+                    <h2 class="font-serif text-lg font-semibold">
+                        Family tree
+                        <span class="text-sm font-normal text-muted-foreground"
+                            >(parents)</span
+                        >
+                    </h2>
+                    <p class="text-sm text-muted-foreground">
+                        Choose this dog’s father and mother. The tree below
+                        builds itself from every dog’s parents, back several
+                        generations.
+                    </p>
+                </div>
+                <div class="grid gap-4 sm:grid-cols-2">
+                    <div class="space-y-2">
+                        <Field
+                            label="Sire (father)"
+                            :error="form.errors.sire_id"
+                        >
+                            <NativeSelect
+                                v-model="form.sire_id"
+                                :options="parentOptions('male')"
+                                placeholder="Not known"
+                            />
+                        </Field>
+                        <QuickDog
+                            sex="male"
+                            label="The father is"
+                            :contacts="contacts"
+                            @added="
+                                (n) => (justAdded = { key: 'sire_id', name: n })
+                            "
+                        />
+                    </div>
+                    <div class="space-y-2">
+                        <Field label="Dam (mother)" :error="form.errors.dam_id">
+                            <NativeSelect
+                                v-model="form.dam_id"
+                                :options="parentOptions('female')"
+                                placeholder="Not known"
+                            />
+                        </Field>
+                        <QuickDog
+                            sex="female"
+                            label="The mother is"
+                            :contacts="contacts"
+                            @added="
+                                (n) => (justAdded = { key: 'dam_id', name: n })
+                            "
+                        />
+                    </div>
+                </div>
+                <ToggleField
+                    v-model="fromElsewhere"
+                    label="This dog lives at another kennel"
+                    hint="Use this for a stud or a mother that belongs to someone else. These dogs are never shown on your website’s Our Dogs page."
+                />
+                <Field
+                    v-if="fromElsewhere"
+                    label="Owner"
+                    :error="form.errors.owner_contact_id"
+                    hint="Pick the owner from your Contacts. Add them there first if they are new."
+                    class="sm:max-w-sm"
+                >
+                    <NativeSelect
+                        v-model="form.owner_contact_id"
+                        :options="
+                            contacts.map((c) => ({
+                                value: String(c.id),
+                                label: c.name,
+                            }))
+                        "
+                        placeholder="Not chosen"
+                    />
+                </Field>
+            </section>
+
             <section
                 class="space-y-4 rounded-xl border border-dashed bg-card p-5"
             >
@@ -296,6 +449,51 @@ const suggestions = [
                             placeholder="985112345678901"
                         />
                     </Field>
+                </div>
+                <div class="grid gap-4 sm:grid-cols-2">
+                    <Field
+                        label="AKC DNA profile number"
+                        :error="form.errors.dna_profile"
+                        for="dna_profile"
+                        help="If AKC has this dog’s DNA on file it has a profile number. AKC requires a DNA profile for a sire used often, for imports, for dogs with conditional (Q) registration, and for artificial insemination."
+                        hint="Leave empty if there is none."
+                    >
+                        <Input id="dna_profile" v-model="form.dna_profile" />
+                    </Field>
+                    <span />
+                    <Field
+                        label="Came to the kennel on"
+                        :error="form.errors.acquired_on"
+                        for="acquired_on"
+                        hint="Leave empty if the dog was born here: the birth date is used."
+                    >
+                        <Input
+                            id="acquired_on"
+                            v-model="form.acquired_on"
+                            type="date"
+                        />
+                    </Field>
+                    <div class="grid grid-cols-2 gap-4">
+                        <Field
+                            label="Left the kennel on"
+                            :error="form.errors.left_on"
+                            for="left_on"
+                            help="Fill this in if the dog was sold, given away or died. Keep the dog here rather than deleting it: AKC wants breeding and ownership records kept for 5 years after that."
+                        >
+                            <Input
+                                id="left_on"
+                                v-model="form.left_on"
+                                type="date"
+                            />
+                        </Field>
+                        <Field label="Why" :error="form.errors.left_reason">
+                            <NativeSelect
+                                v-model="form.left_reason"
+                                :options="options.leftReason"
+                                placeholder="Still here"
+                            />
+                        </Field>
+                    </div>
                 </div>
                 <Field
                     label="Private notes"
@@ -469,6 +667,44 @@ const suggestions = [
                         >Add test</Button
                     >
                 </form>
+            </section>
+
+            <section class="space-y-3 rounded-xl border bg-card p-5">
+                <h2 class="font-serif text-lg font-semibold">Pedigree</h2>
+                <PedigreeChart
+                    v-if="dog?.sire_id || dog?.dam_id"
+                    :tree="pedigree ?? null"
+                    admin
+                />
+                <p v-else class="text-sm text-muted-foreground">
+                    Choose this dog’s father and mother under Family tree above,
+                    then save. The tree is drawn here, and it grows as you add
+                    each parent’s own parents. If the dog has papers, you can
+                    also keep a copy under Documents.
+                </p>
+            </section>
+
+            <section
+                v-if="litters?.length"
+                class="space-y-3 rounded-xl border bg-card p-5"
+            >
+                <h2 class="font-serif text-lg font-semibold">Litters</h2>
+                <ul class="divide-y text-sm">
+                    <li v-for="l in litters" :key="l.id">
+                        <Link
+                            :href="editLitter(l.slug)"
+                            class="flex flex-wrap items-center justify-between gap-2 py-2 hover:underline"
+                        >
+                            <span class="font-medium">{{ l.title }}</span>
+                            <span class="text-muted-foreground">
+                                {{ labelFor(options.litterStatus, l.status) }}
+                                ·
+                                {{ formatDate(l.born_on ?? l.due_on) }}
+                                · {{ l.puppies_count }} puppies
+                            </span>
+                        </Link>
+                    </li>
+                </ul>
             </section>
 
             <section

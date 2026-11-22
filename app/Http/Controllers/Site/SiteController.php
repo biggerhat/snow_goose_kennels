@@ -10,6 +10,7 @@ use App\Models\Litter;
 use App\Models\Photo;
 use App\Models\Setting;
 use App\Models\Testimonial;
+use App\Support\Pedigree;
 use App\Support\SiteContent;
 use Illuminate\Support\Collection;
 use Inertia\Inertia;
@@ -56,7 +57,10 @@ class SiteController extends Controller
     {
         abort_unless($dog->is_public, 404);
 
-        return Inertia::render('public/DogShow', ['dog' => $this->dogData($dog->load(['photos' => fn ($q) => $q->where('is_public', true), 'healthTests' => fn ($q) => $q->where('is_public', true)]))]);
+        return Inertia::render('public/DogShow', [
+            'dog' => $this->dogData($dog->load(['photos' => fn ($q) => $q->where('is_public', true), 'healthTests' => fn ($q) => $q->where('is_public', true)])),
+            'pedigree' => ($dog->sire_id || $dog->dam_id) ? Pedigree::build($dog, 3, public: true) : null,
+        ]);
     }
 
     public function gallery(): Response
@@ -171,6 +175,7 @@ class SiteController extends Controller
             'slug' => $dog->slug,
             'name' => $dog->name,
             'registered_name' => $dog->registered_name,
+            'titles' => $dog->titles,
             'sex' => $dog->sex->value,
             'role' => $dog->role->value,
             'color' => $dog->color?->value,

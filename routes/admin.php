@@ -18,6 +18,7 @@ use App\Http\Controllers\Admin\WeighInController;
 use Illuminate\Support\Facades\Route;
 
 Route::middleware('auth')->prefix('admin')->name('admin.')->group(function () {
+    Route::post('dogs/quick', [DogController::class, 'quick'])->name('dogs.quick');
     Route::resource('dogs', DogController::class)->except('show');
     Route::post('dogs/{dog}/health-tests', [HealthTestController::class, 'store'])->name('health-tests.store');
     Route::put('health-tests/{healthTest}', [HealthTestController::class, 'update'])->name('health-tests.update');

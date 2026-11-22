@@ -36,6 +36,7 @@ class LitterController extends Controller
         return Inertia::render('admin/litters/Edit', [
             'litter' => null,
             'dogs' => $this->dogs(),
+            'contacts' => Contact::orderBy('name')->get(['id', 'name']),
         ]);
     }
 
@@ -80,7 +81,7 @@ class LitterController extends Controller
 
     private function dogs()
     {
-        return Dog::orderBy('name')->get(['id', 'name', 'sex']);
+        return Dog::orderBy('name')->get(['id', 'name', 'sex', 'is_ours']);
     }
 
     /** @return array<string, mixed> */

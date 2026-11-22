@@ -8,6 +8,7 @@ export type Options = {
     puppyStatus: Option[];
     contactType: Option[];
     waitlistStatus: Option[];
+    leftReason: Option[];
 };
 
 export type Photo = {
@@ -56,6 +57,16 @@ export type Dog = {
     registry_number: string | null;
     microchip: string | null;
     private_notes: string | null;
+    is_ours?: boolean;
+    owner_contact_id?: number | null;
+    owner_contact?: { id: number; name: string } | null;
+    sire_id?: number | null;
+    dam_id?: number | null;
+    titles?: string | null;
+    dna_profile?: string | null;
+    acquired_on?: string | null;
+    left_on?: string | null;
+    left_reason?: string | null;
     age_label?: string | null;
     photos?: Photo[];
     health_tests?: HealthTest[];

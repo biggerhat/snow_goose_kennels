@@ -1,11 +1,12 @@
 <script setup lang="ts">
 import { Head, Link, router, useForm, usePage } from '@inertiajs/vue3';
-import { computed } from 'vue';
+import { computed, ref, watch } from 'vue';
 import ConfirmDelete from '@/components/admin/ConfirmDelete.vue';
 import Field from '@/components/admin/Field.vue';
 import NativeSelect from '@/components/admin/NativeSelect.vue';
 import PageHeader from '@/components/admin/PageHeader.vue';
 import PhotoManager from '@/components/admin/PhotoManager.vue';
+import QuickDog from '@/components/admin/QuickDog.vue';
 import PuppyRow from '@/components/admin/PuppyRow.vue';
 import WeighIns from '@/components/admin/WeighIns.vue';
 import StatusBadge from '@/components/admin/StatusBadge.vue';
@@ -29,7 +30,7 @@ import type { Dog, Litter, Options } from '@/types';
 
 const props = defineProps<{
     litter: Litter | null;
-    dogs: Pick<Dog, 'id' | 'name' | 'sex'>[];
+    dogs: Pick<Dog, 'id' | 'name' | 'sex' | 'is_ours'>[];
     contacts?: { id: number; name: string }[];
 }>();
 const options = computed(() => usePage().props.options as Options);
@@ -89,15 +90,29 @@ const litterSummary = computed(() => {
         : status;
 });
 
-const males = computed(() =>
+const dogOptions = (sex: string) =>
     props.dogs
-        .filter((d) => d.sex === 'male')
-        .map((d) => ({ value: String(d.id), label: d.name })),
-);
-const females = computed(() =>
-    props.dogs
-        .filter((d) => d.sex === 'female')
-        .map((d) => ({ value: String(d.id), label: d.name })),
+        .filter((d) => d.sex === sex)
+        .map((d) => ({
+            value: String(d.id),
+            label: d.is_ours === false ? `${d.name} (another kennel)` : d.name,
+        }));
+const males = computed(() => dogOptions('male'));
+const females = computed(() => dogOptions('female'));
+
+// Pick a dog the moment it has been added from the quick form.
+const justAdded = ref<{ key: 'sire_id' | 'dam_id'; name: string } | null>(null);
+watch(
+    () => props.dogs,
+    (list) => {
+        const pending = justAdded.value;
+        const dog = pending && list.find((d) => d.name === pending.name);
+
+        if (pending && dog) {
+            form[pending.key] = dog.id;
+            justAdded.value = null;
+        }
+    },
 );
 
 function submit() {
@@ -182,23 +197,41 @@ const summary = computed(() => {
                     <Field
                         label="Dam (mother)"
                         :error="form.errors.dam_id"
-                        help="The mother of the puppies. Only female dogs are listed. Add her on the Dogs page first if she is missing."
+                        help="The mother of the puppies. Only female dogs are listed, including mothers from other kennels. If she is missing, use the link under the box to add her."
                     >
                         <NativeSelect
                             v-model="form.dam_id"
                             :options="females"
                             placeholder="Choose…"
                         />
+                        <QuickDog
+                            sex="female"
+                            label="The mother is"
+                            reload="dogs"
+                            :contacts="contacts ?? []"
+                            @added="
+                                (n) => (justAdded = { key: 'dam_id', name: n })
+                            "
+                        />
                     </Field>
                     <Field
                         label="Sire (father)"
                         :error="form.errors.sire_id"
-                        help="The father of the puppies. Only male dogs are listed. If he belongs to someone else, add him on the Dogs page anyway."
+                        help="The father of the puppies. Only male dogs are listed, including studs from other kennels. If he belongs to someone else, use the link under the box to add him."
                     >
                         <NativeSelect
                             v-model="form.sire_id"
                             :options="males"
                             placeholder="Choose…"
+                        />
+                        <QuickDog
+                            sex="male"
+                            label="The father is"
+                            reload="dogs"
+                            :contacts="contacts ?? []"
+                            @added="
+                                (n) => (justAdded = { key: 'sire_id', name: n })
+                            "
                         />
                     </Field>
                     <Field

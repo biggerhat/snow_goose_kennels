@@ -4,6 +4,7 @@ namespace App\Support;
 
 use App\Enums\CoatColor;
 use App\Enums\ContactType;
+use App\Enums\DogLeftReason;
 use App\Enums\DogRole;
 use App\Enums\DogSex;
 use App\Enums\LitterStatus;
@@ -18,6 +19,7 @@ class Options
         return [
             'sex' => DogSex::options(),
             'role' => DogRole::options(),
+            'leftReason' => DogLeftReason::options(),
             'color' => CoatColor::options(),
             'litterStatus' => LitterStatus::options(),
             'puppyStatus' => PuppyStatus::options(),

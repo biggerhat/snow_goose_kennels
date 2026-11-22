@@ -89,6 +89,12 @@ const groups = computed(() =>
                             :label="labelFor(options.litterStatus, l.status)"
                         />
                     </div>
+                    <p
+                        v-if="l.next_step"
+                        class="rounded-md bg-amber-500/10 px-2.5 py-1 text-sm text-amber-900 dark:text-amber-200"
+                    >
+                        Next: {{ l.next_step }}
+                    </p>
                     <dl
                         class="grid grid-cols-2 gap-x-4 gap-y-1 text-sm sm:grid-cols-4"
                     >

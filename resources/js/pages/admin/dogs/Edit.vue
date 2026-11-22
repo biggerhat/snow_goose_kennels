@@ -7,6 +7,7 @@ import ArchivedBanner from '@/components/admin/ArchivedBanner.vue';
 import type { AkcItem } from '@/components/admin/AkcChecklist.vue';
 import ConfirmDelete from '@/components/admin/ConfirmDelete.vue';
 import SectionNav from '@/components/admin/SectionNav.vue';
+import { jumpTo } from '@/directives/fold';
 import StickySave from '@/components/admin/StickySave.vue';
 import DocumentManager from '@/components/admin/DocumentManager.vue';
 import Field from '@/components/admin/Field.vue';
@@ -247,6 +248,19 @@ const suggestions = [
         </PageHeader>
 
         <SectionNav v-if="dog" />
+
+        <aside
+            v-if="dog && !dog.deleted_at && !dog.photos?.length"
+            class="flex flex-wrap items-center justify-between gap-3 rounded-xl border border-primary/30 bg-primary/5 p-4 text-sm"
+        >
+            <p>
+                <strong>Next:</strong> add a photo so this dog’s page on your
+                website looks its best.
+            </p>
+            <Button type="button" size="sm" @click="jumpTo('photos')"
+                >Add a photo</Button
+            >
+        </aside>
 
         <ArchivedBanner
             v-if="dog?.deleted_at"

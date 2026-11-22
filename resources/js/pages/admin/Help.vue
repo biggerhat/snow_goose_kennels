@@ -65,6 +65,30 @@ const jobs = [
         ],
     },
     {
+        q: 'Find a dog, puppy, litter or person fast',
+        a: [
+            'Tap Find… at the top of any page (or press the / key on a computer). Type part of a name, a registration number, a microchip number, a phone number or an email.',
+            'Tap a result to open it. It searches dogs (including archived ones), litters, puppies and contacts at once.',
+        ],
+    },
+    {
+        q: 'Move around a long page',
+        a: [
+            'Dog and litter pages have a strip of buttons under the title (Basics, Family, Papers…). Tap one to jump to that part. It opens the section if it was folded.',
+            'Tap a section’s heading to fold it away or open it. Sections you use less often start folded.',
+            'When you change something, a bar appears at the bottom saying you have changes that are not saved. Tap Save changes there, or Discard to undo.',
+            'On a phone, the bar at the bottom has Home, Litters, Dogs and Waitlist. Tap More for everything else.',
+        ],
+    },
+    {
+        q: 'Deal with “Needs attention” on the dashboard',
+        a: [
+            'Each card is something due soon or overdue, like a vaccine, a paper that runs out, or an AKC deadline. Tap a card to go to it.',
+            'Not ready to deal with it? Tap Remind me in a week and it disappears for a week, then comes back.',
+            'Recording the next dose, or adding the new paper, clears the reminder by itself.',
+        ],
+    },
+    {
         q: 'Fill in the AKC litter application',
         a: [
             'First go to Website text and fill in Kennel owner (your name and mailing address). They are private and only used on AKC forms.',

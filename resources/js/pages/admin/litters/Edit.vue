@@ -6,6 +6,7 @@ import ArchivedBanner from '@/components/admin/ArchivedBanner.vue';
 import type { AkcItem } from '@/components/admin/AkcChecklist.vue';
 import ConfirmDelete from '@/components/admin/ConfirmDelete.vue';
 import SectionNav from '@/components/admin/SectionNav.vue';
+import { jumpTo } from '@/directives/fold';
 import StickySave from '@/components/admin/StickySave.vue';
 import DocumentManager from '@/components/admin/DocumentManager.vue';
 import Field from '@/components/admin/Field.vue';
@@ -224,6 +225,24 @@ const summary = computed(() => {
         </PageHeader>
 
         <SectionNav v-if="litter" />
+
+        <aside
+            v-if="
+                litter &&
+                !litter.deleted_at &&
+                litter.status === 'on_ground' &&
+                !litter.puppies?.length
+            "
+            class="flex flex-wrap items-center justify-between gap-3 rounded-xl border border-amber-500/40 bg-amber-500/10 p-4 text-sm"
+        >
+            <p>
+                <strong>Next:</strong> the puppies have arrived, so add each
+                one. Tap “+ Add girl puppy” or “+ Add boy puppy” under Puppies.
+            </p>
+            <Button type="button" size="sm" @click="jumpTo('puppies')"
+                >Go to Puppies</Button
+            >
+        </aside>
 
         <ArchivedBanner
             v-if="litter?.deleted_at"

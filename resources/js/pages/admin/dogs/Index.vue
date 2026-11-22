@@ -1,13 +1,14 @@
 <script setup lang="ts">
 import { Head, Link, usePage } from '@inertiajs/vue3';
 import { Dog as DogIcon } from '@lucide/vue';
-import { computed } from 'vue';
+import { computed, ref } from 'vue';
 import EmptyState from '@/components/admin/EmptyState.vue';
 import { formatDate } from '@/lib/format';
 import { restore } from '@/routes/admin/dogs';
 import PageHeader from '@/components/admin/PageHeader.vue';
 import StatusBadge from '@/components/admin/StatusBadge.vue';
 import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
 import { labelFor } from '@/lib/format';
 import { router } from '@inertiajs/vue3';
 import { create, edit, index } from '@/routes/admin/dogs';
@@ -20,22 +21,39 @@ const props = defineProps<{
 }>();
 const options = computed(() => usePage().props.options as Options);
 
+const q = ref('');
+const matching = (list: Dog[]) => {
+    const t = q.value.trim().toLowerCase();
+
+    return t
+        ? list.filter((d) =>
+              [d.name, d.registered_name, d.registry_number]
+                  .filter(Boolean)
+                  .some((v) => String(v).toLowerCase().includes(t)),
+          )
+        : list;
+};
+
 const groups = computed(() =>
     [
         {
             title: 'Our dogs',
             note: '',
-            items: props.dogs.filter((d) => d.is_ours !== false && !d.left_on),
+            items: matching(
+                props.dogs.filter((d) => d.is_ours !== false && !d.left_on),
+            ),
         },
         {
             title: 'Dogs from other kennels',
             note: 'Sires and dams that belong to someone else. They are never shown on your website’s Our Dogs page.',
-            items: props.dogs.filter((d) => d.is_ours === false),
+            items: matching(props.dogs.filter((d) => d.is_ours === false)),
         },
         {
             title: 'No longer here',
             note: 'Dogs that were sold, given away or passed away. Keep them for your breeding records.',
-            items: props.dogs.filter((d) => d.is_ours !== false && d.left_on),
+            items: matching(
+                props.dogs.filter((d) => d.is_ours !== false && d.left_on),
+            ),
         },
     ].filter((g) => g.items.length),
 );
@@ -63,6 +81,15 @@ const groups = computed(() =>
                 ></Button
             >
         </PageHeader>
+
+        <div v-if="dogs.length > 6" class="max-w-sm">
+            <Input
+                v-model="q"
+                type="search"
+                placeholder="Search by name or registration number…"
+                aria-label="Search dogs"
+            />
+        </div>
 
         <EmptyState
             v-if="!dogs.length"

@@ -107,6 +107,12 @@ function submit() {
             ]"
             help-title="About this page"
         >
+            <Button v-if="entry?.contact?.phone" as-child variant="outline"
+                ><a :href="`tel:${entry.contact.phone}`">Call</a></Button
+            >
+            <Button v-if="entry?.contact?.email" as-child variant="outline"
+                ><a :href="`mailto:${entry.contact.email}`">Email</a></Button
+            >
             <ConfirmDelete
                 v-if="entry"
                 label="Remove"

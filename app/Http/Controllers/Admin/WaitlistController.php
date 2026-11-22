@@ -67,7 +67,7 @@ class WaitlistController extends Controller
     public function edit(WaitlistEntry $waitlist): Response
     {
         return Inertia::render('admin/waitlist/Edit', [
-            'entry' => $waitlist->load('contact:id,name'),
+            'entry' => $waitlist->load('contact:id,name,phone,email'),
             'contacts' => Contact::orderBy('name')->get(['id', 'name']),
             'litters' => $this->litters(),
             'puppies' => $waitlist->litter?->puppies()->get(['id', 'name', 'collar', 'sex']) ?? [],

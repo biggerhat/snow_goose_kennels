@@ -2,6 +2,7 @@
 
 use App\Models\Contact;
 use App\Models\Dog;
+use App\Models\Litter;
 use App\Models\Testimonial;
 use App\Models\User;
 use App\Models\WaitlistEntry;
@@ -68,4 +69,17 @@ test('the owner area is kept out of search engines', function () {
 
     expect($this->get(route('dashboard'))->getContent())->toContain('noindex')->not->toContain('og:title');
     expect($this->get('/')->getContent())->not->toContain('noindex');
+});
+
+test('the litters list says what to do next', function () {
+    $this->actingAs(User::factory()->create());
+    Litter::create(['status' => 'on_ground', 'name' => 'Empty', 'born_on' => today()->subWeeks(3), 'akc_applied_on' => today()]);
+    Litter::create(['status' => 'on_ground', 'name' => 'Unfiled', 'born_on' => today()->subMonths(2)]);
+    Litter::create(['status' => 'on_ground', 'name' => 'Late', 'born_on' => today()->subMonths(8)]);
+
+    $steps = collect($this->get(route('admin.litters.index'))->viewData('page')['props']['litters'])->pluck('next_step', 'title');
+
+    expect($steps['Empty'])->toBe('Add the puppies')
+        ->and($steps['Unfiled'])->toStartWith('Send the AKC application by')
+        ->and($steps['Late'])->toContain('past its 6-month deadline');
 });

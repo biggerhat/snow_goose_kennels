@@ -270,7 +270,10 @@ const subjectLabel: Record<string, string> = {
         </dl>
 
         <!-- Albums -->
-        <nav aria-label="Albums" class="flex flex-wrap items-center gap-2">
+        <nav
+            aria-label="Albums"
+            class="-mx-4 flex flex-nowrap items-center gap-2 overflow-x-auto px-4 pb-1 sm:mx-0 sm:flex-wrap sm:px-0 [&>*]:shrink-0"
+        >
             <Link
                 :href="index.url()"
                 preserve-scroll
@@ -534,7 +537,7 @@ const subjectLabel: Record<string, string> = {
         <!-- Grid -->
         <ul
             v-if="photos.data.length"
-            class="grid gap-4 sm:grid-cols-2 xl:grid-cols-3"
+            class="grid grid-cols-2 gap-3 sm:gap-4 lg:grid-cols-3"
         >
             <li
                 v-for="photo in photos.data"
@@ -595,7 +598,9 @@ const subjectLabel: Record<string, string> = {
                     </p>
                     <Input
                         v-model="photo.caption"
+                        class="max-sm:hidden"
                         placeholder="Caption"
+                        aria-label="Caption"
                         @change="save(photo, { caption: photo.caption })"
                     />
                     <details class="group text-sm">
@@ -605,6 +610,15 @@ const subjectLabel: Record<string, string> = {
                             More details
                         </summary>
                         <div class="mt-2 space-y-2">
+                            <Input
+                                v-model="photo.caption"
+                                class="sm:hidden"
+                                placeholder="Caption"
+                                aria-label="Caption"
+                                @change="
+                                    save(photo, { caption: photo.caption })
+                                "
+                            />
                             <Input
                                 v-model="photo.credit"
                                 placeholder="Credit (other people's photos)"

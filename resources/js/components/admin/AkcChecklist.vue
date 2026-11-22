@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { Check, Circle, Info, TriangleAlert } from '@lucide/vue';
+import { computed } from 'vue';
 
 export type AkcItem = {
     key: string;
@@ -8,14 +9,42 @@ export type AkcItem = {
     detail?: string | null;
 };
 
-defineProps<{
+const props = defineProps<{
     akc: { items: AkcItem[]; todo: number; warn: number };
     title?: string;
 }>();
+
+const counted = computed(() =>
+    props.akc.items.filter((i) => i.status !== 'info'),
+);
+const done = computed(
+    () => counted.value.filter((i) => i.status === 'ok').length,
+);
+const percent = computed(() =>
+    counted.value.length
+        ? Math.round((done.value / counted.value.length) * 100)
+        : 100,
+);
 </script>
 
 <template>
     <div class="space-y-3">
+        <div
+            v-if="counted.length"
+            class="flex items-center gap-3"
+            role="img"
+            :aria-label="`${done} of ${counted.length} done`"
+        >
+            <div class="h-2 flex-1 overflow-hidden rounded-full bg-muted">
+                <div
+                    class="h-full rounded-full bg-emerald-600 transition-all"
+                    :style="{ width: percent + '%' }"
+                />
+            </div>
+            <span class="text-sm font-medium tabular-nums"
+                >{{ done }} of {{ counted.length }}</span
+            >
+        </div>
         <p class="text-sm text-muted-foreground">
             <template v-if="akc.warn || akc.todo">
                 <strong class="text-foreground">{{

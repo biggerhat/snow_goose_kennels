@@ -236,8 +236,19 @@ const tone = computed(() => {
                 >
             </Button>
         </template>
-        <p v-else class="text-sm text-muted-foreground">
-            Choose both parents to see how they match up.
-        </p>
+        <section
+            v-else
+            class="space-y-2 rounded-xl border border-dashed bg-card p-5 text-sm"
+        >
+            <p class="font-medium">
+                Choose both parents to see how they match up.
+            </p>
+            <p class="text-muted-foreground">
+                You will see how closely related they are as a percentage, which
+                health tests each dog has, and the AKC points to watch. For
+                example, two dogs with no shared ancestors show 0%. A brother
+                and sister would show 25%.
+            </p>
+        </section>
     </div>
 </template>

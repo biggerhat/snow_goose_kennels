@@ -30,7 +30,8 @@ class LitterController extends Controller
             'litters' => Litter::with(['sire:id,name', 'dam:id,name'])
                 ->withCount(['puppies', 'waitlistEntries'])
                 ->orderByDesc('due_on')->orderByDesc('born_on')->get()
-                ->append('title'),
+                ->append('title')
+                ->each(fn (Litter $l) => $l->setAttribute('next_step', $this->nextStep($l))),
             'archived' => Litter::onlyTrashed()->with(['sire:id,name', 'dam:id,name'])->orderByDesc('born_on')->get()
                 ->map(fn (Litter $l) => ['id' => $l->id, 'slug' => $l->slug, 'title' => $l->title, 'born_on' => $l->born_on?->toDateString(), 'deleted_at' => $l->deleted_at, 'purge_blocked_until' => $l->purgeBlockedUntil()?->toDateString()]),
         ]);
@@ -112,6 +113,22 @@ class LitterController extends Controller
         Inertia::flash('toast', ['type' => 'success', 'message' => 'Deleted for good.']);
 
         return to_route('admin.litters.index');
+    }
+
+    /** One plain sentence on what to do next for this litter, or null. */
+    private function nextStep(Litter $litter): ?string
+    {
+        if ($litter->born_on && ! $litter->akc_applied_on && $litter->born_on->gt(today()->subYears(2))) {
+            $by = $litter->born_on->copy()->addMonths(6);
+
+            return $by->lt(today()) ? 'The AKC application is past its 6-month deadline' : 'Send the AKC application by '.$by->format('M j, Y');
+        }
+
+        if ($litter->status === LitterStatus::OnGround && $litter->puppies_count === 0) {
+            return 'Add the puppies';
+        }
+
+        return null;
     }
 
     private function dogs()

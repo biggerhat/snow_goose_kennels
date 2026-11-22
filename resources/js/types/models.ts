@@ -210,6 +210,7 @@ export type Litter = {
     multiple_sires?: boolean;
     akc_marketplace_listed_on?: string | null;
     puppies_count?: number;
+    next_step?: string | null;
     waitlist_entries_count?: number;
     puppies?: Puppy[];
     photos?: Photo[];

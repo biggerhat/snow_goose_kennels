@@ -83,7 +83,18 @@ function save() {
                 'The site never makes up rules for you. Only what you write is shown.',
             ]"
             help-title="Website text"
-        />
+        >
+            <Button as-child variant="outline" size="sm"
+                ><a href="/contact" target="_blank" rel="noopener"
+                    >See the Contact page</a
+                ></Button
+            >
+            <Button as-child variant="outline" size="sm"
+                ><a href="/how-it-works" target="_blank" rel="noopener"
+                    >See How it works</a
+                ></Button
+            >
+        </PageHeader>
 
         <form id="main-form" class="space-y-8" @submit.prevent="save">
             <section class="space-y-4 rounded-xl border bg-card p-5">

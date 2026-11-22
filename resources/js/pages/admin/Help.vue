@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { Head } from '@inertiajs/vue3';
+import { computed, nextTick, onMounted, ref } from 'vue';
 import PageHeader from '@/components/admin/PageHeader.vue';
 import { help } from '@/routes/admin';
 
@@ -286,6 +287,43 @@ const glossary = [
         'When a female can be bred, about every 6 to 8 months, lasting about 3 weeks. The Dogs page helps you track it.',
     ],
 ];
+
+const query = ref('');
+const openId = ref<string | null>(null);
+
+export function slugOf(text: string): string {
+    return (
+        'topic-' +
+        text
+            .toLowerCase()
+            .replace(/[^a-z0-9]+/g, '-')
+            .replace(/^-|-$/g, '')
+    );
+}
+
+const matches = (text: string) =>
+    text.toLowerCase().includes(query.value.trim().toLowerCase());
+const filteredJobs = computed(() =>
+    jobs.filter(
+        (j) => !query.value.trim() || matches(j.q) || j.a.some(matches),
+    ),
+);
+const filteredGlossary = computed(() =>
+    glossary.filter(
+        ([t, m]) => !query.value.trim() || matches(t) || matches(m),
+    ),
+);
+
+onMounted(() => {
+    const id = window.location.hash.slice(1);
+
+    if (id) {
+        openId.value = id;
+        void nextTick(() =>
+            document.getElementById(id)?.scrollIntoView({ block: 'start' }),
+        );
+    }
+});
 </script>
 
 <template>
@@ -297,7 +335,44 @@ const glossary = [
             description="Plain answers to the things you will do most. Nothing here changes your information."
         />
 
-        <section class="space-y-3 rounded-xl border bg-card p-5">
+        <div
+            class="sticky top-0 z-10 -mx-4 space-y-2 border-b bg-background/95 px-4 py-3 backdrop-blur md:-mx-6 md:px-6"
+        >
+            <input
+                v-model="query"
+                type="search"
+                aria-label="Search the help"
+                placeholder="Search the help: try “deposit”, “AKC”, “photos”…"
+                class="h-11 w-full rounded-md border border-input bg-card px-3 text-base outline-none focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50"
+            />
+            <nav
+                v-if="!query"
+                aria-label="Help contents"
+                class="flex flex-wrap gap-x-4 gap-y-1 text-sm"
+            >
+                <a href="#start" class="underline underline-offset-2"
+                    >Start here</a
+                >
+                <a href="#visitors" class="underline underline-offset-2"
+                    >What visitors see</a
+                >
+                <a href="#how" class="underline underline-offset-2"
+                    >How do I…?</a
+                >
+                <a href="#words" class="underline underline-offset-2"
+                    >Words you will see</a
+                >
+                <a href="#wrong" class="underline underline-offset-2"
+                    >If something looks wrong</a
+                >
+            </nav>
+        </div>
+
+        <section
+            v-if="!query"
+            id="start"
+            class="scroll-mt-28 space-y-3 rounded-xl border bg-card p-5"
+        >
             <h2 class="font-serif text-xl font-semibold">Start here</h2>
             <ol class="list-decimal space-y-2 pl-5">
                 <li>
@@ -332,7 +407,7 @@ const glossary = [
             </p>
         </section>
 
-        <section class="space-y-3">
+        <section v-if="!query" id="visitors" class="scroll-mt-28 space-y-3">
             <h2 class="font-serif text-xl font-semibold">
                 What do visitors see?
             </h2>
@@ -375,10 +450,22 @@ const glossary = [
             </div>
         </section>
 
-        <section class="space-y-3">
+        <section id="how" class="scroll-mt-28 space-y-3">
             <h2 class="font-serif text-xl font-semibold">How do I…?</h2>
-            <div class="divide-y rounded-xl border bg-card">
-                <details v-for="j in jobs" :key="j.q" class="group p-4">
+            <p
+                v-if="!filteredJobs.length"
+                class="text-sm text-muted-foreground"
+            >
+                No how-to matches “{{ query }}”.
+            </p>
+            <div v-else class="divide-y rounded-xl border bg-card">
+                <details
+                    v-for="j in filteredJobs"
+                    :id="slugOf(j.q)"
+                    :key="j.q"
+                    class="group scroll-mt-28 p-4"
+                    :open="!!query || openId === slugOf(j.q)"
+                >
                     <summary class="cursor-pointer font-medium select-none">
                         {{ j.q }}
                     </summary>
@@ -389,11 +476,17 @@ const glossary = [
             </div>
         </section>
 
-        <section class="space-y-3">
+        <section id="words" class="scroll-mt-28 space-y-3">
             <h2 class="font-serif text-xl font-semibold">Words you will see</h2>
-            <dl class="divide-y rounded-xl border bg-card">
+            <p
+                v-if="!filteredGlossary.length"
+                class="text-sm text-muted-foreground"
+            >
+                No word matches “{{ query }}”.
+            </p>
+            <dl v-else class="divide-y rounded-xl border bg-card">
                 <div
-                    v-for="[term, meaning] in glossary"
+                    v-for="[term, meaning] in filteredGlossary"
                     :key="term"
                     class="grid gap-1 p-3 sm:grid-cols-[11rem_1fr] sm:gap-4"
                 >
@@ -403,7 +496,11 @@ const glossary = [
             </dl>
         </section>
 
-        <section class="space-y-3 rounded-xl border bg-card p-5">
+        <section
+            v-if="!query"
+            id="wrong"
+            class="scroll-mt-28 space-y-3 rounded-xl border bg-card p-5"
+        >
             <h2 class="font-serif text-xl font-semibold">
                 If something looks wrong
             </h2>

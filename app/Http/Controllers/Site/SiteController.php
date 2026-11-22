@@ -90,9 +90,34 @@ class SiteController extends Controller
         ]);
     }
 
+    public function privacy(): Response
+    {
+        return Inertia::render('public/Privacy', [
+            'meta' => self::meta('Privacy', 'What information we collect through this website, how we use it, and who sees it.'),
+            'contact' => Setting::contact(),
+        ]);
+    }
+
+    public function healthTesting(): Response
+    {
+        $dogs = Dog::query()->where('is_public', true)->where('is_ours', true)
+            ->with(['photos' => fn ($q) => $q->where('is_public', true), 'healthTests' => fn ($q) => $q->where('is_public', true)])
+            ->get()
+            ->filter(fn (Dog $d) => in_array($d->role, [DogRole::Stud, DogRole::Dam], true))
+            ->sortBy(fn (Dog $d) => [array_search($d->role, [DogRole::Stud, DogRole::Dam]), $d->sort_order, $d->name])
+            ->values()
+            ->map(fn (Dog $d) => $this->dogData($d));
+
+        return Inertia::render('public/HealthTesting', [
+            'meta' => self::meta('Health testing', 'The health clearances for each of our breeding dogs, with links to the public records.'),
+            'dogs' => $dogs,
+            'contact' => Setting::contact(),
+        ]);
+    }
+
     public function sitemap()
     {
-        $urls = collect(['/', '/litters', '/our-dogs', '/gallery', '/how-it-works', '/happy-families', '/apply', '/contact'])
+        $urls = collect(['/', '/litters', '/our-dogs', '/gallery', '/how-it-works', '/health-testing', '/happy-families', '/apply', '/contact', '/privacy'])
             ->map(fn ($p) => url($p))
             ->merge(Dog::where('is_public', true)->pluck('slug')->map(fn ($slug) => url("/our-dogs/$slug")));
 
@@ -135,7 +160,7 @@ class SiteController extends Controller
             ->with([
                 'sire.photos' => fn ($q) => $q->where('is_public', true),
                 'dam.photos' => fn ($q) => $q->where('is_public', true),
-                'puppies',
+                'puppies.photos',
                 'diary' => fn ($q) => $q->where('is_public', true)->limit(5),
                 'photos' => fn ($q) => $q->where('is_public', true),
             ])
@@ -164,6 +189,7 @@ class SiteController extends Controller
                     'sex' => $p->sex->value,
                     'color' => $p->color?->value,
                     'status' => $p->status->value,
+                    'photo' => ($ph = $p->photos->firstWhere('is_public', true)) ? $this->photo($ph) : null,
                 ])->values(),
                 'diary' => $l->diary->map(fn ($d) => ['id' => $d->id, 'posted_on' => $d->posted_on->format('Y-m-d'), 'title' => $d->title, 'body' => $d->body])->values(),
                 'photos' => $l->photos->map(fn ($p) => $this->photo($p))->values(),

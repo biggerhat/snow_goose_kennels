@@ -31,6 +31,7 @@ type PublicLitter = {
         sex: string;
         color: string | null;
         status: string;
+        photo?: { thumb_url: string } | null;
     }[];
     diary?: {
         id: number;
@@ -228,6 +229,13 @@ const available = computed(
                     class="flex items-center justify-between gap-3 rounded-lg border px-3 py-2 text-sm"
                 >
                     <span class="flex items-center gap-2">
+                        <img
+                            v-if="p.photo"
+                            :src="p.photo.thumb_url"
+                            :alt="p.name || 'Puppy'"
+                            class="size-10 rounded-md object-cover"
+                            loading="lazy"
+                        />
                         <span
                             v-if="p.collar"
                             class="size-3.5 rounded-full ring-1 ring-black/20"

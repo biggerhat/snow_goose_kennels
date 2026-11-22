@@ -3,6 +3,7 @@
 namespace App\Http\Middleware;
 
 use App\Enums\WaitlistStatus;
+use App\Models\HealthTest;
 use App\Models\Testimonial;
 use App\Models\WaitlistEntry;
 use App\Support\Attention;
@@ -51,6 +52,7 @@ class HandleInertiaRequests extends Middleware
             'site' => [
                 'hasProcess' => SiteContent::hasAny(),
                 'hasFamilies' => Testimonial::where('is_public', true)->exists(),
+                'hasHealth' => HealthTest::where('is_public', true)->whereHas('dog', fn ($q) => $q->where('is_public', true)->where('is_ours', true))->exists(),
             ],
             // Counts for the badges in the owner menu. Cached briefly so every click is not a new count.
             'nav' => fn () => $request->user() ? [

@@ -100,6 +100,7 @@ const sheets = [
     ['documents', 'Document list'],
     ['contacts', 'Contacts'],
     ['waitlist', 'Waitlist'],
+    ['expenses', 'Expenses'],
 ] as const;
 </script>
 

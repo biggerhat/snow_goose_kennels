@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Contact;
 use App\Models\Document;
 use App\Models\Dog;
+use App\Models\Expense;
 use App\Models\HealthRecord;
 use App\Models\Litter;
 use App\Models\Puppy;
@@ -44,6 +45,10 @@ class ExportController extends Controller
             'waitlist' => [
                 ['Name', 'Phone', 'Email', 'Litter', 'Prefers', 'Colour', 'Pick order', 'Status', 'Deposit', 'Deposit received', 'Source', 'Added', 'Notes'],
                 WaitlistEntry::with(['contact', 'litter.sire', 'litter.dam'])->oldest()->get()->map(fn ($e) => [$e->contact->name, $e->contact->phone, $e->contact->email, $e->litter?->title, $e->preferred_sex?->label(), $e->preferred_color?->label(), $e->pick_order, $e->status->label(), $e->deposit_amount, $e->deposit_paid_on?->toDateString(), $e->source, $e->created_at->toDateString(), $e->notes]),
+            ],
+            'expenses' => [
+                ['Date', 'Kind', 'Amount', 'Paid to', 'What for', 'Litter', 'Dog'],
+                Expense::with(['litter', 'dog'])->orderBy('spent_on')->get()->map(fn ($e) => [$e->spent_on->toDateString(), $e->category->label(), number_format($e->amount_cents / 100, 2, '.', ''), $e->vendor, $e->description, $e->litter?->title, $e->dog?->name]),
             ],
             default => abort(404),
         };

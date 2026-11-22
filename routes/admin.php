@@ -9,6 +9,7 @@ use App\Http\Controllers\Admin\DiaryEntryController;
 use App\Http\Controllers\Admin\DocumentController;
 use App\Http\Controllers\Admin\DogAchievementController;
 use App\Http\Controllers\Admin\DogController;
+use App\Http\Controllers\Admin\ExpenseController;
 use App\Http\Controllers\Admin\ExportController;
 use App\Http\Controllers\Admin\HealthRecordController;
 use App\Http\Controllers\Admin\HealthTestController;
@@ -77,6 +78,10 @@ Route::middleware('auth')->prefix('admin')->name('admin.')->group(function () {
     Route::get('search', SearchController::class)->name('search');
     Route::get('planner', [PlannerController::class, 'index'])->name('planner');
 
+    Route::get('money', [ExpenseController::class, 'index'])->name('money');
+    Route::post('expenses', [ExpenseController::class, 'store'])->name('expenses.store');
+    Route::put('expenses/{expense}', [ExpenseController::class, 'update'])->name('expenses.update');
+    Route::delete('expenses/{expense}', [ExpenseController::class, 'destroy'])->name('expenses.destroy');
     Route::get('records', [RecordsController::class, 'index'])->name('records');
     Route::get('records/emergency-plan', [RecordsController::class, 'emergencyPlan'])->name('records.emergency-plan');
     Route::get('records/all', [RecordsController::class, 'all'])->name('records.all');

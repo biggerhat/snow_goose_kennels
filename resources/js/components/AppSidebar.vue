@@ -11,6 +11,7 @@ import {
     ImageIcon,
     LayoutGrid,
     Library,
+    Wallet,
     ListChecks,
     MessageSquareQuote,
     PenLine,
@@ -29,7 +30,7 @@ import {
     SidebarMenuItem,
 } from '@/components/ui/sidebar';
 import { dashboard, home } from '@/routes';
-import { help, planner, records } from '@/routes/admin';
+import { help, money, planner, records } from '@/routes/admin';
 import { index as contacts } from '@/routes/admin/contacts';
 import { index as dogs } from '@/routes/admin/dogs';
 import { index as litters } from '@/routes/admin/litters';
@@ -88,7 +89,10 @@ const groups = computed<{ label: string; items: NavItem[] }[]>(() => [
     },
     {
         label: 'Records',
-        items: [{ title: 'Records', href: records(), icon: Library }],
+        items: [
+            { title: 'Records', href: records(), icon: Library },
+            { title: 'Money', href: money(), icon: Wallet },
+        ],
     },
 ]);
 

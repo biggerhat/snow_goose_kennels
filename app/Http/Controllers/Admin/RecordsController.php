@@ -3,8 +3,13 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Models\Contact;
 use App\Models\Dog;
+use App\Models\KennelProfile;
 use App\Models\Litter;
+use App\Models\Puppy;
+use App\Support\Kennel;
+use App\Support\Readiness;
 use Illuminate\Contracts\View\View;
 use Illuminate\Support\Collection;
 use Inertia\Inertia;
@@ -15,7 +20,12 @@ class RecordsController extends Controller
 {
     public function index(): Response
     {
+        $kennel = KennelProfile::instance();
+
         return Inertia::render('admin/Records', [
+            'readiness' => Readiness::report(),
+            'kennelId' => $kennel->id,
+            'kennelDocuments' => $kennel->documents()->get(),
             'dogs' => Dog::withTrashed()->with('ownerContact:id,name')->orderBy('name')
                 ->get(['id', 'slug', 'name', 'registry_number', 'dna_profile', 'microchip', 'birth_date', 'acquired_on', 'left_on', 'is_ours', 'owner_contact_id', 'deleted_at']),
             'litters' => Litter::withTrashed()->with(['sire:id,name', 'dam:id,name'])->withCount('puppies')->orderByDesc('born_on')->orderByDesc('due_on')->get()
@@ -25,6 +35,17 @@ class RecordsController extends Controller
                     'akc_litter_number' => $l->akc_litter_number, 'archived' => $l->trashed(), 'akc_applied_on' => $l->akc_applied_on?->toDateString(),
                     'puppies_count' => $l->puppies_count,
                 ]),
+        ]);
+    }
+
+    /** A printable worksheet for the written emergency plan AKC asks breeders to keep. */
+    public function emergencyPlan(): View
+    {
+        return view('records.emergency-plan', [
+            'owner' => Kennel::owner(),
+            'vets' => Contact::where('type', 'vet')->orderBy('name')->get(),
+            'dogCount' => Dog::where('is_ours', true)->whereNull('left_on')->count(),
+            'puppyCount' => Puppy::whereHas('litter', fn ($q) => $q->where('status', 'on_ground'))->whereNotIn('status', ['home', 'kept'])->count(),
         ]);
     }
 

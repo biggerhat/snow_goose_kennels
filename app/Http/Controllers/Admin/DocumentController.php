@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Enums\DocumentCategory;
 use App\Http\Controllers\Controller;
 use App\Models\Document;
+use App\Models\KennelProfile;
 use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -22,7 +23,7 @@ class DocumentController extends Controller
     {
         $data = $request->validate([
             'file' => ['required', 'file', 'mimes:pdf,jpg,jpeg,png,webp,doc,docx,xls,xlsx', 'max:25600'],
-            'documentable_type' => ['required', Rule::in(['dog', 'litter', 'puppy', 'contact'])],
+            'documentable_type' => ['required', Rule::in(['dog', 'litter', 'puppy', 'contact', 'kennel'])],
             'documentable_id' => ['required', 'integer'],
             'category' => ['required', Rule::enum(DocumentCategory::class)],
             'title' => ['nullable', 'string', 'max:200'],
@@ -35,7 +36,9 @@ class DocumentController extends Controller
             'file.uploaded' => 'The file could not be uploaded. It may be too big for this server.',
         ]);
 
-        $owner = Relation::getMorphedModel($data['documentable_type'])::findOrFail($data['documentable_id']);
+        $owner = $data['documentable_type'] === 'kennel'
+            ? KennelProfile::instance()
+            : Relation::getMorphedModel($data['documentable_type'])::findOrFail($data['documentable_id']);
         $file = $data['file'];
         $name = Str::uuid()->toString().'.'.($file->guessExtension() ?: 'bin');
         $path = $file->storeAs('documents/'.now()->format('Y/m'), $name, 'local');

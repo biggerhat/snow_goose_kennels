@@ -5,6 +5,10 @@ import PageHeader from '@/components/admin/PageHeader.vue';
 import { Button } from '@/components/ui/button';
 import { formatDate } from '@/lib/format';
 import { exportMethod, records } from '@/routes/admin';
+import DocumentManager from '@/components/admin/DocumentManager.vue';
+import { emergencyPlan } from '@/routes/admin/records';
+import type { DocumentFile } from '@/types';
+import { Check, Circle } from '@lucide/vue';
 import {
     all as printAll,
     dog as printDog,
@@ -16,6 +20,17 @@ defineOptions({
 });
 
 defineProps<{
+    readiness: {
+        todo: number;
+        items: {
+            key: string;
+            status: 'ok' | 'todo';
+            title: string;
+            details: { text: string; href: string }[];
+        }[];
+    };
+    kennelId: number;
+    kennelDocuments: DocumentFile[];
     dogs: {
         id: number;
         slug: string;
@@ -75,6 +90,80 @@ const sheets = [
                 </a>
             </Button>
         </PageHeader>
+
+        <section class="space-y-3">
+            <h2 class="font-serif text-xl font-semibold">
+                Inspection readiness
+            </h2>
+            <p class="text-sm text-muted-foreground">
+                AKC can inspect a breeder’s records and dogs. This is what you
+                would want in order first.
+                <strong class="text-foreground">{{
+                    readiness.todo
+                        ? `${readiness.todo} thing${readiness.todo === 1 ? '' : 's'} to tidy.`
+                        : 'Everything looks ready.'
+                }}</strong>
+            </p>
+            <ul class="divide-y rounded-xl border bg-card">
+                <li
+                    v-for="i in readiness.items"
+                    :key="i.key"
+                    class="p-3 text-sm"
+                >
+                    <div class="flex items-start gap-3">
+                        <Check
+                            v-if="i.status === 'ok'"
+                            class="mt-0.5 size-4 shrink-0 text-emerald-600"
+                        />
+                        <Circle
+                            v-else
+                            class="mt-0.5 size-4 shrink-0 text-amber-600"
+                        />
+                        <div class="min-w-0">
+                            <p class="font-medium">{{ i.title }}</p>
+                            <ul
+                                v-if="i.details.length"
+                                class="mt-1 list-disc space-y-0.5 pl-5 text-muted-foreground"
+                            >
+                                <li
+                                    v-for="d in i.details.slice(0, 8)"
+                                    :key="d.text"
+                                >
+                                    <Link
+                                        :href="d.href"
+                                        class="underline underline-offset-2"
+                                        >{{ d.text }}</Link
+                                    >
+                                </li>
+                                <li v-if="i.details.length > 8">
+                                    and {{ i.details.length - 8 }} more
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </li>
+            </ul>
+        </section>
+
+        <section class="space-y-3">
+            <h2 class="font-serif text-xl font-semibold">Kennel papers</h2>
+            <p class="text-sm text-muted-foreground">
+                Papers that belong to the whole kennel: your written emergency
+                plan, inspection reports, a kennel license. Private.
+            </p>
+            <Button as-child size="sm" variant="outline">
+                <a :href="emergencyPlan.url()" target="_blank" rel="noopener"
+                    ><Printer class="size-4" /> Print an emergency plan
+                    worksheet</a
+                >
+            </Button>
+            <DocumentManager
+                type="kennel"
+                :id="kennelId"
+                :documents="kennelDocuments"
+                category="emergency_plan"
+            />
+        </section>
 
         <section class="space-y-3">
             <h2 class="font-serif text-xl font-semibold">Dog records</h2>

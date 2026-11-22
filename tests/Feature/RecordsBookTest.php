@@ -2,9 +2,13 @@
 
 use App\Models\Contact;
 use App\Models\Dog;
+use App\Models\KennelProfile;
 use App\Models\Litter;
 use App\Models\User;
+use App\Support\Attention;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Facades\Storage;
 
 uses(RefreshDatabase::class);
 
@@ -85,4 +89,45 @@ test('the new spreadsheets download', function () {
     $csv = $this->get(route('admin.export', 'litters'))->streamedContent();
     expect($csv)->toContain('Spring Litter')->toContain('NP-555')->toContain('Natural mating');
     expect($this->get(route('admin.export', 'puppies'))->streamedContent())->toContain('12 Elm St')->toContain('985000000000042');
+});
+
+test('the emergency plan worksheet prints with vets and the dog count', function () {
+    Dog::create(['name' => 'Bella', 'sex' => 'female', 'role' => 'dam']);
+    Contact::create(['name' => 'Dr. Allen', 'type' => 'vet', 'phone' => '555-0188']);
+
+    $html = $this->get(route('admin.records.emergency-plan'))->assertOk()->getContent();
+
+    expect($html)->toContain('Emergency plan')->toContain('Dr. Allen')->toContain('555-0188')->toContain('1 adults');
+});
+
+test('a missing or old emergency plan shows up under needs attention', function () {
+    Dog::create(['name' => 'Bella', 'sex' => 'female', 'role' => 'dam']);
+    $titles = fn () => Attention::items()->pluck('title')->join('|');
+
+    expect($titles())->toContain('Write down your emergency plan');
+
+    $kennel = KennelProfile::instance();
+    $kennel->documents()->create(['category' => 'emergency_plan', 'title' => 'Plan', 'path' => 'x', 'original_name' => 'p.pdf', 'mime' => 'application/pdf', 'size' => 1, 'issued_on' => today()->subDays(20)]);
+    expect($titles())->not->toContain('emergency plan');
+
+    $this->travel(14)->months();
+    expect($titles())->toContain('Review your emergency plan');
+});
+
+test('kennel papers can be uploaded', function () {
+    Storage::fake('local');
+    $kennel = KennelProfile::instance();
+
+    $this->post(route('admin.documents.store'), ['file' => UploadedFile::fake()->create('plan.pdf', 10, 'application/pdf'), 'documentable_type' => 'kennel', 'documentable_id' => 0, 'category' => 'emergency_plan'])->assertSessionHasNoErrors();
+
+    expect($kennel->documents()->count())->toBe(1);
+});
+
+test('the readiness report lists what is missing', function () {
+    Dog::create(['name' => 'Bella', 'sex' => 'female', 'role' => 'dam']);
+    $props = $this->get(route('admin.records'))->viewData('page')['props'];
+
+    $keys = collect($props['readiness']['items'])->where('status', 'todo')->pluck('key')->all();
+
+    expect($keys)->toContain('dogs')->toContain('plan')->toContain('owner')->and($props['readiness']['todo'])->toBeGreaterThanOrEqual(3);
 });

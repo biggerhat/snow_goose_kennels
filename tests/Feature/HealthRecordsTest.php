@@ -119,10 +119,11 @@ test('the morning email and the dashboard include what needs attention', functio
     $dog->healthRecords()->create(['type' => 'vaccine', 'name' => 'Rabies', 'given_on' => today()->subYear(), 'next_due_on' => today()->subDay()]);
 
     $this->artisan('kennel:reminders')->assertSuccessful();
-    Mail::assertSent(DailyReminders::class, fn ($m) => $m->attention->count() === 1);
+    Mail::assertSent(DailyReminders::class, fn ($m) => $m->attention->where('kind', 'health')->count() === 1);
 
     $props = $this->get(route('dashboard'))->viewData('page')['props'];
-    expect($props['attention'])->toHaveCount(1)->and($props['attention'][0]['title'])->toContain('Rabies');
+    $health = collect($props['attention'])->where('kind', 'health')->values();
+    expect($health)->toHaveCount(1)->and($health[0]['title'])->toContain('Rabies');
 });
 
 test('the same treatment for a whole litter shows as one line', function () {

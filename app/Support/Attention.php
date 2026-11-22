@@ -6,6 +6,7 @@ use App\Enums\PuppyStatus;
 use App\Models\Document;
 use App\Models\Dog;
 use App\Models\HealthRecord;
+use App\Models\KennelProfile;
 use App\Models\Litter;
 use App\Models\Puppy;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
@@ -21,6 +22,7 @@ class Attention
             ...self::health($healthDays),
             ...self::documents($documentDays),
             ...self::akc($akcDays),
+            ...self::emergencyPlan(),
         ])->sortBy('date')->values();
     }
 
@@ -117,6 +119,7 @@ class Attention
                     $owner instanceof Dog => [$owner->name, route('admin.dogs.edit', $owner)],
                     $owner instanceof Litter => [$owner->title, route('admin.litters.edit', $owner)],
                     $owner instanceof Puppy => ['a puppy in '.($owner->litter?->title ?? 'a litter'), route('admin.litters.edit', $owner->litter)],
+                    $owner instanceof KennelProfile => ['the kennel', route('admin.records')],
                     default => [$owner->name ?? 'a contact', route('admin.contacts.edit', $owner)],
                 };
 
@@ -150,5 +153,25 @@ class Attention
                     'href' => route('admin.litters.edit', $l),
                 ] : null;
             })->filter()->values()->all();
+    }
+
+    /** AKC says breeders should have a written emergency plan. Nag gently when there is none or it is old. */
+    private static function emergencyPlan(): array
+    {
+        if (! Dog::where('is_ours', true)->exists()) {
+            return [];
+        }
+
+        $latest = Document::where('documentable_type', 'kennel')->where('category', 'emergency_plan')->get()
+            ->map(fn (Document $d) => $d->issued_on ?? $d->created_at)->max();
+
+        if (! $latest) {
+            return [['kind' => 'akc', 'title' => 'Write down your emergency plan', 'detail' => 'AKC asks breeders to have one on paper', 'date' => today()->toDateString(), 'overdue' => false, 'href' => route('admin.records.emergency-plan')]];
+        }
+
+        return $latest->lt(today()->subYear()) ? [[
+            'kind' => 'akc', 'title' => 'Review your emergency plan', 'detail' => 'Last updated '.$latest->format('M j, Y'),
+            'date' => $latest->copy()->addYear()->toDateString(), 'overdue' => true, 'href' => route('admin.records'),
+        ]] : [];
     }
 }

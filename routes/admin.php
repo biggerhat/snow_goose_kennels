@@ -61,6 +61,7 @@ Route::middleware('auth')->prefix('admin')->name('admin.')->group(function () {
     Route::inertia('help', 'admin/Help')->name('help');
 
     Route::get('records', [RecordsController::class, 'index'])->name('records');
+    Route::get('records/emergency-plan', [RecordsController::class, 'emergencyPlan'])->name('records.emergency-plan');
     Route::get('records/all', [RecordsController::class, 'all'])->name('records.all');
     Route::get('records/dogs/{dog}', [RecordsController::class, 'dog'])->withTrashed()->name('records.dog');
     Route::get('records/litters/{litter}', [RecordsController::class, 'litter'])->withTrashed()->name('records.litter');

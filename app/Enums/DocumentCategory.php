@@ -14,6 +14,8 @@ enum DocumentCategory: string
     case StudAgreement = 'stud_agreement';
     case Sale = 'sale';
     case LitterApplication = 'litter_application';
+    case EmergencyPlan = 'emergency_plan';
+    case Inspection = 'inspection';
     case Other = 'other';
 
     public function label(): string
@@ -27,6 +29,8 @@ enum DocumentCategory: string
             self::StudAgreement => 'Stud agreement',
             self::Sale => 'Bill of sale / sales agreement',
             self::LitterApplication => 'AKC litter application',
+            self::EmergencyPlan => 'Emergency plan',
+            self::Inspection => 'Inspection report or kennel license',
             self::Other => 'Other',
         };
     }

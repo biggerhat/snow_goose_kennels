@@ -12,7 +12,7 @@ import { destroy, store, update } from '@/routes/admin/documents';
 import type { DocumentFile, Options } from '@/types';
 
 const props = defineProps<{
-    type: 'dog' | 'litter' | 'puppy' | 'contact';
+    type: 'dog' | 'litter' | 'puppy' | 'contact' | 'kennel';
     id: number;
     documents: DocumentFile[];
     /** Start the category on this value. */

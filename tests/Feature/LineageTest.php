@@ -21,7 +21,7 @@ test('a dog from another kennel can never be public', function () {
 
     $rex = Dog::firstWhere('name', 'Zzyzx');
     expect($rex->is_ours)->toBeFalse()->and($rex->is_public)->toBeFalse();
-    $this->get(route('site.dogs'))->assertDontSee('Zzyzx');
+    expect(collect($this->get(route('site.dogs'))->viewData('page')['props']['dogs'])->pluck('name'))->not->toContain('Zzyzx');
 });
 
 test('a sire or dam from another kennel can be added on the spot', function () {

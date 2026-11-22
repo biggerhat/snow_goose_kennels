@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { Head, Link, router, useForm, usePage } from '@inertiajs/vue3';
 import { computed, ref, watch } from 'vue';
+import Achievements from '@/components/admin/Achievements.vue';
 import AkcChecklist from '@/components/admin/AkcChecklist.vue';
 import ArchivedBanner from '@/components/admin/ArchivedBanner.vue';
 import type { AkcItem } from '@/components/admin/AkcChecklist.vue';
@@ -294,12 +295,13 @@ const suggestions = [
                         :error="form.errors.titles"
                         for="titles"
                         help="Letters earned in dog sports or shows, like MH (Master Hunter), SH (Senior Hunter) or CH (Champion). They are shown on the website."
-                        hint="Optional. For example MH, SH."
+                        hint="Optional. For example MH, SH. Once you list titles under Titles & awards below, they fill this in for you."
                     >
                         <Input
                             id="titles"
                             v-model="form.titles"
                             placeholder="MH, SH"
+                            :disabled="!!dog?.achievements?.length"
                         />
                     </Field>
                     <Field label="Sex" required :error="form.errors.sex">
@@ -710,6 +712,22 @@ const suggestions = [
                     AKC record for this dog
                 </h2>
                 <AkcChecklist :akc="akc" />
+            </section>
+
+            <section class="space-y-3 rounded-xl border bg-card p-5">
+                <div>
+                    <h2 class="font-serif text-lg font-semibold">
+                        Titles &amp; awards
+                    </h2>
+                    <p class="text-sm text-muted-foreground">
+                        Hunt test, field trial and show results. The letters are
+                        shown after the dog’s name and in the pedigree.
+                    </p>
+                </div>
+                <Achievements
+                    :slug="dog?.slug ?? ''"
+                    :items="dog?.achievements ?? []"
+                />
             </section>
 
             <section

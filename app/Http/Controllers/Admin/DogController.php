@@ -85,7 +85,7 @@ class DogController extends Controller
     public function edit(Dog $dog): Response
     {
         return Inertia::render('admin/dogs/Edit', [
-            'dog' => $dog->load(['healthTests', 'heatCycles', 'photos', 'documents', 'healthRecords'])->setAttribute('purge_blocked_until', $dog->trashed() ? $dog->purgeBlockedUntil()?->toDateString() : null),
+            'dog' => $dog->load(['healthTests', 'heatCycles', 'photos', 'documents', 'healthRecords', 'achievements'])->setAttribute('purge_blocked_until', $dog->trashed() ? $dog->purgeBlockedUntil()?->toDateString() : null),
             'pedigree' => Pedigree::build($dog, 3),
             'akc' => AkcChecks::forDog($dog),
             'litters' => Litter::where('sire_id', $dog->id)->orWhere('dam_id', $dog->id)
@@ -97,7 +97,14 @@ class DogController extends Controller
 
     public function update(Request $request, Dog $dog): RedirectResponse
     {
-        $dog->update($this->validated($request));
+        $data = $this->validated($request);
+
+        // Once titles are listed under Titles & awards, that list is the source of the Titles box.
+        if ($dog->achievements()->exists()) {
+            unset($data['titles']);
+        }
+
+        $dog->update($data);
 
         Inertia::flash('toast', ['type' => 'success', 'message' => 'Saved.']);
 

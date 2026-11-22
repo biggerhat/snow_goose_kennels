@@ -6,6 +6,7 @@ use App\Http\Controllers\Admin\ContactController;
 use App\Http\Controllers\Admin\ContactNoteController;
 use App\Http\Controllers\Admin\DiaryEntryController;
 use App\Http\Controllers\Admin\DocumentController;
+use App\Http\Controllers\Admin\DogAchievementController;
 use App\Http\Controllers\Admin\DogController;
 use App\Http\Controllers\Admin\ExportController;
 use App\Http\Controllers\Admin\HealthRecordController;
@@ -30,6 +31,9 @@ Route::middleware('auth')->prefix('admin')->name('admin.')->group(function () {
     Route::put('health-tests/{healthTest}', [HealthTestController::class, 'update'])->name('health-tests.update');
     Route::delete('health-tests/{healthTest}', [HealthTestController::class, 'destroy'])->name('health-tests.destroy');
 
+    Route::post('dogs/{dog}/achievements', [DogAchievementController::class, 'store'])->name('achievements.store');
+    Route::put('achievements/{achievement}', [DogAchievementController::class, 'update'])->name('achievements.update');
+    Route::delete('achievements/{achievement}', [DogAchievementController::class, 'destroy'])->name('achievements.destroy');
     Route::post('dogs/{dog}/heat-cycles', [HeatCycleController::class, 'store'])->name('heat-cycles.store');
     Route::delete('heat-cycles/{heatCycle}', [HeatCycleController::class, 'destroy'])->name('heat-cycles.destroy');
 

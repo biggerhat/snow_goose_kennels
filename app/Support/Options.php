@@ -2,6 +2,7 @@
 
 namespace App\Support;
 
+use App\Enums\AchievementKind;
 use App\Enums\BreedingMethod;
 use App\Enums\CoatColor;
 use App\Enums\ContactType;
@@ -27,6 +28,7 @@ class Options
             'documentCategory' => DocumentCategory::options(),
             'healthRecordType' => HealthRecordType::options(),
             'breedingMethod' => BreedingMethod::options(),
+            'achievementKind' => AchievementKind::options(),
             'registrationType' => RegistrationType::options(),
             'color' => CoatColor::options(),
             'litterStatus' => LitterStatus::options(),

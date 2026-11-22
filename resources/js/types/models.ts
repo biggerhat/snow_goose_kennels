@@ -13,6 +13,17 @@ export type Options = {
     registrationType: Option[];
     documentCategory: Option[];
     healthRecordType: Option[];
+    achievementKind: Option[];
+};
+
+export type Achievement = {
+    id: number;
+    title: string;
+    full_name: string | null;
+    kind: string;
+    earned_on: string | null;
+    event: string | null;
+    notes: string | null;
 };
 
 export type HealthRecord = {
@@ -102,6 +113,7 @@ export type Dog = {
     photos?: Photo[];
     documents?: DocumentFile[];
     health_records?: HealthRecord[];
+    achievements?: Achievement[];
     health_tests?: HealthTest[];
     heat_cycles?: {
         id: number;

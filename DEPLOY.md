@@ -49,6 +49,8 @@ APP_ENV=production
 APP_DEBUG=false
 APP_URL=https://snowgoosekennels.example
 APP_TIMEZONE=America/Boise          # her local time zone: dates and the 8:00 reminder follow it
+SESSION_LIFETIME=480                # stay logged in for 8 hours
+SESSION_SECURE_COOKIE=true          # the site is https, so cookies are https-only
 
 DB_CONNECTION=sqlite
 DB_DATABASE=/home/forge/kennel-data/database.sqlite

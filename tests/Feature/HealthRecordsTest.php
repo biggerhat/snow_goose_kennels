@@ -137,3 +137,40 @@ test('the same treatment for a whole litter shows as one line', function () {
 
     expect($items)->toHaveCount(1)->and($items->first()['title'])->toBe('Pyrantel due for 4 puppies in Spring');
 });
+
+test('the same treatment for several dogs is one reminder', function () {
+    foreach (['Bella', 'Honey', 'Maple'] as $name) {
+        Dog::create(['name' => $name, 'sex' => 'female', 'role' => 'dam'])->healthRecords()->create(['type' => 'parasite', 'name' => 'Heartworm preventive', 'given_on' => today()->subDays(25), 'next_due_on' => today()->addDays(2)]);
+    }
+    foreach (['A', 'B', 'C', 'D', 'E'] as $name) {
+        Dog::create(['name' => $name, 'sex' => 'male', 'role' => 'stud'])->healthRecords()->create(['type' => 'vaccine', 'name' => 'Rabies', 'given_on' => today()->subYear(), 'next_due_on' => today()->subDays(3)]);
+    }
+
+    $titles = Attention::items()->where('kind', 'health')->pluck('title')->all();
+
+    expect($titles)->toContain('Heartworm preventive due for Bella, Honey and Maple')->toContain('Rabies due for 5 dogs');
+});
+
+test('overdue items come first', function () {
+    $dog = bella();
+    $dog->healthRecords()->create(['type' => 'parasite', 'name' => 'Heartworm', 'given_on' => today()->subDays(20), 'next_due_on' => today()->addDay()]);
+    $dog->healthRecords()->create(['type' => 'vaccine', 'name' => 'Rabies', 'given_on' => today()->subYear(), 'next_due_on' => today()->subDays(9)]);
+
+    expect(Attention::items()->first()['title'])->toContain('Rabies')->and(Attention::items()->first()['overdue'])->toBeTrue();
+});
+
+test('an item can be snoozed and comes back afterwards', function () {
+    $dog = bella();
+    $dog->healthRecords()->create(['type' => 'vaccine', 'name' => 'Rabies', 'given_on' => today()->subYear(), 'next_due_on' => today()->subDay()]);
+    $item = Attention::items()->firstWhere('kind', 'health');
+
+    $this->post(route('admin.attention.snooze'), ['key' => $item['key'], 'days' => 7])->assertRedirect();
+    expect(Attention::items()->where('kind', 'health'))->toBeEmpty();
+
+    $this->travel(8)->days();
+    expect(Attention::items()->where('kind', 'health'))->toHaveCount(1);
+});
+
+test('snoozing needs a proper key', function () {
+    $this->post(route('admin.attention.snooze'), ['key' => 'nope'])->assertSessionHasErrors('key');
+});

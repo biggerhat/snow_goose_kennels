@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Admin\AkcApplicationController;
 use App\Http\Controllers\Admin\AlbumController;
+use App\Http\Controllers\Admin\AttentionSnoozeController;
 use App\Http\Controllers\Admin\ContactController;
 use App\Http\Controllers\Admin\ContactNoteController;
 use App\Http\Controllers\Admin\DiaryEntryController;
@@ -65,6 +66,7 @@ Route::middleware('auth')->prefix('admin')->name('admin.')->group(function () {
 
     Route::inertia('help', 'admin/Help')->name('help');
 
+    Route::post('attention/snooze', [AttentionSnoozeController::class, 'store'])->name('attention.snooze');
     Route::get('planner', [PlannerController::class, 'index'])->name('planner');
 
     Route::get('records', [RecordsController::class, 'index'])->name('records');

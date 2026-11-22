@@ -72,6 +72,13 @@ const jobs = [
         ],
     },
     {
+        q: 'Call someone from your contacts',
+        a: [
+            'Open Contacts. Anyone with a phone number has a Call button next to their name. On your phone, tap it and the call starts.',
+            'Tap the name itself to see their details and everything you have talked about.',
+        ],
+    },
+    {
         q: 'Move around a long page',
         a: [
             'Dog and litter pages have a strip of buttons under the title (Basics, Family, Papers…). Tap one to jump to that part. It opens the section if it was folded.',
@@ -125,7 +132,7 @@ const jobs = [
     {
         q: 'Get ready for an AKC inspection',
         a: [
-            'Open Records and look at Inspection readiness. It lists what would catch your eye first: dog records with gaps, litter records with gaps, overdue vaccines, and no emergency plan.',
+            'Open Records and look at Inspection readiness. The green bar shows how much is ready. Under it is what would catch your eye first: dog records with gaps, litter records with gaps, overdue vaccines, and no emergency plan.',
             'Under Kennel papers, print the emergency plan worksheet, fill it in, and add a copy of the signed plan as a document. You will be reminded to review it once a year.',
             'Tap Print everything to print every dog and litter record in one go.',
         ],

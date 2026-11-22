@@ -46,7 +46,7 @@ watch([q, type], () => {
             description="Buyers, vets, stud owners and everyone else."
             :help="[
                 'Your address book. Search by name, phone, email or city.',
-                'Tap a person to see their details and the log of everything you have talked about.',
+                'Tap a person to see their details and the log of everything you have talked about. If they have a phone number, tap Call next to their name to ring them.',
                 'Nothing in Contacts is ever shown on the website.',
             ]"
             help-title="Your contacts"

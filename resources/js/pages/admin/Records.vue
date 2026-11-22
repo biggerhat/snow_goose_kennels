@@ -79,7 +79,7 @@ const sheets = [
             :help="[
                 'AKC asks breeders to keep an ownership record for each adult dog and a record for each litter, and to keep them for 5 years after a dog dies, is sold or is given away.',
                 'You do not need to write these. They are built from what you have already entered on the Dogs and Litters pages, so the more you fill in there, the more complete they are.',
-                'Inspection readiness lists what would catch your eye first if AKC asked to see your records: gaps in dog or litter records, overdue vaccines, and a missing emergency plan.',
+                'Inspection readiness lists what would catch your eye first if AKC asked to see your records: gaps in dog or litter records, overdue vaccines, and a missing emergency plan. The green bar shows how much is ready.',
                 'Tap Print under a dog or litter to open a clean page, then use Print or Save as PDF. Print everything makes one big file with every dog and litter.',
                 'The spreadsheets are extra copies you can open in Excel or Google Sheets. They do not include photos or documents, only their details.',
             ]"
@@ -108,7 +108,7 @@ const sheets = [
                     <div class="min-w-0">
                         <Link
                             :href="`/admin/dogs/${d.slug}/edit`"
-                            class="font-medium hover:underline"
+                            class="-my-1 inline-block py-2 font-medium hover:underline"
                             >{{ d.name }}</Link
                         >
                         <span v-if="!d.is_ours" class="text-muted-foreground">
@@ -165,7 +165,7 @@ const sheets = [
                     <div class="min-w-0">
                         <Link
                             :href="`/admin/litters/${l.slug}/edit`"
-                            class="font-medium hover:underline"
+                            class="-my-1 inline-block py-2 font-medium hover:underline"
                             >{{ l.title }}</Link
                         >
                         <p class="text-xs text-muted-foreground">

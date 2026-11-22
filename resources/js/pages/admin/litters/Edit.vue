@@ -557,7 +557,7 @@ const summary = computed(() => {
                     </Button>
                 </div>
                 <div v-if="litter && akc" class="space-y-2">
-                    <h3 class="font-medium">AKC checklist</h3>
+                    <p class="font-medium">AKC checklist</p>
                     <AkcChecklist :akc="akc" />
                 </div>
             </section>

@@ -5,6 +5,7 @@ import ConfirmDelete from '@/components/admin/ConfirmDelete.vue';
 import DocumentManager from '@/components/admin/DocumentManager.vue';
 import HealthRecords from '@/components/admin/HealthRecords.vue';
 import Field from '@/components/admin/Field.vue';
+import MoneyInput from '@/components/admin/MoneyInput.vue';
 import NativeSelect from '@/components/admin/NativeSelect.vue';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -157,13 +158,7 @@ function save() {
                     :error="form.errors.sale_price"
                     hint="Private. Whole dollars."
                 >
-                    <Input
-                        v-model="form.sale_price"
-                        type="number"
-                        inputmode="numeric"
-                        min="0"
-                        placeholder="1500"
-                    />
+                    <MoneyInput v-model="form.sale_price" placeholder="1500" />
                 </Field>
                 <Field
                     :label="`Birth weight (${unit === 'oz' ? 'ounces' : 'grams'})`"

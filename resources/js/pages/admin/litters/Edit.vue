@@ -10,6 +10,7 @@ import StickySave from '@/components/admin/StickySave.vue';
 import DocumentManager from '@/components/admin/DocumentManager.vue';
 import Field from '@/components/admin/Field.vue';
 import HealthRecords from '@/components/admin/HealthRecords.vue';
+import MoneyInput from '@/components/admin/MoneyInput.vue';
 import NativeSelect from '@/components/admin/NativeSelect.vue';
 import PageHeader from '@/components/admin/PageHeader.vue';
 import PhotoManager from '@/components/admin/PhotoManager.vue';
@@ -435,13 +436,7 @@ const summary = computed(() => {
                         help="Money paid for the stud’s services, either to the other kennel for their stud or to you for yours. Leave empty if there was none. Keep the signed stud agreement under Documents."
                         hint="Whole dollars."
                     >
-                        <Input
-                            id="stud_fee"
-                            v-model="form.stud_fee"
-                            type="number"
-                            inputmode="numeric"
-                            min="0"
-                        />
+                        <MoneyInput id="stud_fee" v-model="form.stud_fee" />
                     </Field>
                     <Field
                         label="Stud fee paid on"
@@ -564,12 +559,9 @@ const summary = computed(() => {
                         :error="form.errors.price"
                         hint="Whole dollars, like 1500."
                         for="price"
-                        ><Input
+                        ><MoneyInput
                             id="price"
                             v-model="form.price"
-                            type="number"
-                            inputmode="numeric"
-                            min="0"
                             placeholder="1500"
                     /></Field>
                     <Field
@@ -578,12 +570,9 @@ const summary = computed(() => {
                         help="The amount a buyer pays up front to hold a place on the list. It is usually taken off the price."
                         hint="Whole dollars, like 300."
                         for="deposit"
-                        ><Input
+                        ><MoneyInput
                             id="deposit"
                             v-model="form.deposit"
-                            type="number"
-                            inputmode="numeric"
-                            min="0"
                             placeholder="300"
                     /></Field>
                     <Field

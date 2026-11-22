@@ -3,6 +3,7 @@ import { Head, router, useForm, usePage } from '@inertiajs/vue3';
 import { computed, ref, watch } from 'vue';
 import ConfirmDelete from '@/components/admin/ConfirmDelete.vue';
 import Field from '@/components/admin/Field.vue';
+import MoneyInput from '@/components/admin/MoneyInput.vue';
 import NativeSelect from '@/components/admin/NativeSelect.vue';
 import PageHeader from '@/components/admin/PageHeader.vue';
 import StickySave from '@/components/admin/StickySave.vue';
@@ -280,12 +281,9 @@ function submit() {
                         :error="form.errors.deposit_amount"
                         hint="Whole dollars, like 300."
                         for="deposit_amount"
-                        ><Input
+                        ><MoneyInput
                             id="deposit_amount"
                             v-model="form.deposit_amount"
-                            type="number"
-                            inputmode="numeric"
-                            min="0"
                             placeholder="300"
                     /></Field>
                     <Field

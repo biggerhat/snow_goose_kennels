@@ -183,3 +183,27 @@
     transform: rotate(-45deg);
     top: 0.6rem;
 }
+
+/* Fingers are bigger than mouse pointers: give touch screens comfortable targets. */
+@media (pointer: coarse) {
+    [data-slot='button'] {
+        min-height: 2.5rem;
+    }
+    [data-slot='button'][data-size='icon'] {
+        min-width: 2.5rem;
+    }
+    [data-slot='input'],
+    select,
+    textarea {
+        min-height: 2.75rem;
+    }
+    input[type='checkbox'] {
+        width: 1.25rem;
+        height: 1.25rem;
+    }
+    summary {
+        min-height: 2.5rem;
+        display: list-item;
+        padding-block: 0.4rem;
+    }
+}

@@ -24,7 +24,7 @@ const jobs = [
         a: [
             'Open the litter and change the status to On the ground. Add the birth date.',
             'Under Puppies, tap + Add girl puppy or + Add boy puppy once for each pup. A collar colour (the coloured ribbon or collar you put on each one) is the easiest way to tell them apart.',
-            'Use Weigh-ins to record weights, and Puppy diary to post updates visitors can read.',
+            'On the litter’s Health & diary tab, use Weigh-ins to record weights, and Puppy diary to post updates visitors can read.',
         ],
     },
     {
@@ -81,8 +81,9 @@ const jobs = [
     {
         q: 'Move around a long page',
         a: [
-            'Dog and litter pages have a strip of buttons under the title (Basics, Family, Papers…). Tap one to jump to that part. It opens the section if it was folded.',
-            'Tap a section’s heading to fold it away or open it. Sections you use less often start folded.',
+            'Dog and litter pages are split into tabs along the top, like Details, Health and Papers. Tap a tab to see that part. The tabs slide sideways if there are too many to fit.',
+            'The Details tab holds the main form. Its Save changes button is at the very bottom of the form. Boxes on the other tabs, like adding a vaccine or a document, save themselves when you tap their own Add button.',
+            'On a litter, each puppy is one line showing its name, status and buyer. Tap the line to open the puppy and change anything.',
             'When you change something, a bar appears at the bottom saying you have changes that are not saved. Tap Save changes there, or Discard to undo.',
             'On a phone, the bar at the bottom has Home, Litters, Dogs and Waitlist. Tap More for everything else.',
         ],
@@ -99,7 +100,7 @@ const jobs = [
         q: 'Fill in the AKC litter application',
         a: [
             'First go to Website text and fill in Kennel owner (your name and mailing address). They are private and only used on AKC forms.',
-            'Open the litter, go to Breeding & AKC and tap Fill in the AKC litter application. It lines up everything AKC asks for and lists anything still missing.',
+            'Open the litter, go to the Breeding & AKC tab and tap Fill in the AKC litter application. It lines up everything AKC asks for and lists anything still missing.',
             'Tap Download filled-in AKC form to get AKC’s own PDF with your answers in the boxes. Check every box, print it, sign it in black ink and mail it with a check or money order. Or tap Register online and use the copy buttons.',
             'The sire’s owner has to sign too, and so does every owner of the dam. Write the dates they signed on the litter page.',
             'When you have sent it, enter the date on the litter page. When AKC sends back the litter number, enter that too.',
@@ -117,7 +118,7 @@ const jobs = [
     {
         q: 'Add a dog’s titles',
         a: [
-            'Open the dog and find Titles & awards. Tap Add a title or award, type the letters (like MH), what it stands for, the date and the event.',
+            'Open the dog, tap the Papers & titles tab and find Titles & awards. Tap Add a title or award, type the letters (like MH), what it stands for, the date and the event.',
             'The letters appear after the dog’s name on your website and in the pedigree, in date order. Once you list titles here, the Titles box fills itself in.',
         ],
     },
@@ -142,21 +143,21 @@ const jobs = [
         a: [
             'On the litter, open the Sire (father) or Dam (mother) box. If the dog is not in the list, tap the link under the box to add a dog from another kennel. Fill in the name, registered name, registration number and the owner.',
             'These dogs are kept apart from yours (under Dogs, in Dogs from other kennels) and are never shown on your Our Dogs page. Visitors only see the name on the litter.',
-            'On the litter, under Breeding & AKC, record the stud fee and the date it was paid. Keep the signed stud agreement under Litter documents.',
+            'On the litter, on the Breeding & AKC tab, record the stud fee and the date it was paid. Keep the signed stud agreement on the Papers & photos tab.',
         ],
     },
     {
         q: 'Show a dog’s family tree',
         a: [
             'Open the dog and choose its father and mother under Family tree. If a parent is not in your list, add them with the link under the box.',
-            'The Pedigree card on the dog’s page draws the tree back several generations. Open each parent and fill in their parents to grow it.',
+            'The Pedigree card on the dog’s Papers & titles tab draws the tree back several generations. Open each parent and fill in their parents to grow it.',
             'The tree also shows on the dog’s page on your website, with names and titles only. Registration numbers stay private.',
         ],
     },
     {
         q: 'Keep copies of registration papers, OFA results and agreements',
         a: [
-            'Open the dog, litter, puppy (inside its card) or contact and find Papers & documents. Tap Add a document, choose the file (a PDF or a photo of the paper is fine), say what it is, and add it.',
+            'Open the dog, litter, puppy (inside its card) or contact and find Papers & documents. On a dog or contact it is on the Papers tab. Tap Add a document, choose the file (a PDF or a photo of the paper is fine), say what it is, and add it.',
             'If a paper runs out, like a rabies certificate, fill in Runs out on. You will see a reminder on the dashboard and in the morning email.',
             'Documents are private. Only you can open them, and they are never shown on the website.',
         ],
@@ -164,17 +165,17 @@ const jobs = [
     {
         q: 'Record vaccines, worming and vet visits',
         a: [
-            'On a dog’s page, find Vaccines, treatments & vet visits and tap Add. Say what it was, the date it was given, and when it is due again.',
-            'For puppies, open the litter. Under Litter health, record a deworming day or vet check once and it is added to every puppy. A single puppy’s records are in its own card.',
+            'On a dog’s page, open the Health tab, find Vaccines, treatments & vet visits and tap Add. Say what it was, the date it was given, and when it is due again.',
+            'For puppies, open the litter and its Health & diary tab. Under Litter health, record a deworming day or vet check once and it is added to every puppy. A single puppy’s records are in its own card.',
             'When something is due soon or overdue, it shows under Needs attention on the dashboard and in your morning email. Once you record the next dose, the reminder clears.',
         ],
     },
     {
         q: 'Get a litter ready for AKC',
         a: [
-            'Open the litter and fill in Breeding & AKC. The AKC checklist under it shows what is done and what is missing: both parents’ registration numbers, how old each parent was, DNA for the sire when AKC needs it, and the application deadline.',
+            'Open the litter, tap the Breeding & AKC tab and fill it in. The AKC checklist under it shows what is done and what is missing: both parents’ registration numbers, how old each parent was, DNA for the sire when AKC needs it, and the application deadline.',
             'AKC asks you to send the litter application within 6 months of the birth date. When you send it, enter the date; when AKC sends the papers back, enter the AKC litter number.',
-            'For each puppy, open Go-home & AKC details to record the microchip, whether it gets full or limited registration, and the date you hand over the papers. Add the buyer’s name and address on the Contacts page.',
+            'For each puppy, tap its line on the Puppies tab to open it, then open Go-home & AKC details to record the microchip, whether it gets full or limited registration, and the date you hand over the papers. Add the buyer’s name and address on the Contacts page.',
             'The checklist is a reminder, not a rule book. If you are unsure about something, check akc.org or call AKC.',
         ],
     },
@@ -197,14 +198,14 @@ const jobs = [
     {
         q: 'Change my phone number or the website wording',
         a: [
-            'Go to Website text. Phone, email, town and Facebook are at the top. The boxes below become the How it works page; leave a box empty and it will not appear.',
+            'Go to Website text. The Contact details tab has your phone, email, town and Facebook. The How it works tab becomes the How it works page; leave a box empty and it will not appear. Tap Save changes when you are done.',
             'Changes show on the website straight away.',
         ],
     },
     {
         q: 'Keep a copy of my information',
         a: [
-            'On Website text there is a Download your records section. Each button saves a spreadsheet you can open in Excel or Google Sheets.',
+            'Open Records and tap the Spreadsheets tab. Each button saves a spreadsheet you can open in Excel or Google Sheets.',
             'Photos are not in those files. Ask whoever set up the website how photos are backed up.',
         ],
     },

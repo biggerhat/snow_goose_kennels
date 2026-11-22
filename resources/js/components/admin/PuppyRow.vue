@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { router, useForm, usePage } from '@inertiajs/vue3';
-import { computed, watch } from 'vue';
+import { ChevronDown } from '@lucide/vue';
+import { computed, ref, watch } from 'vue';
 import ConfirmDelete from '@/components/admin/ConfirmDelete.vue';
 import DocumentManager from '@/components/admin/DocumentManager.vue';
 import HealthRecords from '@/components/admin/HealthRecords.vue';
@@ -67,6 +68,20 @@ const title = computed(() => {
     return `${who} (${sex})`;
 });
 
+const open = ref(false);
+const shown = computed(() => open.value || form.hasErrors || form.isDirty);
+
+// One line to read without opening the puppy.
+const summary = computed(() =>
+    [
+        props.status.find((o) => o.value === form.status)?.label,
+        props.contacts.find((c) => c.id === form.contact_id)?.name,
+        form.sale_price ? `$${Number(form.sale_price).toLocaleString()}` : null,
+    ]
+        .filter(Boolean)
+        .join(' · '),
+);
+
 const needsBuyer = computed(
     () => ['reserved', 'home'].includes(form.status) && !form.contact_id,
 );
@@ -83,7 +98,27 @@ function save() {
     <div class="space-y-3 rounded-lg border bg-background/50 p-3">
         <form class="space-y-3" @submit.prevent="save">
             <div class="flex items-center justify-between gap-2">
-                <p class="font-medium">{{ title }}</p>
+                <button
+                    type="button"
+                    class="-m-1 flex min-h-11 min-w-0 flex-1 items-center gap-2 rounded-md p-1 text-left hover:bg-muted/50"
+                    :aria-expanded="shown"
+                    @click="open = !shown"
+                >
+                    <ChevronDown
+                        :class="[
+                            'size-4 shrink-0 transition-transform',
+                            shown ? '' : '-rotate-90',
+                        ]"
+                    />
+                    <span class="min-w-0">
+                        <span class="block font-medium">{{ title }}</span>
+                        <span
+                            v-if="summary"
+                            class="block truncate text-sm text-muted-foreground"
+                            >{{ summary }}</span
+                        >
+                    </span>
+                </button>
                 <div class="flex items-center gap-1">
                     <Button
                         v-if="form.isDirty"
@@ -105,7 +140,10 @@ function save() {
                 </div>
             </div>
 
-            <div class="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+            <div
+                v-show="shown"
+                class="grid gap-3 sm:grid-cols-2 lg:grid-cols-4"
+            >
                 <Field
                     label="Collar colour"
                     :error="form.errors.collar"
@@ -183,7 +221,7 @@ function save() {
                 </Field>
             </div>
 
-            <details class="rounded-lg border bg-card/50 p-3">
+            <details v-show="shown" class="rounded-lg border bg-card/50 p-3">
                 <summary class="cursor-pointer text-sm font-medium select-none">
                     Go-home &amp; AKC details
                     <span class="font-normal text-muted-foreground"
@@ -251,7 +289,7 @@ function save() {
             </details>
         </form>
 
-        <details class="rounded-lg border bg-card/50 p-3">
+        <details v-show="shown" class="rounded-lg border bg-card/50 p-3">
             <summary class="cursor-pointer text-sm font-medium select-none">
                 Health records
                 <span class="font-normal text-muted-foreground"
@@ -268,7 +306,7 @@ function save() {
             </div>
         </details>
 
-        <details class="rounded-lg border bg-card/50 p-3">
+        <details v-show="shown" class="rounded-lg border bg-card/50 p-3">
             <summary class="cursor-pointer text-sm font-medium select-none">
                 Paperwork
                 <span class="font-normal text-muted-foreground"

@@ -6,8 +6,10 @@ import AkcChecklist from '@/components/admin/AkcChecklist.vue';
 import ArchivedBanner from '@/components/admin/ArchivedBanner.vue';
 import type { AkcItem } from '@/components/admin/AkcChecklist.vue';
 import ConfirmDelete from '@/components/admin/ConfirmDelete.vue';
-import SectionNav from '@/components/admin/SectionNav.vue';
-import { jumpTo } from '@/directives/fold';
+import PageTabs from '@/components/admin/PageTabs.vue';
+import type { PageTab } from '@/components/admin/PageTabs.vue';
+import TabPanel from '@/components/admin/TabPanel.vue';
+import { usePageTabs } from '@/composables/usePageTabs';
 import StickySave from '@/components/admin/StickySave.vue';
 import DocumentManager from '@/components/admin/DocumentManager.vue';
 import Field from '@/components/admin/Field.vue';
@@ -139,9 +141,25 @@ watch(
     },
 );
 
+const tabs: PageTab[] = [
+    { key: 'details', label: 'Details' },
+    { key: 'health', label: 'Health' },
+    { key: 'papers', label: 'Papers & titles' },
+    { key: 'photos', label: 'Photos' },
+    { key: 'litters', label: 'Litters & more' },
+];
+const tab = usePageTabs(
+    tabs.map((t) => t.key),
+    'details',
+);
+
 function submit() {
     if (props.dog) {
-        form.put(update.url(props.dog.slug), { preserveScroll: true });
+        form.put(update.url(props.dog.slug), {
+            preserveScroll: true,
+            // A mistake in the form is on the Details tab, so go back there to show it.
+            onError: () => (tab.value = 'details'),
+        });
     } else {
         form.post(store.url());
     }
@@ -238,7 +256,7 @@ const suggestions = [
             :help="[
                 'Add each dog you keep or breed: the mothers (dams), the fathers (studs), and retired dogs.',
                 'Only name, sex and role are needed. Add a photo and a short description to make the dog’s page on the website nicer.',
-                'After you save, you can add health tests, vaccines, heat cycles (for females), papers and photos further down this page.',
+                'After you save, use the tabs along the top: Health (tests, vaccines, heat cycles), Papers & titles, Photos, and Litters & more. Save changes is at the bottom of the Details tab. Boxes on the other tabs save by themselves.',
                 'Family tree: choose the father and mother. If they belong to another kennel, add them with the link under the box. The pedigree draws itself from everyone’s parents.',
                 'Documents keeps a private copy of registration papers, pedigrees, OFA and DNA reports and vet records. The AKC record list shows what is still missing for this dog.',
                 'Untick Show on the website to keep a dog private. Registration, microchip and private notes are never shown to visitors.',
@@ -247,7 +265,7 @@ const suggestions = [
         >
         </PageHeader>
 
-        <SectionNav v-if="dog" />
+        <PageTabs v-if="dog" v-model="tab" :tabs="tabs" />
 
         <aside
             v-if="dog && !dog.deleted_at && !dog.photos?.length"
@@ -257,7 +275,7 @@ const suggestions = [
                 <strong>Next:</strong> add a photo so this dog’s page on your
                 website looks its best.
             </p>
-            <Button type="button" size="sm" @click="jumpTo('photos')"
+            <Button type="button" size="sm" @click="tab = 'photos'"
                 >Add a photo</Button
             >
         </aside>
@@ -270,11 +288,13 @@ const suggestions = [
             @purge="router.delete(purge.url(dog.slug))"
         />
 
-        <form id="main-form" class="space-y-6" @submit.prevent="submit">
-            <section
-                v-fold="{ id: 'basics', label: 'Basics', open: true }"
-                class="space-y-4 rounded-xl border bg-card p-5"
-            >
+        <form
+            v-show="!dog || tab === 'details'"
+            id="main-form"
+            class="space-y-6"
+            @submit.prevent="submit"
+        >
+            <section class="space-y-4 rounded-xl border bg-card p-5">
                 <h2 class="font-serif text-lg font-semibold">
                     The basics
                     <span class="text-sm font-normal text-muted-foreground"
@@ -313,7 +333,7 @@ const suggestions = [
                         :error="form.errors.titles"
                         for="titles"
                         help="Letters earned in dog sports or shows, like MH (Master Hunter), SH (Senior Hunter) or CH (Champion). They are shown on the website."
-                        hint="Optional. For example MH, SH. Once you list titles under Titles & awards below, they fill this in for you."
+                        hint="Optional. For example MH, SH. Once you list titles on the Papers & titles tab, they fill this in for you."
                     >
                         <Input
                             id="titles"
@@ -381,10 +401,7 @@ const suggestions = [
                 />
             </section>
 
-            <section
-                v-fold="{ id: 'family', label: 'Family tree', open: true }"
-                class="space-y-4 rounded-xl border bg-card p-5"
-            >
+            <section class="space-y-4 rounded-xl border bg-card p-5">
                 <div>
                     <h2 class="font-serif text-lg font-semibold">
                         Family tree
@@ -393,9 +410,9 @@ const suggestions = [
                         >
                     </h2>
                     <p class="text-sm text-muted-foreground">
-                        Choose this dog’s father and mother. The tree below
-                        builds itself from every dog’s parents, back several
-                        generations.
+                        Choose this dog’s father and mother. The pedigree on the
+                        Papers & titles tab builds itself from every dog’s
+                        parents, back several generations.
                     </p>
                 </div>
                 <div class="grid gap-4 sm:grid-cols-2">
@@ -463,11 +480,6 @@ const suggestions = [
             </section>
 
             <section
-                v-fold="{
-                    id: 'private',
-                    label: 'Private details',
-                    open: false,
-                }"
                 class="space-y-4 rounded-xl border border-dashed bg-card p-5"
             >
                 <h2 class="font-serif text-lg font-semibold">
@@ -581,394 +593,409 @@ const suggestions = [
         </form>
 
         <template v-if="dog">
-            <section
-                v-fold="{ id: 'health', label: 'Health tests', open: true }"
-                class="space-y-4 rounded-xl border bg-card p-5"
-            >
-                <h2 class="font-serif text-lg font-semibold">
-                    Health tests &amp; clearances
-                </h2>
-                <div class="space-y-1.5">
-                    <p class="text-xs text-muted-foreground">
-                        Health tests show buyers you care about the puppies’
-                        health. Green means done. The Labrador Retriever Club
-                        suggests at least hips, elbows, eyes, EIC and D-locus;
-                        the rest are extra.
-                    </p>
-                    <ul class="flex flex-wrap gap-1.5 text-xs">
+            <TabPanel name="health" :active="tab === 'health'">
+                <p class="text-sm text-muted-foreground">
+                    Each box here saves by itself when you tap its own Add or
+                    Save button.
+                </p>
+                <section class="space-y-4 rounded-xl border bg-card p-5">
+                    <h2 class="font-serif text-lg font-semibold">
+                        Health tests &amp; clearances
+                    </h2>
+                    <div class="space-y-1.5">
+                        <p class="text-xs text-muted-foreground">
+                            Health tests show buyers you care about the puppies’
+                            health. Green means done. The Labrador Retriever
+                            Club suggests at least hips, elbows, eyes, EIC and
+                            D-locus; the rest are extra.
+                        </p>
+                        <ul class="flex flex-wrap gap-1.5 text-xs">
+                            <li
+                                v-for="c in chic"
+                                :key="c.label"
+                                :class="[
+                                    'rounded-full px-2.5 py-1',
+                                    c.done
+                                        ? 'bg-emerald-500/15 text-emerald-800 dark:text-emerald-300'
+                                        : c.required
+                                          ? 'bg-amber-500/15 text-amber-800 dark:text-amber-300'
+                                          : 'bg-muted text-muted-foreground',
+                                ]"
+                            >
+                                {{ c.done ? '✓' : '○' }} {{ c.label
+                                }}<span v-if="!c.required"> (recommended)</span>
+                            </li>
+                        </ul>
+                    </div>
+                    <ul v-if="dog.health_tests?.length" class="divide-y">
                         <li
-                            v-for="c in chic"
-                            :key="c.label"
-                            :class="[
-                                'rounded-full px-2.5 py-1',
-                                c.done
-                                    ? 'bg-emerald-500/15 text-emerald-800 dark:text-emerald-300'
-                                    : c.required
-                                      ? 'bg-amber-500/15 text-amber-800 dark:text-amber-300'
-                                      : 'bg-muted text-muted-foreground',
-                            ]"
+                            v-for="t in dog.health_tests"
+                            :key="t.id"
+                            class="flex items-center justify-between gap-3 py-2 text-sm"
                         >
-                            {{ c.done ? '✓' : '○' }} {{ c.label
-                            }}<span v-if="!c.required"> (recommended)</span>
+                            <div>
+                                <span class="font-medium">{{ t.name }}:</span>
+                                {{ t.result }}
+                                <span
+                                    v-if="t.tested_on"
+                                    class="text-muted-foreground"
+                                    >· {{ formatDate(t.tested_on) }}</span
+                                >
+                                <span
+                                    v-if="t.certificate_number"
+                                    class="text-muted-foreground"
+                                    >· #{{ t.certificate_number }}</span
+                                >
+                                <a
+                                    v-if="t.verification_url"
+                                    :href="t.verification_url"
+                                    target="_blank"
+                                    rel="noopener"
+                                    class="underline"
+                                    >· verify</a
+                                >
+                                <span
+                                    v-if="!t.is_public"
+                                    class="text-muted-foreground"
+                                    >· private</span
+                                >
+                            </div>
+                            <ConfirmDelete
+                                icon
+                                message="Remove this health test? You can add it again later."
+                                @confirm="
+                                    router.delete(destroyTest.url(t.id), {
+                                        preserveScroll: true,
+                                    })
+                                "
+                            />
                         </li>
                     </ul>
-                </div>
-                <ul v-if="dog.health_tests?.length" class="divide-y">
-                    <li
-                        v-for="t in dog.health_tests"
-                        :key="t.id"
-                        class="flex items-center justify-between gap-3 py-2 text-sm"
-                    >
-                        <div>
-                            <span class="font-medium">{{ t.name }}:</span>
-                            {{ t.result }}
-                            <span
-                                v-if="t.tested_on"
-                                class="text-muted-foreground"
-                                >· {{ formatDate(t.tested_on) }}</span
-                            >
-                            <span
-                                v-if="t.certificate_number"
-                                class="text-muted-foreground"
-                                >· #{{ t.certificate_number }}</span
-                            >
-                            <a
-                                v-if="t.verification_url"
-                                :href="t.verification_url"
-                                target="_blank"
-                                rel="noopener"
-                                class="underline"
-                                >· verify</a
-                            >
-                            <span
-                                v-if="!t.is_public"
-                                class="text-muted-foreground"
-                                >· private</span
-                            >
-                        </div>
-                        <ConfirmDelete
-                            icon
-                            message="Remove this health test? You can add it again later."
-                            @confirm="
-                                router.delete(destroyTest.url(t.id), {
-                                    preserveScroll: true,
-                                })
-                            "
-                        />
-                    </li>
-                </ul>
-                <p v-else class="text-sm text-muted-foreground">
-                    No tests recorded yet.
-                </p>
+                    <p v-else class="text-sm text-muted-foreground">
+                        No tests recorded yet.
+                    </p>
 
-                <form
-                    class="grid items-end gap-3 sm:grid-cols-[1fr_1fr_9rem_auto]"
-                    @submit.prevent="addTest"
-                >
-                    <Field
-                        label="Test"
-                        required
-                        :error="testForm.errors.name"
-                        help="Pick one from the list or type your own. Hips and elbows are graded by OFA; the DNA tests (EIC, CNM, PRA) say Clear, Carrier or Affected."
+                    <form
+                        class="grid items-end gap-3 sm:grid-cols-[1fr_1fr_9rem_auto]"
+                        @submit.prevent="addTest"
                     >
-                        <Input
-                            v-model="testForm.name"
-                            list="test-names"
-                            placeholder="OFA Hips"
+                        <Field
+                            label="Test"
                             required
-                        />
-                        <datalist id="test-names">
-                            <option
-                                v-for="s in suggestions"
-                                :key="s"
-                                :value="s"
+                            :error="testForm.errors.name"
+                            help="Pick one from the list or type your own. Hips and elbows are graded by OFA; the DNA tests (EIC, CNM, PRA) say Clear, Carrier or Affected."
+                        >
+                            <Input
+                                v-model="testForm.name"
+                                list="test-names"
+                                placeholder="OFA Hips"
+                                required
                             />
-                        </datalist>
-                    </Field>
-                    <Field
-                        label="Result"
-                        required
-                        :error="testForm.errors.result"
-                        hint="For example Good, Excellent, Normal or Clear."
-                    >
-                        <Input
-                            v-model="testForm.result"
-                            placeholder="Good"
+                            <datalist id="test-names">
+                                <option
+                                    v-for="s in suggestions"
+                                    :key="s"
+                                    :value="s"
+                                />
+                            </datalist>
+                        </Field>
+                        <Field
+                            label="Result"
                             required
-                        />
-                    </Field>
-                    <Field label="Date" :error="testForm.errors.tested_on">
-                        <Input v-model="testForm.tested_on" type="date" />
-                    </Field>
-                    <Field
-                        label="OFA / certificate number"
-                        :error="testForm.errors.certificate_number"
-                    >
-                        <Input
-                            v-model="testForm.certificate_number"
-                            placeholder="LR-12345G24M-PI"
-                        />
-                    </Field>
-                    <Field
-                        label="Link to the public record"
-                        :error="testForm.errors.verification_url"
-                        hint="Paste the dog's page from ofa.org"
-                    >
-                        <Input
-                            v-model="testForm.verification_url"
-                            type="url"
-                            placeholder="https://ofa.org/…"
-                        />
-                    </Field>
-                    <ToggleField
-                        v-model="testForm.is_public"
-                        label="Show on the website"
-                        class="sm:col-span-2"
-                    />
-                    <Button
-                        type="submit"
-                        variant="secondary"
-                        :disabled="testForm.processing"
-                        >Add test</Button
-                    >
-                </form>
-            </section>
-
-            <section
-                v-fold="{ id: 'akc', label: 'AKC check', open: true }"
-                v-if="akc"
-                class="space-y-3 rounded-xl border bg-card p-5"
-            >
-                <h2 class="font-serif text-lg font-semibold">
-                    AKC record for this dog
-                </h2>
-                <AkcChecklist :akc="akc" />
-            </section>
-
-            <section
-                v-fold="{ id: 'titles', label: 'Titles', open: false }"
-                class="space-y-3 rounded-xl border bg-card p-5"
-            >
-                <div>
-                    <h2 class="font-serif text-lg font-semibold">
-                        Titles &amp; awards
-                    </h2>
-                    <p class="text-sm text-muted-foreground">
-                        Hunt test, field trial and show results. The letters are
-                        shown after the dog’s name and in the pedigree.
-                    </p>
-                </div>
-                <Achievements
-                    :slug="dog?.slug ?? ''"
-                    :items="dog?.achievements ?? []"
-                />
-            </section>
-
-            <section
-                v-fold="{ id: 'vaccines', label: 'Vaccines', open: true }"
-                v-if="dog?.is_ours !== false"
-                class="space-y-3 rounded-xl border bg-card p-5"
-            >
-                <div>
-                    <h2 class="font-serif text-lg font-semibold">
-                        Vaccines, treatments &amp; vet visits
-                        <span class="text-sm font-normal text-muted-foreground"
-                            >(private)</span
+                            :error="testForm.errors.result"
+                            hint="For example Good, Excellent, Normal or Clear."
                         >
-                    </h2>
-                    <p class="text-sm text-muted-foreground">
-                        Rabies and other shots, worming, flea and heartworm
-                        medicine, checkups. Add a “next due” date and you will
-                        be reminded.
-                    </p>
-                </div>
-                <HealthRecords
-                    target="dog"
-                    :id="dog?.slug ?? ''"
-                    :records="dog?.health_records ?? []"
-                />
-            </section>
-
-            <section
-                v-fold="{ id: 'papers', label: 'Papers', open: false }"
-                class="space-y-3 rounded-xl border bg-card p-5"
-            >
-                <div>
-                    <h2 class="font-serif text-lg font-semibold">
-                        Papers &amp; documents
-                        <span class="text-sm font-normal text-muted-foreground"
-                            >(private)</span
+                            <Input
+                                v-model="testForm.result"
+                                placeholder="Good"
+                                required
+                            />
+                        </Field>
+                        <Field label="Date" :error="testForm.errors.tested_on">
+                            <Input v-model="testForm.tested_on" type="date" />
+                        </Field>
+                        <Field
+                            label="OFA / certificate number"
+                            :error="testForm.errors.certificate_number"
                         >
-                    </h2>
-                    <p class="text-sm text-muted-foreground">
-                        Keep a copy of this dog’s registration certificate,
-                        pedigree, OFA and DNA reports and vet records. Only you
-                        can open them.
-                    </p>
-                </div>
-                <DocumentManager
-                    type="dog"
-                    :id="dog?.id ?? 0"
-                    :documents="dog?.documents ?? []"
-                    category="registration"
-                />
-            </section>
-
-            <section
-                v-fold="{ id: 'pedigree', label: 'Pedigree', open: true }"
-                class="space-y-3 rounded-xl border bg-card p-5"
-            >
-                <h2 class="font-serif text-lg font-semibold">Pedigree</h2>
-                <PedigreeChart
-                    v-if="dog?.sire_id || dog?.dam_id"
-                    :tree="pedigree ?? null"
-                    admin
-                />
-                <p v-else class="text-sm text-muted-foreground">
-                    Choose this dog’s father and mother under Family tree above,
-                    then save. The tree is drawn here, and it grows as you add
-                    each parent’s own parents. If the dog has papers, you can
-                    also keep a copy under Documents.
-                </p>
-            </section>
-
-            <section
-                v-fold="{ id: 'litters', label: 'Litters', open: true }"
-                v-if="litters?.length"
-                class="space-y-3 rounded-xl border bg-card p-5"
-            >
-                <h2 class="font-serif text-lg font-semibold">Litters</h2>
-                <ul class="divide-y text-sm">
-                    <li v-for="l in litters" :key="l.id">
-                        <Link
-                            :href="editLitter(l.slug)"
-                            class="flex flex-wrap items-center justify-between gap-2 py-2 hover:underline"
+                            <Input
+                                v-model="testForm.certificate_number"
+                                placeholder="LR-12345G24M-PI"
+                            />
+                        </Field>
+                        <Field
+                            label="Link to the public record"
+                            :error="testForm.errors.verification_url"
+                            hint="Paste the dog's page from ofa.org"
                         >
-                            <span class="font-medium">{{ l.title }}</span>
-                            <span class="text-muted-foreground">
-                                {{ labelFor(options.litterStatus, l.status) }}
-                                ·
-                                {{ formatDate(l.born_on ?? l.due_on) }}
-                                · {{ l.puppies_count }} puppies
-                            </span>
-                        </Link>
-                    </li>
-                </ul>
-            </section>
-
-            <section
-                v-fold="{ id: 'heat', label: 'Heat cycles', open: false }"
-                v-if="dog && dog.sex === 'female'"
-                class="space-y-4 rounded-xl border bg-card p-5"
-            >
-                <div>
-                    <h2 class="font-serif text-lg font-semibold">
-                        Heat cycles
-                    </h2>
-                    <p v-if="nextHeat" class="text-sm text-muted-foreground">
-                        Many Labs cycle roughly every 6–8 months, so the next
-                        one might be around {{ nextHeat }}. Every dog is
-                        different; this is only a rough guide.
-                    </p>
-                </div>
-                <ul v-if="dog.heat_cycles?.length" class="divide-y text-sm">
-                    <li
-                        v-for="h in dog.heat_cycles"
-                        :key="h.id"
-                        class="flex items-center justify-between gap-3 py-2"
-                    >
-                        <span>
-                            Started
-                            <strong>{{ formatDate(h.started_on) }}</strong>
-                            <span v-if="h.ended_on">
-                                · ended {{ formatDate(h.ended_on) }}</span
-                            >
-                            <span v-if="h.bred_on">
-                                · bred {{ formatDate(h.bred_on) }}</span
-                            >
-                            <span v-if="h.notes" class="text-muted-foreground">
-                                · {{ h.notes }}</span
-                            >
-                        </span>
-                        <ConfirmDelete
-                            icon
-                            message="Remove this heat cycle entry?"
-                            @confirm="
-                                router.delete(destroyHeat.url(h.id), {
-                                    preserveScroll: true,
-                                })
-                            "
+                            <Input
+                                v-model="testForm.verification_url"
+                                type="url"
+                                placeholder="https://ofa.org/…"
+                            />
+                        </Field>
+                        <ToggleField
+                            v-model="testForm.is_public"
+                            label="Show on the website"
+                            class="sm:col-span-2"
                         />
-                    </li>
-                </ul>
-                <form
-                    class="grid items-end gap-3 sm:grid-cols-2 lg:grid-cols-4"
-                    @submit.prevent="addHeat"
+                        <Button
+                            type="submit"
+                            variant="secondary"
+                            :disabled="testForm.processing"
+                            >Add test</Button
+                        >
+                    </form>
+                </section>
+
+                <section
+                    v-if="dog?.is_ours !== false"
+                    class="space-y-3 rounded-xl border bg-card p-5"
                 >
-                    <Field
-                        label="First day of heat"
-                        required
-                        :error="heatForm.errors.started_on"
-                        help="The first day you saw signs of heat, such as spotting. Labs usually cycle about every 6 to 8 months, and it lasts about 3 weeks."
-                        ><Input
-                            v-model="heatForm.started_on"
-                            type="date"
-                            required
-                    /></Field>
-                    <Field
-                        label="Last day of heat"
-                        :error="heatForm.errors.ended_on"
-                        ><Input v-model="heatForm.ended_on" type="date"
-                    /></Field>
-                    <Field label="Bred on" :error="heatForm.errors.bred_on"
-                        ><Input v-model="heatForm.bred_on" type="date"
-                    /></Field>
-                    <Field label="Notes" :error="heatForm.errors.notes"
-                        ><Input v-model="heatForm.notes"
-                    /></Field>
-                    <Button
-                        type="submit"
-                        variant="secondary"
-                        :disabled="heatForm.processing"
-                        >Add heat cycle</Button
+                    <div>
+                        <h2 class="font-serif text-lg font-semibold">
+                            Vaccines, treatments &amp; vet visits
+                            <span
+                                class="text-sm font-normal text-muted-foreground"
+                                >(private)</span
+                            >
+                        </h2>
+                        <p class="text-sm text-muted-foreground">
+                            Rabies and other shots, worming, flea and heartworm
+                            medicine, checkups. Add a “next due” date and you
+                            will be reminded.
+                        </p>
+                    </div>
+                    <HealthRecords
+                        target="dog"
+                        :id="dog?.slug ?? ''"
+                        :records="dog?.health_records ?? []"
+                    />
+                </section>
+
+                <section
+                    v-if="dog && dog.sex === 'female'"
+                    class="space-y-4 rounded-xl border bg-card p-5"
+                >
+                    <div>
+                        <h2 class="font-serif text-lg font-semibold">
+                            Heat cycles
+                        </h2>
+                        <p
+                            v-if="nextHeat"
+                            class="text-sm text-muted-foreground"
+                        >
+                            Many Labs cycle roughly every 6–8 months, so the
+                            next one might be around {{ nextHeat }}. Every dog
+                            is different; this is only a rough guide.
+                        </p>
+                    </div>
+                    <ul v-if="dog.heat_cycles?.length" class="divide-y text-sm">
+                        <li
+                            v-for="h in dog.heat_cycles"
+                            :key="h.id"
+                            class="flex items-center justify-between gap-3 py-2"
+                        >
+                            <span>
+                                Started
+                                <strong>{{ formatDate(h.started_on) }}</strong>
+                                <span v-if="h.ended_on">
+                                    · ended {{ formatDate(h.ended_on) }}</span
+                                >
+                                <span v-if="h.bred_on">
+                                    · bred {{ formatDate(h.bred_on) }}</span
+                                >
+                                <span
+                                    v-if="h.notes"
+                                    class="text-muted-foreground"
+                                >
+                                    · {{ h.notes }}</span
+                                >
+                            </span>
+                            <ConfirmDelete
+                                icon
+                                message="Remove this heat cycle entry?"
+                                @confirm="
+                                    router.delete(destroyHeat.url(h.id), {
+                                        preserveScroll: true,
+                                    })
+                                "
+                            />
+                        </li>
+                    </ul>
+                    <form
+                        class="grid items-end gap-3 sm:grid-cols-2 lg:grid-cols-4"
+                        @submit.prevent="addHeat"
                     >
-                </form>
-            </section>
+                        <Field
+                            label="First day of heat"
+                            required
+                            :error="heatForm.errors.started_on"
+                            help="The first day you saw signs of heat, such as spotting. Labs usually cycle about every 6 to 8 months, and it lasts about 3 weeks."
+                            ><Input
+                                v-model="heatForm.started_on"
+                                type="date"
+                                required
+                        /></Field>
+                        <Field
+                            label="Last day of heat"
+                            :error="heatForm.errors.ended_on"
+                            ><Input v-model="heatForm.ended_on" type="date"
+                        /></Field>
+                        <Field label="Bred on" :error="heatForm.errors.bred_on"
+                            ><Input v-model="heatForm.bred_on" type="date"
+                        /></Field>
+                        <Field label="Notes" :error="heatForm.errors.notes"
+                            ><Input v-model="heatForm.notes"
+                        /></Field>
+                        <Button
+                            type="submit"
+                            variant="secondary"
+                            :disabled="heatForm.processing"
+                            >Add heat cycle</Button
+                        >
+                    </form>
+                </section>
+            </TabPanel>
 
-            <section
-                v-fold="{ id: 'photos', label: 'Photos', open: true }"
-                v-if="dog"
-                class="space-y-4 rounded-xl border bg-card p-5"
-            >
-                <h2 class="font-serif text-lg font-semibold">Photos</h2>
-                <PhotoManager
-                    :photos="dog.photos ?? []"
-                    type="dog"
-                    :id="dog.id"
-                />
-            </section>
-
-            <section
-                v-if="dog && !dog.deleted_at"
-                v-fold="{ id: 'archive', label: 'Archive', open: false }"
-                class="space-y-3 rounded-xl border border-dashed bg-card p-5"
-            >
-                <h2 class="font-serif text-lg font-semibold">
-                    Archive this dog
-                </h2>
+            <TabPanel name="papers" :active="tab === 'papers'">
                 <p class="text-sm text-muted-foreground">
-                    Hides the dog from your lists and the website. Health tests,
-                    vaccines, papers, the family tree and litters are all kept,
-                    as AKC asks, and you can bring the dog back any time. Use
-                    this when a dog is sold or passes away, and also fill in
-                    “Left the kennel” in the private details.
+                    Each box here saves by itself when you tap its own Add or
+                    Save button.
                 </p>
-                <ConfirmDelete
-                    label="Archive dog"
-                    :message="`Archive ${dog.name}? The dog is hidden from your lists and the website, but all records are kept. You can bring the dog back any time.`"
-                    @confirm="router.delete(destroy.url(dog.slug))"
-                />
-            </section>
+                <section
+                    v-if="akc"
+                    class="space-y-3 rounded-xl border bg-card p-5"
+                >
+                    <h2 class="font-serif text-lg font-semibold">
+                        AKC record for this dog
+                    </h2>
+                    <AkcChecklist :akc="akc" />
+                </section>
+
+                <section class="space-y-3 rounded-xl border bg-card p-5">
+                    <div>
+                        <h2 class="font-serif text-lg font-semibold">
+                            Titles &amp; awards
+                        </h2>
+                        <p class="text-sm text-muted-foreground">
+                            Hunt test, field trial and show results. The letters
+                            are shown after the dog’s name and in the pedigree.
+                        </p>
+                    </div>
+                    <Achievements
+                        :slug="dog?.slug ?? ''"
+                        :items="dog?.achievements ?? []"
+                    />
+                </section>
+
+                <section class="space-y-3 rounded-xl border bg-card p-5">
+                    <div>
+                        <h2 class="font-serif text-lg font-semibold">
+                            Papers &amp; documents
+                            <span
+                                class="text-sm font-normal text-muted-foreground"
+                                >(private)</span
+                            >
+                        </h2>
+                        <p class="text-sm text-muted-foreground">
+                            Keep a copy of this dog’s registration certificate,
+                            pedigree, OFA and DNA reports and vet records. Only
+                            you can open them.
+                        </p>
+                    </div>
+                    <DocumentManager
+                        type="dog"
+                        :id="dog?.id ?? 0"
+                        :documents="dog?.documents ?? []"
+                        category="registration"
+                    />
+                </section>
+
+                <section class="space-y-3 rounded-xl border bg-card p-5">
+                    <h2 class="font-serif text-lg font-semibold">Pedigree</h2>
+                    <PedigreeChart
+                        v-if="dog?.sire_id || dog?.dam_id"
+                        :tree="pedigree ?? null"
+                        admin
+                    />
+                    <p v-else class="text-sm text-muted-foreground">
+                        Choose this dog’s father and mother under Family tree
+                        above, then save. The tree is drawn here, and it grows
+                        as you add each parent’s own parents. If the dog has
+                        papers, you can also keep a copy under Documents.
+                    </p>
+                </section>
+            </TabPanel>
+
+            <TabPanel name="photos" :active="tab === 'photos'">
+                <p class="text-sm text-muted-foreground">
+                    Photos are added as soon as you pick them.
+                </p>
+                <section
+                    v-if="dog"
+                    class="space-y-4 rounded-xl border bg-card p-5"
+                >
+                    <h2 class="font-serif text-lg font-semibold">Photos</h2>
+                    <PhotoManager
+                        :photos="dog.photos ?? []"
+                        type="dog"
+                        :id="dog.id"
+                    />
+                </section>
+            </TabPanel>
+
+            <TabPanel name="litters" :active="tab === 'litters'">
+                <p class="text-sm text-muted-foreground">
+                    The litters this dog has been in are listed here.
+                </p>
+                <section
+                    v-if="litters?.length"
+                    class="space-y-3 rounded-xl border bg-card p-5"
+                >
+                    <h2 class="font-serif text-lg font-semibold">Litters</h2>
+                    <ul class="divide-y text-sm">
+                        <li v-for="l in litters" :key="l.id">
+                            <Link
+                                :href="editLitter(l.slug)"
+                                class="flex flex-wrap items-center justify-between gap-2 py-2 hover:underline"
+                            >
+                                <span class="font-medium">{{ l.title }}</span>
+                                <span class="text-muted-foreground">
+                                    {{
+                                        labelFor(options.litterStatus, l.status)
+                                    }}
+                                    ·
+                                    {{ formatDate(l.born_on ?? l.due_on) }}
+                                    · {{ l.puppies_count }} puppies
+                                </span>
+                            </Link>
+                        </li>
+                    </ul>
+                </section>
+
+                <section
+                    v-if="dog && !dog.deleted_at"
+                    class="space-y-3 rounded-xl border border-dashed bg-card p-5"
+                >
+                    <h2 class="font-serif text-lg font-semibold">
+                        Archive this dog
+                    </h2>
+                    <p class="text-sm text-muted-foreground">
+                        Hides the dog from your lists and the website. Health
+                        tests, vaccines, papers, the family tree and litters are
+                        all kept, as AKC asks, and you can bring the dog back
+                        any time. Use this when a dog is sold or passes away,
+                        and also fill in “Left the kennel” in the private
+                        details.
+                    </p>
+                    <ConfirmDelete
+                        label="Archive dog"
+                        :message="`Archive ${dog.name}? The dog is hidden from your lists and the website, but all records are kept. You can bring the dog back any time.`"
+                        @confirm="router.delete(destroy.url(dog.slug))"
+                    />
+                </section>
+            </TabPanel>
         </template>
 
         <StickySave

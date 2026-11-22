@@ -8,7 +8,9 @@ import TextArea from '@/components/admin/TextArea.vue';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { useUnsavedWarning } from '@/composables/useUnsavedWarning';
-import { exportMethod } from '@/routes/admin';
+import PageTabs from '@/components/admin/PageTabs.vue';
+import type { PageTab } from '@/components/admin/PageTabs.vue';
+import { usePageTabs } from '@/composables/usePageTabs';
 import { edit, update } from '@/routes/admin/site';
 
 defineOptions({
@@ -47,7 +49,15 @@ const set = (key: string, value: unknown): void => {
     state[key] = String(value ?? '');
 };
 
-const exportUrl = (type: string) => exportMethod.url(type);
+const tabs: PageTab[] = [
+    { key: 'contact', label: 'Contact details' },
+    { key: 'how', label: 'How it works' },
+    { key: 'owner', label: 'Kennel owner' },
+];
+const tab = usePageTabs(
+    tabs.map((t) => t.key),
+    'contact',
+);
 
 const processing = ref(false);
 const fieldErrors = computed(
@@ -63,6 +73,15 @@ function save() {
             onStart: () => (processing.value = true),
             onFinish: () => (processing.value = false),
             onSuccess: () => (snapshot.value = JSON.stringify(state)),
+            // Show the tab that holds the first mistake.
+            onError: (e) => {
+                const k = Object.keys(e)[0] ?? '';
+                tab.value = k.startsWith('owner_')
+                    ? 'owner'
+                    : ['phone', 'email', 'location', 'facebook'].includes(k)
+                      ? 'contact'
+                      : 'how';
+            },
         },
     );
 }
@@ -78,7 +97,8 @@ function save() {
             :help="[
                 'Fill in your phone, email and town first. They show on the Contact page and the bottom of the home page.',
                 'The boxes under How it works and policies are optional. Write them the way you would explain it on the phone. Only boxes with text appear on the website, so it is fine to leave some empty.',
-                'Tap Save at the bottom when you finish. Changes show on the website straight away.',
+                'Use the tabs along the top: Contact details, How it works, and Kennel owner. Tap Save changes at the bottom when you finish. It saves all three tabs at once, and changes show on the website straight away.',
+                'Want a spreadsheet copy of your information? Go to Records and open the Spreadsheets tab.',
                 'Kennel owner is private. It is only used to fill in AKC forms for you and is never shown on the website.',
                 'The site never makes up rules for you. Only what you write is shown.',
             ]"
@@ -96,8 +116,13 @@ function save() {
             >
         </PageHeader>
 
+        <PageTabs v-model="tab" :tabs="tabs" />
+
         <form id="main-form" class="space-y-8" @submit.prevent="save">
-            <section class="space-y-4 rounded-xl border bg-card p-5">
+            <section
+                v-show="tab === 'contact'"
+                class="space-y-4 rounded-xl border bg-card p-5"
+            >
                 <h2 class="font-serif text-lg font-semibold">
                     Contact details
                 </h2>
@@ -145,6 +170,7 @@ function save() {
             </section>
 
             <section
+                v-show="tab === 'owner'"
                 class="space-y-4 rounded-xl border border-dashed bg-card p-5"
             >
                 <div>
@@ -254,7 +280,10 @@ function save() {
                 </div>
             </section>
 
-            <section class="space-y-5 rounded-xl border bg-card p-5">
+            <section
+                v-show="tab === 'how'"
+                class="space-y-5 rounded-xl border bg-card p-5"
+            >
                 <div>
                     <h2 class="font-serif text-lg font-semibold">
                         How it works &amp; policies
@@ -282,32 +311,7 @@ function save() {
                 </Field>
             </section>
 
-            <Button type="submit" :disabled="processing">Save</Button>
-
-            <section
-                class="space-y-3 rounded-xl border border-dashed bg-card p-5"
-            >
-                <h2 class="font-serif text-lg font-semibold">
-                    Download your records
-                </h2>
-                <p class="text-sm text-muted-foreground">
-                    Spreadsheet files (open in Excel or Google Sheets). A handy
-                    backup of everything you have entered.
-                </p>
-                <div class="flex flex-wrap gap-2">
-                    <Button
-                        v-for="t in ['dogs', 'puppies', 'contacts', 'waitlist']"
-                        :key="t"
-                        as-child
-                        variant="outline"
-                        size="sm"
-                    >
-                        <a :href="exportUrl(t)" download>{{
-                            t[0].toUpperCase() + t.slice(1)
-                        }}</a>
-                    </Button>
-                </div>
-            </section>
+            <Button type="submit" :disabled="processing">Save changes</Button>
         </form>
 
         <StickySave

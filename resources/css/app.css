@@ -149,41 +149,6 @@
         color-mix(in oklch, var(--destructive) 20%, transparent);
 }
 
-/* Foldable sections on long pages (see directives/fold.ts). */
-.fold {
-    scroll-margin-top: 4.5rem;
-}
-.fold-head {
-    position: relative;
-    cursor: pointer;
-    padding-right: 2rem;
-    border-radius: 0.5rem;
-}
-.fold-head:focus-visible {
-    outline: 2px solid var(--ring);
-    outline-offset: 4px;
-}
-.fold-head::after {
-    content: '';
-    position: absolute;
-    right: 0.35rem;
-    top: 0.45rem;
-    width: 0.55rem;
-    height: 0.55rem;
-    border-right: 2px solid currentColor;
-    border-bottom: 2px solid currentColor;
-    transform: rotate(45deg);
-    transition: transform 0.15s;
-    opacity: 0.55;
-}
-.fold[data-collapsed] > :not(.fold-head) {
-    display: none;
-}
-.fold[data-collapsed] .fold-head::after {
-    transform: rotate(-45deg);
-    top: 0.6rem;
-}
-
 /* Fingers are bigger than mouse pointers: give touch screens comfortable targets. */
 @media (pointer: coarse) {
     [data-slot='button'] {

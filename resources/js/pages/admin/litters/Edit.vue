@@ -5,8 +5,10 @@ import AkcChecklist from '@/components/admin/AkcChecklist.vue';
 import ArchivedBanner from '@/components/admin/ArchivedBanner.vue';
 import type { AkcItem } from '@/components/admin/AkcChecklist.vue';
 import ConfirmDelete from '@/components/admin/ConfirmDelete.vue';
-import SectionNav from '@/components/admin/SectionNav.vue';
-import { jumpTo } from '@/directives/fold';
+import PageTabs from '@/components/admin/PageTabs.vue';
+import type { PageTab } from '@/components/admin/PageTabs.vue';
+import TabPanel from '@/components/admin/TabPanel.vue';
+import { usePageTabs } from '@/composables/usePageTabs';
 import StickySave from '@/components/admin/StickySave.vue';
 import DocumentManager from '@/components/admin/DocumentManager.vue';
 import Field from '@/components/admin/Field.vue';
@@ -154,9 +156,41 @@ watch(
     },
 );
 
+const tabs = computed<PageTab[]>(() => [
+    { key: 'details', label: 'Details' },
+    { key: 'puppies', label: 'Puppies', count: props.litter?.puppies?.length },
+    {
+        key: 'waitlist',
+        label: 'Waitlist',
+        count: props.litter?.waitlist_entries?.length,
+    },
+    { key: 'health', label: 'Health & diary' },
+    { key: 'akc', label: 'Breeding & AKC' },
+    { key: 'papers', label: 'Papers & photos' },
+]);
+const tab = usePageTabs(
+    ['details', 'puppies', 'waitlist', 'health', 'akc', 'papers'],
+    'details',
+);
+
 function submit() {
     if (props.litter) {
-        form.put(update.url(props.litter.slug), { preserveScroll: true });
+        form.put(update.url(props.litter.slug), {
+            preserveScroll: true,
+            // A mistake in the form shows on the tab that holds it; Details is the likeliest.
+            onError: (e) => {
+                if (
+                    tab.value !== 'akc' ||
+                    !Object.keys(e).some((k) =>
+                        /akc|sire_owner|dam_owner|breed|stud|stillborn|multiple/.test(
+                            k,
+                        ),
+                    )
+                ) {
+                    tab.value = 'details';
+                }
+            },
+        });
     } else {
         form.post(store.url());
     }
@@ -215,16 +249,16 @@ const summary = computed(() => {
                 'Start with the mother (dam), the father (sire) and the status. Everything else can be added later.',
                 'Change the status as things happen: Planned, then Expected, then On the ground when puppies are born.',
                 'Once the litter exists, scroll down to add each puppy, record weights, post updates for families, and see who is waiting.',
-                'Breeding & AKC keeps the paperwork side: how and where they were bred, any stud fee, and when the AKC application went in. The AKC checklist under it tells you what is still missing.',
+                'Breeding & AKC keeps the paperwork side: how and where they were bred, any stud fee, and when the AKC application went in. The AKC checklist on that tab tells you what is still missing.',
                 'The “Fill in the AKC litter application” button in Breeding & AKC lines up everything AKC asks for and fills in AKC’s own PDF form for you.',
-                'If the father belongs to another kennel, pick “not in the list?” under the Sire box to add him. Keep the signed stud agreement under Litter documents.',
+                'If the father belongs to another kennel, pick “not in the list?” under the Sire box to add him. Keep the signed stud agreement on the Papers & photos tab.',
                 'Untick Show on the website to hide a litter while you decide. Nothing is lost.',
             ]"
             help-title="About this page"
         >
         </PageHeader>
 
-        <SectionNav v-if="litter" />
+        <PageTabs v-if="litter" v-model="tab" :tabs="tabs" />
 
         <aside
             v-if="
@@ -237,9 +271,10 @@ const summary = computed(() => {
         >
             <p>
                 <strong>Next:</strong> the puppies have arrived, so add each
-                one. Tap “+ Add girl puppy” or “+ Add boy puppy” under Puppies.
+                one. Tap “+ Add girl puppy” or “+ Add boy puppy” on the Puppies
+                tab.
             </p>
-            <Button type="button" size="sm" @click="jumpTo('puppies')"
+            <Button type="button" size="sm" @click="tab = 'puppies'"
                 >Go to Puppies</Button
             >
         </aside>
@@ -252,9 +287,14 @@ const summary = computed(() => {
             @purge="router.delete(purge.url(litter.slug))"
         />
 
-        <form id="main-form" class="space-y-6" @submit.prevent="submit">
+        <form
+            v-show="!litter || tab === 'details' || tab === 'akc'"
+            id="main-form"
+            class="space-y-6"
+            @submit.prevent="submit"
+        >
             <section
-                v-fold="{ id: 'pairing', label: 'Pairing', open: true }"
+                v-show="!litter || tab === 'details'"
                 class="space-y-4 rounded-xl border bg-card p-5"
             >
                 <h2 class="font-serif text-lg font-semibold">
@@ -405,7 +445,7 @@ const summary = computed(() => {
             </section>
 
             <section
-                v-fold="{ id: 'akc', label: 'Breeding & AKC', open: true }"
+                v-show="!litter || tab === 'akc'"
                 class="space-y-4 rounded-xl border bg-card p-5"
             >
                 <div>
@@ -563,7 +603,7 @@ const summary = computed(() => {
             </section>
 
             <section
-                v-fold="{ id: 'price', label: 'Price & website', open: true }"
+                v-show="!litter || tab === 'details'"
                 class="space-y-4 rounded-xl border bg-card p-5"
             >
                 <h2 class="font-serif text-lg font-semibold">
@@ -627,7 +667,7 @@ const summary = computed(() => {
             </section>
 
             <section
-                v-fold="{ id: 'notes', label: 'Notes', open: false }"
+                v-show="!litter || tab === 'details'"
                 class="space-y-3 rounded-xl border border-dashed bg-card p-5"
             >
                 <h2 class="font-serif text-lg font-semibold">
@@ -649,275 +689,291 @@ const summary = computed(() => {
         </form>
 
         <template v-if="litter">
-            <section
-                v-fold="{ id: 'puppies', label: 'Puppies', open: true }"
-                class="space-y-4 rounded-xl border bg-card p-5"
-            >
-                <div class="flex flex-wrap items-end justify-between gap-3">
-                    <div>
-                        <h2 class="font-serif text-lg font-semibold">
-                            Puppies
-                        </h2>
-                        <p class="text-sm text-muted-foreground">
-                            {{ summary.total }} total ·
-                            {{ summary.available }} available ·
-                            {{ summary.reserved }} reserved ·
-                            {{ summary.home }} gone home
-                            <span v-if="litter.price">
-                                · {{ money(litter.price) }} each</span
-                            >
-                        </p>
-                    </div>
-                    <div class="flex gap-2">
-                        <Button
-                            type="button"
-                            variant="secondary"
-                            size="sm"
-                            @click="addPuppy('female')"
-                            >+ Add girl puppy</Button
-                        >
-                        <Button
-                            type="button"
-                            variant="secondary"
-                            size="sm"
-                            @click="addPuppy('male')"
-                            >+ Add boy puppy</Button
-                        >
-                    </div>
-                </div>
-                <p
-                    v-if="!litter.puppies?.length"
-                    class="text-sm text-muted-foreground"
-                >
-                    No puppies yet. Tap “Add girl puppy” or “Add boy puppy” once
-                    for each pup as they are born, then give each a collar
-                    colour so you can tell them apart.
-                </p>
-                <div class="space-y-2">
-                    <PuppyRow
-                        v-for="p in litter.puppies"
-                        :key="p.id"
-                        :puppy="p"
-                        :sex="options.sex"
-                        :color="options.color"
-                        :status="options.puppyStatus"
-                        :contacts="contacts ?? []"
-                    />
-                </div>
-            </section>
-
-            <section
-                v-fold="{ id: 'diary', label: 'Puppy diary', open: false }"
-                class="space-y-4 rounded-xl border bg-card p-5"
-            >
-                <div>
-                    <h2 class="font-serif text-lg font-semibold">
-                        Puppy diary
-                    </h2>
-                    <p class="text-sm text-muted-foreground">
-                        A short note each week (eyes open, first steps, first
-                        bath) shows on the litter's page. Families love these.
-                    </p>
-                </div>
-                <form
-                    class="space-y-3 rounded-lg border bg-background/50 p-3"
-                    @submit.prevent="postDiary"
-                >
-                    <div class="grid gap-3 sm:grid-cols-[11rem_1fr]">
-                        <Field label="Date" :error="diaryForm.errors.posted_on"
-                            ><Input v-model="diaryForm.posted_on" type="date"
-                        /></Field>
-                        <Field
-                            label="Title (optional)"
-                            :error="diaryForm.errors.title"
-                            ><Input
-                                v-model="diaryForm.title"
-                                placeholder="Week 3: eyes are open!"
-                        /></Field>
-                    </div>
-                    <Field label="What happened?" :error="diaryForm.errors.body"
-                        ><TextArea v-model="diaryForm.body" :rows="3"
-                    /></Field>
-                    <ToggleField
-                        v-model="diaryForm.is_public"
-                        label="Show on the website"
-                    />
-                    <Button
-                        type="submit"
-                        size="sm"
-                        :disabled="diaryForm.processing || !diaryForm.body"
-                        >Post update</Button
-                    >
-                </form>
-                <ul v-if="litter.diary?.length" class="divide-y">
-                    <li
-                        v-for="d in litter.diary"
-                        :key="d.id"
-                        class="flex items-start justify-between gap-3 py-3"
-                    >
+            <TabPanel name="puppies" :active="tab === 'puppies'">
+                <section class="space-y-4 rounded-xl border bg-card p-5">
+                    <div class="flex flex-wrap items-end justify-between gap-3">
                         <div>
-                            <p class="text-sm font-medium">
-                                {{ formatDate(d.posted_on)
-                                }}<span v-if="d.title"> · {{ d.title }}</span
-                                ><span
-                                    v-if="!d.is_public"
-                                    class="font-normal text-muted-foreground"
+                            <h2 class="font-serif text-lg font-semibold">
+                                Puppies
+                            </h2>
+                            <p class="text-sm text-muted-foreground">
+                                {{ summary.total }} total ·
+                                {{ summary.available }} available ·
+                                {{ summary.reserved }} reserved ·
+                                {{ summary.home }} gone home
+                                <span v-if="litter.price">
+                                    · {{ money(litter.price) }} each</span
                                 >
-                                    · hidden</span
-                                >
-                            </p>
-                            <p
-                                class="text-sm whitespace-pre-line text-muted-foreground"
-                            >
-                                {{ d.body }}
                             </p>
                         </div>
-                        <ConfirmDelete
-                            icon
-                            message="Delete this update?"
-                            @confirm="
-                                router.delete(destroyDiary.url(d.id), {
-                                    preserveScroll: true,
-                                })
-                            "
-                        />
-                    </li>
-                </ul>
-            </section>
-
-            <section
-                v-fold="{ id: 'health', label: 'Litter health', open: false }"
-                v-if="litter.puppies?.length"
-                class="space-y-3 rounded-xl border bg-card p-5"
-            >
-                <div>
-                    <h2 class="font-serif text-lg font-semibold">
-                        Litter health: deworming, vaccines &amp; vet checks
-                    </h2>
-                    <p class="text-sm text-muted-foreground">
-                        Did the whole litter get dewormed or vaccinated today?
-                        Record it once here and it is added to every puppy. Each
-                        puppy’s own records are in its card above.
-                    </p>
-                </div>
-                <HealthRecords target="litter" :id="litter.slug" />
-            </section>
-
-            <section
-                v-fold="{ id: 'weighins', label: 'Weigh-ins', open: false }"
-                v-if="litter.puppies?.length"
-                class="space-y-3 rounded-xl border bg-card p-5"
-            >
-                <h2 class="font-serif text-lg font-semibold">Weigh-ins</h2>
-                <WeighIns :slug="litter.slug" :puppies="litter.puppies" />
-            </section>
-
-            <section
-                v-fold="{ id: 'waitlist', label: 'Waitlist', open: true }"
-                class="space-y-3 rounded-xl border bg-card p-5"
-            >
-                <div class="flex items-center justify-between">
-                    <h2 class="font-serif text-lg font-semibold">
-                        Waitlist for this litter
-                    </h2>
-                    <Button as-child size="sm" variant="secondary"
-                        ><Link
-                            :href="
-                                newWaitlist({ query: { litter: litter.id } })
-                            "
-                            >Add person</Link
-                        ></Button
+                        <div class="flex gap-2">
+                            <Button
+                                type="button"
+                                variant="secondary"
+                                size="sm"
+                                @click="addPuppy('female')"
+                                >+ Add girl puppy</Button
+                            >
+                            <Button
+                                type="button"
+                                variant="secondary"
+                                size="sm"
+                                @click="addPuppy('male')"
+                                >+ Add boy puppy</Button
+                            >
+                        </div>
+                    </div>
+                    <p
+                        v-if="!litter.puppies?.length"
+                        class="text-sm text-muted-foreground"
                     >
-                </div>
-                <p
-                    v-if="!litter.waitlist_entries?.length"
-                    class="text-sm text-muted-foreground"
-                >
-                    Nobody is on the list for this litter yet.
-                </p>
-                <ul class="divide-y">
-                    <li v-for="e in litter.waitlist_entries" :key="e.id">
-                        <Link
-                            :href="editWaitlist(e.id)"
-                            class="flex items-center justify-between gap-3 py-2 text-sm hover:underline"
+                        No puppies yet. Tap “Add girl puppy” or “Add boy puppy”
+                        once for each pup as they are born, then give each a
+                        collar colour so you can tell them apart.
+                    </p>
+                    <div class="space-y-2">
+                        <PuppyRow
+                            v-for="p in litter.puppies"
+                            :key="p.id"
+                            :puppy="p"
+                            :sex="options.sex"
+                            :color="options.color"
+                            :status="options.puppyStatus"
+                            :contacts="contacts ?? []"
+                        />
+                    </div>
+                </section>
+            </TabPanel>
+
+            <TabPanel name="waitlist" :active="tab === 'waitlist'">
+                <section class="space-y-3 rounded-xl border bg-card p-5">
+                    <div class="flex items-center justify-between">
+                        <h2 class="font-serif text-lg font-semibold">
+                            Waitlist for this litter
+                        </h2>
+                        <Button as-child size="sm" variant="secondary"
+                            ><Link
+                                :href="
+                                    newWaitlist({
+                                        query: { litter: litter.id },
+                                    })
+                                "
+                                >Add person</Link
+                            ></Button
                         >
-                            <span>
-                                <span
-                                    v-if="e.pick_order"
-                                    class="mr-1 font-semibold"
-                                    >#{{ e.pick_order }}</span
-                                >{{ e.contact?.name }}
-                                <span class="text-muted-foreground">{{
-                                    e.contact?.phone
-                                }}</span>
-                            </span>
-                            <StatusBadge
-                                :value="e.status"
-                                :label="
-                                    labelFor(options.waitlistStatus, e.status)
+                    </div>
+                    <p
+                        v-if="!litter.waitlist_entries?.length"
+                        class="text-sm text-muted-foreground"
+                    >
+                        Nobody is on the list for this litter yet.
+                    </p>
+                    <ul class="divide-y">
+                        <li v-for="e in litter.waitlist_entries" :key="e.id">
+                            <Link
+                                :href="editWaitlist(e.id)"
+                                class="flex items-center justify-between gap-3 py-2 text-sm hover:underline"
+                            >
+                                <span>
+                                    <span
+                                        v-if="e.pick_order"
+                                        class="mr-1 font-semibold"
+                                        >#{{ e.pick_order }}</span
+                                    >{{ e.contact?.name }}
+                                    <span class="text-muted-foreground">{{
+                                        e.contact?.phone
+                                    }}</span>
+                                </span>
+                                <StatusBadge
+                                    :value="e.status"
+                                    :label="
+                                        labelFor(
+                                            options.waitlistStatus,
+                                            e.status,
+                                        )
+                                    "
+                                />
+                            </Link>
+                        </li>
+                    </ul>
+                </section>
+            </TabPanel>
+
+            <TabPanel name="health" :active="tab === 'health'">
+                <p class="text-sm text-muted-foreground">
+                    Each box here saves by itself when you tap its own Add or
+                    Save button.
+                </p>
+                <section
+                    v-if="litter.puppies?.length"
+                    class="space-y-3 rounded-xl border bg-card p-5"
+                >
+                    <div>
+                        <h2 class="font-serif text-lg font-semibold">
+                            Litter health: deworming, vaccines &amp; vet checks
+                        </h2>
+                        <p class="text-sm text-muted-foreground">
+                            Did the whole litter get dewormed or vaccinated
+                            today? Record it once here and it is added to every
+                            puppy. Each puppy’s own records are in its card
+                            above.
+                        </p>
+                    </div>
+                    <HealthRecords target="litter" :id="litter.slug" />
+                </section>
+
+                <section
+                    v-if="litter.puppies?.length"
+                    class="space-y-3 rounded-xl border bg-card p-5"
+                >
+                    <h2 class="font-serif text-lg font-semibold">Weigh-ins</h2>
+                    <WeighIns :slug="litter.slug" :puppies="litter.puppies" />
+                </section>
+
+                <section class="space-y-4 rounded-xl border bg-card p-5">
+                    <div>
+                        <h2 class="font-serif text-lg font-semibold">
+                            Puppy diary
+                        </h2>
+                        <p class="text-sm text-muted-foreground">
+                            A short note each week (eyes open, first steps,
+                            first bath) shows on the litter's page. Families
+                            love these.
+                        </p>
+                    </div>
+                    <form
+                        class="space-y-3 rounded-lg border bg-background/50 p-3"
+                        @submit.prevent="postDiary"
+                    >
+                        <div class="grid gap-3 sm:grid-cols-[11rem_1fr]">
+                            <Field
+                                label="Date"
+                                :error="diaryForm.errors.posted_on"
+                                ><Input
+                                    v-model="diaryForm.posted_on"
+                                    type="date"
+                            /></Field>
+                            <Field
+                                label="Title (optional)"
+                                :error="diaryForm.errors.title"
+                                ><Input
+                                    v-model="diaryForm.title"
+                                    placeholder="Week 3: eyes are open!"
+                            /></Field>
+                        </div>
+                        <Field
+                            label="What happened?"
+                            :error="diaryForm.errors.body"
+                            ><TextArea v-model="diaryForm.body" :rows="3"
+                        /></Field>
+                        <ToggleField
+                            v-model="diaryForm.is_public"
+                            label="Show on the website"
+                        />
+                        <Button
+                            type="submit"
+                            size="sm"
+                            :disabled="diaryForm.processing || !diaryForm.body"
+                            >Post update</Button
+                        >
+                    </form>
+                    <ul v-if="litter.diary?.length" class="divide-y">
+                        <li
+                            v-for="d in litter.diary"
+                            :key="d.id"
+                            class="flex items-start justify-between gap-3 py-3"
+                        >
+                            <div>
+                                <p class="text-sm font-medium">
+                                    {{ formatDate(d.posted_on)
+                                    }}<span v-if="d.title">
+                                        · {{ d.title }}</span
+                                    ><span
+                                        v-if="!d.is_public"
+                                        class="font-normal text-muted-foreground"
+                                    >
+                                        · hidden</span
+                                    >
+                                </p>
+                                <p
+                                    class="text-sm whitespace-pre-line text-muted-foreground"
+                                >
+                                    {{ d.body }}
+                                </p>
+                            </div>
+                            <ConfirmDelete
+                                icon
+                                message="Delete this update?"
+                                @confirm="
+                                    router.delete(destroyDiary.url(d.id), {
+                                        preserveScroll: true,
+                                    })
                                 "
                             />
-                        </Link>
-                    </li>
-                </ul>
-            </section>
+                        </li>
+                    </ul>
+                </section>
+            </TabPanel>
 
-            <section
-                v-fold="{ id: 'papers', label: 'Papers', open: false }"
-                class="space-y-3 rounded-xl border bg-card p-5"
-            >
-                <div>
+            <TabPanel name="papers" :active="tab === 'papers'">
+                <p class="text-sm text-muted-foreground">
+                    Papers and photos are added as soon as you pick them.
+                </p>
+                <section class="space-y-3 rounded-xl border bg-card p-5">
+                    <div>
+                        <h2 class="font-serif text-lg font-semibold">
+                            Litter documents
+                            <span
+                                class="text-sm font-normal text-muted-foreground"
+                                >(private)</span
+                            >
+                        </h2>
+                        <p class="text-sm text-muted-foreground">
+                            The stud agreement, a copy of the AKC litter
+                            application, vet records for the whole litter. For
+                            one puppy’s bill of sale, use that puppy’s details
+                            above.
+                        </p>
+                    </div>
+                    <DocumentManager
+                        type="litter"
+                        :id="litter.id"
+                        :documents="litter.documents ?? []"
+                        category="stud_agreement"
+                    />
+                </section>
+
+                <section class="space-y-4 rounded-xl border bg-card p-5">
                     <h2 class="font-serif text-lg font-semibold">
-                        Litter documents
-                        <span class="text-sm font-normal text-muted-foreground"
-                            >(private)</span
-                        >
+                        Litter photos
+                    </h2>
+                    <PhotoManager
+                        :photos="litter.photos ?? []"
+                        type="litter"
+                        :id="litter.id"
+                    />
+                </section>
+
+                <section
+                    v-if="litter && !litter.deleted_at"
+                    class="space-y-3 rounded-xl border border-dashed bg-card p-5"
+                >
+                    <h2 class="font-serif text-lg font-semibold">
+                        Archive this litter
                     </h2>
                     <p class="text-sm text-muted-foreground">
-                        The stud agreement, a copy of the AKC litter
-                        application, vet records for the whole litter. For one
-                        puppy’s bill of sale, use that puppy’s details above.
+                        Hides the litter from your lists and the website. The
+                        puppies, weights, buyers, documents and diary are all
+                        kept, as AKC asks, and you can bring the litter back any
+                        time.
                     </p>
-                </div>
-                <DocumentManager
-                    type="litter"
-                    :id="litter.id"
-                    :documents="litter.documents ?? []"
-                    category="stud_agreement"
-                />
-            </section>
-
-            <section
-                v-fold="{ id: 'photos', label: 'Photos', open: false }"
-                class="space-y-4 rounded-xl border bg-card p-5"
-            >
-                <h2 class="font-serif text-lg font-semibold">Litter photos</h2>
-                <PhotoManager
-                    :photos="litter.photos ?? []"
-                    type="litter"
-                    :id="litter.id"
-                />
-            </section>
-
-            <section
-                v-if="litter && !litter.deleted_at"
-                v-fold="{ id: 'archive', label: 'Archive', open: false }"
-                class="space-y-3 rounded-xl border border-dashed bg-card p-5"
-            >
-                <h2 class="font-serif text-lg font-semibold">
-                    Archive this litter
-                </h2>
-                <p class="text-sm text-muted-foreground">
-                    Hides the litter from your lists and the website. The
-                    puppies, weights, buyers, documents and diary are all kept,
-                    as AKC asks, and you can bring the litter back any time.
-                </p>
-                <ConfirmDelete
-                    label="Archive litter"
-                    :message="`Archive this litter? It is hidden from your lists and the website, but the ${litter.puppies?.length ?? 0} puppies, weights, buyers, documents and the puppy diary are all kept. People on the waitlist stay. You can bring the litter back any time.`"
-                    @confirm="router.delete(destroy.url(litter.slug))"
-                />
-            </section>
+                    <ConfirmDelete
+                        label="Archive litter"
+                        :message="`Archive this litter? It is hidden from your lists and the website, but the ${litter.puppies?.length ?? 0} puppies, weights, buyers, documents and the puppy diary are all kept. People on the waitlist stay. You can bring the litter back any time.`"
+                        @confirm="router.delete(destroy.url(litter.slug))"
+                    />
+                </section>
+            </TabPanel>
         </template>
 
         <StickySave

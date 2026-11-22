@@ -327,7 +327,7 @@ const glossary = [
             </ol>
             <p class="text-sm text-muted-foreground">
                 You do not have to fill in everything. Only fields with a red
-                <span class="text-red-600">*</span> are needed. You can always
+                <span class="text-red-700">*</span> are needed. You can always
                 come back and add more later.
             </p>
         </section>

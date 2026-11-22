@@ -580,9 +580,7 @@ const suggestions = [
                             ]"
                         >
                             {{ c.done ? '✓' : '○' }} {{ c.label
-                            }}<span v-if="!c.required" class="opacity-70">
-                                (recommended)</span
-                            >
+                            }}<span v-if="!c.required"> (recommended)</span>
                         </li>
                     </ul>
                 </div>

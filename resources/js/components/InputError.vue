@@ -6,7 +6,7 @@ defineProps<{
 
 <template>
     <div v-show="message" :data-field-error="message ? '' : undefined">
-        <p class="text-sm text-red-600 dark:text-red-500" role="alert">
+        <p class="text-sm text-red-700 dark:text-red-400" role="alert">
             {{ message }}
         </p>
     </div>

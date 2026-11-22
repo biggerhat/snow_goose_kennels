@@ -79,6 +79,8 @@ const photo = computed(() => props.dog.photos[active.value]);
                         v-for="(p, i) in dog.photos"
                         :key="p.id"
                         type="button"
+                        :aria-label="`Show photo ${i + 1} of ${dog.photos.length}`"
+                        :aria-pressed="i === active"
                         :class="[
                             'size-16 overflow-hidden rounded ring-offset-2 ring-offset-background',
                             i === active

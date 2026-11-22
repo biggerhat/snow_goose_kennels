@@ -27,7 +27,7 @@ provide(fieldIdKey, controlId);
             {{ label }}
             <span
                 v-if="required"
-                class="text-red-600"
+                class="text-red-700"
                 title="Required"
                 aria-hidden="true"
                 >*</span

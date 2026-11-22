@@ -9,6 +9,7 @@ use App\Models\Dog;
 use App\Models\HealthRecord;
 use App\Models\KennelProfile;
 use App\Models\Litter;
+use App\Models\LitterTask;
 use App\Models\Puppy;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
 use Illuminate\Support\Collection;
@@ -26,6 +27,7 @@ class Attention
             ...self::documents($documentDays),
             ...self::akc($akcDays),
             ...self::emergencyPlan(),
+            ...self::schedule($healthDays),
         ])
             ->map(fn (array $i) => $i + ['key' => self::key($i)])
             ->reject(fn (array $i) => $snoozed->has($i['key']))
@@ -187,6 +189,22 @@ class Attention
                     'href' => route('admin.litters.edit', $l),
                 ] : null;
             })->filter()->values()->all();
+    }
+
+    /** Steps of a litter's puppy schedule that are due soon or late. */
+    private static function schedule(int $days): array
+    {
+        return LitterTask::with('litter')->whereNull('done_on')->where('due_on', '<=', today()->addDays($days))
+            ->whereHas('litter', fn ($q) => $q->whereNull('deleted_at')->whereIn('status', ['expected', 'on_ground']))
+            ->get()
+            ->map(fn (LitterTask $t) => [
+                'kind' => 'schedule',
+                'title' => "{$t->title} for {$t->litter->title}",
+                'detail' => 'Puppy schedule',
+                'date' => $t->due_on->toDateString(),
+                'overdue' => $t->due_on->lt(today()),
+                'href' => route('admin.litters.edit', $t->litter).'#health',
+            ])->all();
     }
 
     /** AKC says breeders should have a written emergency plan. Nag gently when there is none or it is old. */

@@ -64,6 +64,23 @@ export type Photo = {
     taken_on?: string | null;
 };
 
+export type LitterTask = {
+    id: number;
+    kind: string;
+    title: string;
+    detail: string | null;
+    due_on: string;
+    done_on: string | null;
+};
+
+export type LitterMessage = {
+    id: number;
+    subject: string;
+    body: string;
+    recipient_count: number;
+    sent_at: string;
+};
+
 export type Album = {
     id: number;
     name: string;
@@ -213,6 +230,8 @@ export type Litter = {
     next_step?: string | null;
     waitlist_entries_count?: number;
     puppies?: Puppy[];
+    tasks?: LitterTask[];
+    messages?: LitterMessage[];
     photos?: Photo[];
     documents?: DocumentFile[];
     diary?: {

@@ -12,6 +12,7 @@ use App\Models\Dog;
 use App\Models\Litter;
 use App\Support\AkcChecks;
 use App\Support\Inbreeding;
+use App\Support\PuppySchedule;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
@@ -59,7 +60,7 @@ class LitterController extends Controller
     public function edit(Litter $litter): Response
     {
         $litter->setAttribute('purge_blocked_until', $litter->trashed() ? $litter->purgeBlockedUntil()?->toDateString() : null);
-        $litter->load(['puppies.buyer:id,name', 'puppies.weights', 'puppies.documents', 'puppies.healthRecords', 'diary', 'photos', 'documents', 'waitlistEntries.contact:id,name,phone,email'])
+        $litter->load(['puppies.buyer:id,name', 'puppies.weights', 'puppies.documents', 'puppies.healthRecords', 'tasks', 'messages', 'diary', 'photos', 'documents', 'waitlistEntries.contact:id,name,phone,email'])
             ->append('title');
 
         return Inertia::render('admin/litters/Edit', [
@@ -75,7 +76,10 @@ class LitterController extends Controller
     {
         $litter->update($this->validated($request));
 
-        Inertia::flash('toast', ['type' => 'success', 'message' => 'Saved.']);
+        // A litter with a birth date gets the usual puppy schedule the first time, so nothing is forgotten.
+        $made = $litter->born_on && $litter->tasks()->doesntExist() ? PuppySchedule::create($litter) : 0;
+
+        Inertia::flash('toast', ['type' => 'success', 'message' => $made ? 'Saved. I also made a puppy schedule for you. Find it on the Health & diary tab.' : 'Saved.']);
 
         return to_route('admin.litters.edit', $litter->fresh());
     }

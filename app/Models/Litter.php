@@ -75,6 +75,16 @@ class Litter extends Model
         return $this->belongsTo(Dog::class, 'dam_id')->withTrashed();
     }
 
+    public function tasks(): HasMany
+    {
+        return $this->hasMany(LitterTask::class)->orderBy('due_on')->orderBy('id');
+    }
+
+    public function messages(): HasMany
+    {
+        return $this->hasMany(LitterMessage::class)->latest('sent_at');
+    }
+
     public function puppies(): HasMany
     {
         return $this->hasMany(Puppy::class)->orderBy('id');

@@ -5,6 +5,7 @@ import AkcChecklist from '@/components/admin/AkcChecklist.vue';
 import ArchivedBanner from '@/components/admin/ArchivedBanner.vue';
 import type { AkcItem } from '@/components/admin/AkcChecklist.vue';
 import ConfirmDelete from '@/components/admin/ConfirmDelete.vue';
+import LitterSchedule from '@/components/admin/LitterSchedule.vue';
 import PageTabs from '@/components/admin/PageTabs.vue';
 import type { PageTab } from '@/components/admin/PageTabs.vue';
 import TabPanel from '@/components/admin/TabPanel.vue';
@@ -804,6 +805,17 @@ const summary = computed(() => {
                     Each box here saves by itself when you tap its own Add or
                     Save button.
                 </p>
+                <section class="space-y-3 rounded-xl border bg-card p-5">
+                    <h2 class="font-serif text-lg font-semibold">
+                        Puppy schedule
+                    </h2>
+                    <LitterSchedule
+                        :slug="litter.slug"
+                        :tasks="litter.tasks ?? []"
+                        :has-birth-date="!!litter.born_on"
+                    />
+                </section>
+
                 <section
                     v-if="litter.puppies?.length"
                     class="space-y-3 rounded-xl border bg-card p-5"

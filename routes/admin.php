@@ -14,6 +14,7 @@ use App\Http\Controllers\Admin\HealthRecordController;
 use App\Http\Controllers\Admin\HealthTestController;
 use App\Http\Controllers\Admin\HeatCycleController;
 use App\Http\Controllers\Admin\LitterController;
+use App\Http\Controllers\Admin\LitterTaskController;
 use App\Http\Controllers\Admin\PhotoController;
 use App\Http\Controllers\Admin\PlannerController;
 use App\Http\Controllers\Admin\PuppyController;
@@ -49,6 +50,10 @@ Route::middleware('auth')->prefix('admin')->name('admin.')->group(function () {
     Route::delete('diary/{diaryEntry}', [DiaryEntryController::class, 'destroy'])->name('diary.destroy');
     Route::post('litters/{litter}/weigh-ins', [WeighInController::class, 'store'])->name('weigh-ins.store');
     Route::delete('litters/{litter}/weigh-ins/{date}', [WeighInController::class, 'destroy'])->name('weigh-ins.destroy');
+    Route::post('litters/{litter}/schedule', [LitterTaskController::class, 'generate'])->name('tasks.generate');
+    Route::post('litters/{litter}/tasks', [LitterTaskController::class, 'store'])->name('tasks.store');
+    Route::put('tasks/{task}', [LitterTaskController::class, 'update'])->name('tasks.update');
+    Route::delete('tasks/{task}', [LitterTaskController::class, 'destroy'])->name('tasks.destroy');
     Route::post('litters/{litter}/puppies', [PuppyController::class, 'store'])->name('puppies.store');
     Route::put('puppies/{puppy}', [PuppyController::class, 'update'])->name('puppies.update');
     Route::delete('puppies/{puppy}', [PuppyController::class, 'destroy'])->name('puppies.destroy');

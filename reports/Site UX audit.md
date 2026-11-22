@@ -21,7 +21,7 @@ Nothing was changed. Everything below is a recommendation.
 1. The two big edit pages (litter and dog) are **very long**, with no way to jump around and no single Save. The litter page is 10,386 px tall on a desktop and **18,487 px on a phone**.
 2. On a phone, **navigation is hidden behind a tiny icon** in the top corner. There is no bottom bar.
 3. The **help panels misbehave**: they pop open on the first visit to *every different dog or litter*, and on edit pages they are titled "Adding a dog".
-4. Many **form controls have no accessible name** (49 critical axe hits across the admin). Screen readers and voice control cannot tell the boxes apart.
+4. Many **form controls have no accessible name** (115 critical axe findings on 11 admin pages). Screen readers and voice control cannot tell the boxes apart.
 5. The login session is **2 hours**, "Remember me" starts off, and there are **no security headers** and **no branded error pages**.
 6. The **dashboard** is getting noisy, and its summary cards are not clickable.
 
@@ -50,7 +50,7 @@ Severity: **High** = fix soon; **Medium** = worth doing next; **Low** = polish.
 | B1 | **Bug: help panels open for every dog and litter.** The "seen it" memory is keyed by the page *title*, which on an edit page is the dog's or litter's name. Each different dog opens a fresh panel. | `PageHelp` is given the title as its id | Key it by page type (e.g. "dog-edit"), not by name. | High |
 | B2 | **Edit pages say "Adding a dog"** even when editing an existing dog (the help title is fixed). | Dog page screenshot | Use "About this page" or switch the title between add and edit. | High |
 | B3 | **Help panels are long and open by default**, pushing the form below the fold (the litter panel is 7 bullets; on a phone it fills the first screen). | Phone screenshot of a litter | Start collapsed everywhere except one short first-run welcome on the dashboard. Keep each panel to 3 bullets and link to the full Help page for more. | High |
-| B4 | **The Help page has about 20 how-tos and 40 glossary terms and no way to search or jump.** | Help page: 4,481 px desktop, 6,459 px phone | Add a search box, a contents list, and deep links from page help ("See: Fill in the AKC litter application"). | Medium |
+| B4 | **The Help page has 21 how-tos and about 30 glossary terms and no way to search or jump.** | Help page: 4,481 px desktop, 6,459 px phone | Add a search box, a contents list, and deep links from page help ("See: Fill in the AKC litter application"). | Medium |
 | B5 | **No "what next?" prompts.** After creating a litter, nothing says "now add the puppies". | n/a | A short next-step line at the top of a new record. | Medium |
 | B6 | **Wording is mostly good,** but a few terms are insider shorthand: "pick order", "Needs attention" items such as "Heartworm preventive due for Maple". | Dashboard | Keep the tooltips; show a one-line explanation under the first use of each term. | Low |
 | B7 | **Success and error messages disappear fast** (toasts). A phone user who looks away misses them. | n/a | Keep errors on screen until dismissed; keep the red box on the field (already done). | Low |

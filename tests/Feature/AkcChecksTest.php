@@ -137,3 +137,17 @@ test('puppy go-home details validate the microchip and dates', function () {
 
     expect($puppy->fresh()->microchip)->toBe('985112345678901')->and($puppy->fresh()->registration_type->value)->toBe('limited');
 });
+
+test('signatures, multiple sires and artificial insemination are tracked', function () {
+    $owner = Contact::create(['name' => 'Ridgeline', 'type' => 'stud_owner']);
+    $sire = dogAged('Duke', 'male', '2020-01-01', ['is_ours' => false, 'owner_contact_id' => $owner->id]);
+    $dam = dogAged('Bella', 'female', '2021-01-01', ['co_owner_name' => 'Pat Lee']);
+    $litter = Litter::create(['status' => 'on_ground', 'born_on' => today()->subMonths(1), 'sire_id' => $sire->id, 'dam_id' => $dam->id, 'breeding_method' => 'ai_fresh', 'multiple_sires' => true]);
+
+    $r = AkcChecks::forLitter($litter);
+    expect(status($r, 'signed'))->toBe('todo')->and(status($r, 'multi'))->toBe('warn')->and(status($r, 'ai'))->toBe('todo')->and(status($r, 'coowner'))->toBe('info');
+    expect(collect($r['items'])->firstWhere('key', 'signed')['detail'])->toContain('Ridgeline')->toContain('Pat Lee');
+
+    $litter->update(['sire_owner_signed_on' => today(), 'dam_owner_signed_on' => today()]);
+    expect(status(AkcChecks::forLitter($litter->fresh()), 'signed'))->toBe('ok');
+});

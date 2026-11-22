@@ -83,6 +83,30 @@ class AkcChecks
             }
         }
 
+        // Multiple sires, artificial insemination, co-owners
+        if ($litter->multiple_sires) {
+            $add('multi', 'warn', 'More than one possible sire', 'AKC needs DNA profiles for every possible sire, the dam and all the puppies before it will register a litter like this.');
+        }
+        if ($litter->breeding_method === BreedingMethod::AiFresh) {
+            $add('ai', 'todo', 'Litters from fresh semen use a separate AKC application', 'AKC has its own form for artificial insemination with fresh extended semen, and needs the sire’s DNA profile.');
+        } elseif ($litter->breeding_method === BreedingMethod::AiFrozen) {
+            $add('ai', 'todo', 'Frozen semen must be reported to AKC', 'The collection is reported to AKC with DNA certification before the litter is registered. Check AKC’s current frozen semen form.');
+        }
+        if ($dam?->co_owner_name) {
+            $add('coowner', 'info', "{$dam->name} has a co-owner ({$dam->co_owner_name})", 'Every owner or lessee of the dam has to sign the litter application.');
+        }
+
+        // Signatures
+        if ($litter->born_on && $sire && $dam) {
+            $who = array_filter([
+                $litter->sire_owner_signed_on ? null : ($sire->is_ours ? 'the sire’s owner (you)' : 'the sire’s owner'.($sire->ownerContact ? " ({$sire->ownerContact->name})" : '')),
+                $litter->dam_owner_signed_on ? null : 'the dam’s owner'.($dam->co_owner_name ? "s ({$dam->co_owner_name} too)" : ''),
+            ]);
+            $who
+                ? $add('signed', 'todo', 'The application still needs a signature', 'Waiting for '.implode(' and ', $who).'. Enter the dates in Breeding & AKC when they have signed.')
+                : $add('signed', 'ok', 'Signed by the sire’s and the dam’s owners');
+        }
+
         // Litter application
         if ($litter->born_on) {
             $deadline = $litter->born_on->copy()->addMonths(6);

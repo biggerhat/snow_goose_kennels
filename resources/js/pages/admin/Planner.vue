@@ -149,7 +149,7 @@ const tone = computed(() => {
                         >
                         <span
                             v-if="p.titles"
-                            class="text-sm font-normal text-muted-foreground"
+                            class="ml-2 text-sm font-normal text-muted-foreground"
                         >
                             {{ p.titles }}</span
                         >

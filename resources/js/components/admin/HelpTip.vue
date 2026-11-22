@@ -33,7 +33,7 @@ onBeforeUnmount(() => {
     <span ref="root" class="relative inline-flex align-middle">
         <button
             type="button"
-            class="inline-flex size-6 items-center justify-center rounded-full text-muted-foreground hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none"
+            class="-my-[5px] inline-flex size-6 items-center justify-center rounded-full text-muted-foreground hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none"
             :aria-label="label ?? 'What is this?'"
             :aria-expanded="open"
             @click.prevent="open = !open"

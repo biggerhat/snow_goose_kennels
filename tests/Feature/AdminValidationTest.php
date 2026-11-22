@@ -129,3 +129,35 @@ test('deleting a dog or litter keeps its photos in the library', function () {
 
     expect(Photo::count())->toBe(3)->and(Photo::whereNotNull('photoable_type')->count())->toBe(0);
 });
+
+test('the help page opens for the owner and not for visitors', function () {
+    $this->get(route('admin.help'))->assertOk();
+
+    auth()->logout();
+    $this->get(route('admin.help'))->assertRedirect(route('login'));
+});
+
+test('the dashboard checklist ticks steps off as the kennel fills in', function () {
+    $steps = fn () => collect($this->get(route('dashboard'))->viewData('page')['props']['setup'])->pluck('done', 'key')->all();
+
+    expect($steps())->toMatchArray(['dogs' => false, 'litter' => false, 'photos' => false]);
+
+    dog('Bella');
+    Litter::create(['status' => 'planned']);
+
+    expect($steps())->toMatchArray(['dogs' => true, 'litter' => true, 'photos' => false]);
+});
+
+test('a stud must be male and a dam must be female', function () {
+    $this->post(route('admin.dogs.store'), ['name' => 'Ace', 'sex' => 'female', 'role' => 'stud'])->assertSessionHasErrors('role');
+    $this->post(route('admin.dogs.store'), ['name' => 'Ace', 'sex' => 'male', 'role' => 'dam'])->assertSessionHasErrors('role');
+    $this->post(route('admin.dogs.store'), ['name' => 'Ace', 'sex' => 'male', 'role' => 'stud'])->assertSessionHasNoErrors();
+});
+
+test('saving a puppy confirms with a message', function () {
+    $litter = Litter::create(['status' => 'on_ground', 'born_on' => today()->subWeek()]);
+    $puppy = $litter->puppies()->create(['sex' => 'male', 'status' => 'available']);
+
+    $this->put(route('admin.puppies.update', $puppy), ['sex' => 'male', 'status' => 'reserved', 'birth_weight_g' => 10])
+        ->assertSessionHasErrors(['birth_weight_g' => 'That birth weight looks too small. Newborn Labs are usually 6 to 20 ounces (170 to 570 grams).']);
+});

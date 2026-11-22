@@ -123,3 +123,15 @@ test('the morning email and the dashboard include what needs attention', functio
     $props = $this->get(route('dashboard'))->viewData('page')['props'];
     expect($props['attention'])->toHaveCount(1)->and($props['attention'][0]['title'])->toContain('Rabies');
 });
+
+test('the same treatment for a whole litter shows as one line', function () {
+    $litter = Litter::create(['status' => 'on_ground', 'name' => 'Spring', 'born_on' => today()->subWeeks(4)]);
+    foreach (range(1, 4) as $i) {
+        $litter->puppies()->create(['sex' => 'male', 'status' => 'available']);
+    }
+    $this->post(route('admin.health-records.litter', $litter), ['type' => 'deworming', 'name' => 'Pyrantel', 'given_on' => today()->subDays(12)->toDateString(), 'next_due_on' => today()->addDay()->toDateString()]);
+
+    $items = Attention::items()->where('kind', 'health');
+
+    expect($items)->toHaveCount(1)->and($items->first()['title'])->toBe('Pyrantel due for 4 puppies in Spring');
+});

@@ -100,10 +100,11 @@ location /storage/ { add_header Cache-Control "public, max-age=2592000"; try_fil
 (Built files have hashed names, and every photo gets a new name on upload, so long caching is safe.)
 
 **Backups.** Forge's database backups only cover MySQL and Postgres, so they do **not** cover this SQLite
-database or the photos. Everything she has entered lives in two places:
+database or the photos. Everything she has entered lives in three places:
 
 - `/home/forge/kennel-data/database.sqlite`
 - `storage/app/public` (every photo; with zero-downtime deploys Forge keeps it in the site's shared storage)
+- `storage/app/private` (her private documents: registration papers, pedigrees, OFA and DNA reports, agreements)
 
 Do both of these:
 
@@ -118,6 +119,7 @@ DEST=/home/forge/backups/$(date +%F)
 mkdir -p "$DEST"
 sqlite3 /home/forge/kennel-data/database.sqlite ".backup '$DEST/database.sqlite'"   # safe while the site runs
 rclone sync /home/forge/snowgoosekennels.example/storage/app/public space:kennel-backups/photos
+rclone sync /home/forge/snowgoosekennels.example/storage/app/private space:kennel-backups/documents   # private papers
 rclone copy "$DEST/database.sqlite" space:kennel-backups/db/$(date +%F)/
 find /home/forge/backups -maxdepth 1 -mtime +14 -exec rm -rf {} +                   # keep two weeks locally
 ```

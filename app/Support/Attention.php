@@ -8,6 +8,7 @@ use App\Models\Dog;
 use App\Models\HealthRecord;
 use App\Models\Litter;
 use App\Models\Puppy;
+use Illuminate\Database\Eloquent\Relations\MorphTo;
 use Illuminate\Support\Collection;
 
 /** Things that are due or running out soon: vaccines and treatments, expiring papers, AKC deadlines. */
@@ -27,10 +28,11 @@ class Attention
     private static function health(int $days): array
     {
         $out = [];
+        $groups = [];
 
-        HealthRecord::with('recordable')->whereNotNull('next_due_on')
+        HealthRecord::with(['recordable' => fn (MorphTo $m) => $m->morphWith([Puppy::class => ['litter']])])->whereNotNull('next_due_on')
             ->where('next_due_on', '<=', today()->addDays($days))->get()
-            ->each(function (HealthRecord $r) use (&$out) {
+            ->each(function (HealthRecord $r) use (&$out, &$groups) {
                 $owner = $r->recordable;
 
                 if (! $owner) {
@@ -55,8 +57,12 @@ class Attention
                     if (in_array($owner->status, [PuppyStatus::Home, PuppyStatus::Kept], true)) {
                         return;
                     }
-                    $who = ($owner->name ?: ($owner->collar ? "{$owner->collar} collar puppy" : 'a puppy')).' ('.($owner->litter?->title ?? 'litter').')';
-                    $href = route('admin.litters.edit', $owner->litter);
+                    // One line per litter and treatment, not one per puppy.
+                    $key = $owner->litter_id.'|'.mb_strtolower(trim($r->name)).'|'.$r->next_due_on->toDateString();
+                    $groups[$key] ??= ['count' => 0, 'record' => $r, 'litter' => $owner->litter];
+                    $groups[$key]['count']++;
+
+                    return;
                 } else {
                     return;
                 }
@@ -70,6 +76,18 @@ class Attention
                     'href' => $href,
                 ];
             });
+
+        foreach ($groups as $g) {
+            $r = $g['record'];
+            $out[] = [
+                'kind' => 'health',
+                'title' => "{$r->name} due for ".($g['count'] === 1 ? 'a puppy' : "{$g['count']} puppies")." in {$g['litter']->title}",
+                'detail' => $r->type->label().', last given '.$r->given_on->format('M j, Y'),
+                'date' => $r->next_due_on->toDateString(),
+                'overdue' => $r->next_due_on->lt(today()),
+                'href' => route('admin.litters.edit', $g['litter']),
+            ];
+        }
 
         return $out;
     }

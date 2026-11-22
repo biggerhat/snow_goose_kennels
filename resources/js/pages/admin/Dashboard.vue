@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { Head, Link, usePage } from '@inertiajs/vue3';
-import { computed } from 'vue';
+import { computed, ref } from 'vue';
 import PageHeader from '@/components/admin/PageHeader.vue';
 import StatusBadge from '@/components/admin/StatusBadge.vue';
 import { Button } from '@/components/ui/button';
@@ -56,6 +56,10 @@ const props = defineProps<{
 const options = computed(() => usePage().props.options as Options);
 const doneCount = computed(() => props.setup.filter((s) => s.done).length);
 const allDone = computed(() => doneCount.value === props.setup.length);
+const showAllAttention = ref(false);
+const shownAttention = computed(() =>
+    showAllAttention.value ? props.attention : props.attention.slice(0, 6),
+);
 </script>
 
 <template>
@@ -123,7 +127,7 @@ const allDone = computed(() => doneCount.value === props.setup.length);
         <section v-if="attention.length" class="space-y-3">
             <h2 class="font-serif text-xl font-semibold">Needs attention</h2>
             <ul class="grid gap-2 sm:grid-cols-2">
-                <li v-for="(a, i) in attention" :key="i">
+                <li v-for="(a, i) in shownAttention" :key="i">
                     <Link
                         :href="a.href"
                         :class="[
@@ -141,6 +145,18 @@ const allDone = computed(() => doneCount.value === props.setup.length);
                     </Link>
                 </li>
             </ul>
+            <button
+                v-if="attention.length > 6"
+                type="button"
+                class="text-sm text-primary underline underline-offset-2"
+                @click="showAllAttention = !showAllAttention"
+            >
+                {{
+                    showAllAttention
+                        ? 'Show fewer'
+                        : `Show ${attention.length - 6} more`
+                }}
+            </button>
         </section>
 
         <div class="grid grid-cols-2 gap-3 lg:grid-cols-4">

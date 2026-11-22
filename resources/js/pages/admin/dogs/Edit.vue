@@ -222,7 +222,9 @@ const suggestions = [
             :help="[
                 'Add each dog you keep or breed: the mothers (dams), the fathers (studs), and retired dogs.',
                 'Only name, sex and role are needed. Add a photo and a short description to make the dog’s page on the website nicer.',
-                'After you save, you can add health tests, heat cycles (for females) and photos further down this page.',
+                'After you save, you can add health tests, vaccines, heat cycles (for females), papers and photos further down this page.',
+                'Family tree: choose the father and mother. If they belong to another kennel, add them with the link under the box. The pedigree draws itself from everyone’s parents.',
+                'Documents keeps a private copy of registration papers, pedigrees, OFA and DNA reports and vet records. The AKC record list shows what is still missing for this dog.',
                 'Untick Show on the website to keep a dog private. Registration, microchip and private notes are never shown to visitors.',
             ]"
             help-title="Adding a dog"

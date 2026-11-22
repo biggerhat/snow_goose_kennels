@@ -63,6 +63,55 @@ const jobs = [
         ],
     },
     {
+        q: 'Use a stud or mother from another kennel',
+        a: [
+            'On the litter, open the Sire (father) or Dam (mother) box. If the dog is not in the list, tap the link under the box to add a dog from another kennel. Fill in the name, registered name, registration number and the owner.',
+            'These dogs are kept apart from yours (under Dogs, in Dogs from other kennels) and are never shown on your Our Dogs page. Visitors only see the name on the litter.',
+            'On the litter, under Breeding & AKC, record the stud fee and the date it was paid. Keep the signed stud agreement under Litter documents.',
+        ],
+    },
+    {
+        q: 'Show a dog’s family tree',
+        a: [
+            'Open the dog and choose its father and mother under Family tree. If a parent is not in your list, add them with the link under the box.',
+            'The Pedigree card on the dog’s page draws the tree back several generations. Open each parent and fill in their parents to grow it.',
+            'The tree also shows on the dog’s page on your website, with names and titles only. Registration numbers stay private.',
+        ],
+    },
+    {
+        q: 'Keep copies of registration papers, OFA results and agreements',
+        a: [
+            'Open the dog, litter, puppy (inside its card) or contact and find Papers & documents. Tap Add a document, choose the file (a PDF or a photo of the paper is fine), say what it is, and add it.',
+            'If a paper runs out, like a rabies certificate, fill in Runs out on. You will see a reminder on the dashboard and in the morning email.',
+            'Documents are private. Only you can open them, and they are never shown on the website.',
+        ],
+    },
+    {
+        q: 'Record vaccines, worming and vet visits',
+        a: [
+            'On a dog’s page, find Vaccines, treatments & vet visits and tap Add. Say what it was, the date it was given, and when it is due again.',
+            'For puppies, open the litter. Under Litter health, record a deworming day or vet check once and it is added to every puppy. A single puppy’s records are in its own card.',
+            'When something is due soon or overdue, it shows under Needs attention on the dashboard and in your morning email. Once you record the next dose, the reminder clears.',
+        ],
+    },
+    {
+        q: 'Get a litter ready for AKC',
+        a: [
+            'Open the litter and fill in Breeding & AKC. The AKC checklist under it shows what is done and what is missing: both parents’ registration numbers, how old each parent was, DNA for the sire when AKC needs it, and the application deadline.',
+            'AKC asks you to send the litter application within 6 months of the birth date. When you send it, enter the date; when AKC sends the papers back, enter the AKC litter number.',
+            'For each puppy, open Go-home & AKC details to record the microchip, whether it gets full or limited registration, and the date you hand over the papers. Add the buyer’s name and address on the Contacts page.',
+            'The checklist is a reminder, not a rule book. If you are unsure about something, check akc.org or call AKC.',
+        ],
+    },
+    {
+        q: 'Print my records for AKC',
+        a: [
+            'Open Records in the menu. Tap Print next to a dog or a litter, or Print everything.',
+            'A clean page opens. Use Print or Save as PDF. The pages are built from what you have entered, so fill in the dog and litter pages first.',
+            'AKC asks you to keep these records for 5 years after a dog dies, is sold or is given away. Mark a dog as Left the kennel instead of deleting it so its records stay.',
+        ],
+    },
+    {
         q: 'Hide something from the website',
         a: [
             'Dogs and litters have a Show on the website box. Untick it and they disappear from the public site, but nothing is deleted.',
@@ -87,6 +136,39 @@ const jobs = [
 ];
 
 const glossary = [
+    [
+        'AKC',
+        'The American Kennel Club, the main registry for purebred dogs. A registered puppy gets papers from AKC.',
+    ],
+    [
+        'AKC litter application',
+        'The form that registers a whole litter with AKC. It is due within 6 months of the puppies being born. AKC sends back a litter number and a registration form for each puppy.',
+    ],
+    ['AKC litter number', 'The number AKC gives a registered litter.'],
+    [
+        'DNA profile',
+        'A dog’s DNA on file with AKC. AKC requires it for a sire used a lot, for artificial insemination, for imports and for some conditional registrations.',
+    ],
+    [
+        'Full registration',
+        'The puppy’s owner can register the puppy and also its own future litters.',
+    ],
+    [
+        'Limited registration',
+        'The puppy can be registered, but its offspring cannot.',
+    ],
+    [
+        'Pedigree',
+        'A family tree showing a dog’s parents, grandparents and so on.',
+    ],
+    [
+        'Stud fee',
+        'What is paid for the use of a stud dog. You may pay it for another kennel’s stud or be paid it for yours.',
+    ],
+    [
+        'Titles',
+        'Letters earned in dog sports or shows, like MH (Master Hunter) or SH (Senior Hunter), added after a dog’s name.',
+    ],
     ['Dam', 'The mother dog.'],
     ['Sire', 'The father dog.'],
     ['Stud', 'A male dog used for breeding.'],
@@ -180,6 +262,10 @@ const glossary = [
                     <strong>Photos</strong>: keep all your photos here and
                     choose which ones the website shows.
                 </li>
+                <li>
+                    <strong>Records</strong>: print your AKC dog and litter
+                    records whenever you need them.
+                </li>
             </ol>
             <p class="text-sm text-muted-foreground">
                 You do not have to fill in everything. Only fields with a red
@@ -201,9 +287,10 @@ const glossary = [
                             <em>Show on the website</em> ticked
                         </li>
                         <li>
-                            Their names, colours, descriptions and health tests
-                            marked public
+                            Their names, colours, titles, descriptions and
+                            health tests marked public
                         </li>
+                        <li>A dog’s family tree: names and titles only</li>
                         <li>Prices and deposit on public litters</li>
                         <li>Photos marked <em>Show on the website</em></li>
                         <li>Puppy diary entries marked public</li>
@@ -218,7 +305,11 @@ const glossary = [
                         <li>Private notes on dogs and litters</li>
                         <li>Who bought which puppy, and the price</li>
                         <li>Albums, and photos marked Private</li>
-                        <li>Microchip and registration numbers</li>
+                        <li>Microchip, registration and DNA numbers</li>
+                        <li>Documents, vaccines and vet records</li>
+                        <li>
+                            Stud fees, AKC details, and dogs from other kennels
+                        </li>
                     </ul>
                 </div>
             </div>

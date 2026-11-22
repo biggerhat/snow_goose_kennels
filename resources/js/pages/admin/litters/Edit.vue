@@ -79,7 +79,9 @@ function addDays(iso: string, days: number): string {
 
 // Labs carry puppies about 63 days; puppies are usually ready at 8 weeks.
 const suggestedDue = computed(() =>
-    form.bred_on && !form.due_on ? addDays(form.bred_on, 63) : null,
+    form.bred_on && !form.due_on && !form.born_on
+        ? addDays(form.bred_on, 63)
+        : null,
 );
 const suggestedHome = computed(() => {
     const base = form.born_on || form.due_on;
@@ -189,6 +191,8 @@ const summary = computed(() => {
                 'Start with the mother (dam), the father (sire) and the status. Everything else can be added later.',
                 'Change the status as things happen: Planned, then Expected, then On the ground when puppies are born.',
                 'Once the litter exists, scroll down to add each puppy, record weights, post updates for families, and see who is waiting.',
+                'Breeding & AKC keeps the paperwork side: how and where they were bred, any stud fee, and when the AKC application went in. The AKC checklist under it tells you what is still missing.',
+                'If the father belongs to another kennel, pick “not in the list?” under the Sire box to add him. Keep the signed stud agreement under Litter documents.',
                 'Untick Show on the website to hide a litter while you decide. Nothing is lost.',
             ]"
             help-title="How a litter works"

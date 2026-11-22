@@ -6,6 +6,7 @@ import ArchivedBanner from '@/components/admin/ArchivedBanner.vue';
 import type { AkcItem } from '@/components/admin/AkcChecklist.vue';
 import ConfirmDelete from '@/components/admin/ConfirmDelete.vue';
 import { stud as studAgreement } from '@/routes/admin/records';
+import LitterUpdates from '@/components/admin/LitterUpdates.vue';
 import LitterSchedule from '@/components/admin/LitterSchedule.vue';
 import PageTabs from '@/components/admin/PageTabs.vue';
 import type { PageTab } from '@/components/admin/PageTabs.vue';
@@ -814,6 +815,18 @@ const summary = computed(() => {
                             </Link>
                         </li>
                     </ul>
+                </section>
+
+                <section class="space-y-3 rounded-xl border bg-card p-5">
+                    <h2 class="font-serif text-lg font-semibold">
+                        Send an update by email
+                    </h2>
+                    <LitterUpdates
+                        :slug="litter.slug"
+                        :litter-title="litter.title"
+                        :entries="litter.waitlist_entries ?? []"
+                        :messages="litter.messages ?? []"
+                    />
                 </section>
             </TabPanel>
 

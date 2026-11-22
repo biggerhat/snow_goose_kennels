@@ -16,6 +16,7 @@ use App\Http\Controllers\Admin\HealthRecordController;
 use App\Http\Controllers\Admin\HealthTestController;
 use App\Http\Controllers\Admin\HeatCycleController;
 use App\Http\Controllers\Admin\LitterController;
+use App\Http\Controllers\Admin\LitterMessageController;
 use App\Http\Controllers\Admin\LitterTaskController;
 use App\Http\Controllers\Admin\PaperworkController;
 use App\Http\Controllers\Admin\PhotoController;
@@ -53,6 +54,7 @@ Route::middleware('auth')->prefix('admin')->name('admin.')->group(function () {
     Route::delete('diary/{diaryEntry}', [DiaryEntryController::class, 'destroy'])->name('diary.destroy');
     Route::post('litters/{litter}/weigh-ins', [WeighInController::class, 'store'])->name('weigh-ins.store');
     Route::delete('litters/{litter}/weigh-ins/{date}', [WeighInController::class, 'destroy'])->name('weigh-ins.destroy');
+    Route::post('litters/{litter}/messages', [LitterMessageController::class, 'store'])->name('litter-messages.store');
     Route::post('litters/{litter}/schedule', [LitterTaskController::class, 'generate'])->name('tasks.generate');
     Route::post('litters/{litter}/tasks', [LitterTaskController::class, 'store'])->name('tasks.store');
     Route::put('tasks/{task}', [LitterTaskController::class, 'update'])->name('tasks.update');

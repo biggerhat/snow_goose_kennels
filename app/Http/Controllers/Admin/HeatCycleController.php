@@ -1,0 +1,31 @@
+<?php
+
+namespace App\Http\Controllers\Admin;
+
+use App\Http\Controllers\Controller;
+use App\Models\Dog;
+use App\Models\HeatCycle;
+use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Request;
+
+class HeatCycleController extends Controller
+{
+    public function store(Request $request, Dog $dog): RedirectResponse
+    {
+        $dog->heatCycles()->create($request->validate([
+            'started_on' => ['required', 'date'],
+            'ended_on' => ['nullable', 'date', 'after_or_equal:started_on'],
+            'bred_on' => ['nullable', 'date'],
+            'notes' => ['nullable', 'string', 'max:2000'],
+        ]));
+
+        return back();
+    }
+
+    public function destroy(HeatCycle $heatCycle): RedirectResponse
+    {
+        $heatCycle->delete();
+
+        return back();
+    }
+}

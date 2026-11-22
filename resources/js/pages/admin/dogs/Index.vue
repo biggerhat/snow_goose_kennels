@@ -3,15 +3,21 @@ import { Head, Link, usePage } from '@inertiajs/vue3';
 import { Dog as DogIcon } from '@lucide/vue';
 import { computed } from 'vue';
 import EmptyState from '@/components/admin/EmptyState.vue';
+import { formatDate } from '@/lib/format';
+import { restore } from '@/routes/admin/dogs';
 import PageHeader from '@/components/admin/PageHeader.vue';
 import StatusBadge from '@/components/admin/StatusBadge.vue';
 import { Button } from '@/components/ui/button';
 import { labelFor } from '@/lib/format';
+import { router } from '@inertiajs/vue3';
 import { create, edit, index } from '@/routes/admin/dogs';
 import type { Dog, Options } from '@/types';
 
 defineOptions({ layout: { breadcrumbs: [{ title: 'Dogs', href: index() }] } });
-const props = defineProps<{ dogs: Dog[] }>();
+const props = defineProps<{
+    dogs: Dog[];
+    archived: Dog[];
+}>();
 const options = computed(() => usePage().props.options as Options);
 
 const groups = computed(() =>
@@ -137,6 +143,43 @@ const groups = computed(() =>
                             </div>
                         </div>
                     </Link>
+                </li>
+            </ul>
+        </section>
+
+        <section v-if="archived.length" class="space-y-3">
+            <div>
+                <h2 class="font-serif text-xl font-semibold">Archived</h2>
+                <p class="text-sm text-muted-foreground">
+                    Hidden from your lists and the website. Their records are
+                    kept for AKC.
+                </p>
+            </div>
+            <ul class="divide-y rounded-xl border bg-card">
+                <li
+                    v-for="d in archived"
+                    :key="d.id"
+                    class="flex flex-wrap items-center justify-between gap-2 p-3 text-sm"
+                >
+                    <Link
+                        :href="edit(d.slug)"
+                        class="font-medium hover:underline"
+                        >{{ d.name }}</Link
+                    >
+                    <span class="flex items-center gap-3">
+                        <span
+                            v-if="d.left_on"
+                            class="text-xs text-muted-foreground"
+                            >left {{ formatDate(d.left_on) }}</span
+                        >
+                        <Button
+                            type="button"
+                            size="sm"
+                            variant="outline"
+                            @click="router.post(restore.url(d.slug))"
+                            >Bring back</Button
+                        >
+                    </span>
                 </li>
             </ul>
         </section>

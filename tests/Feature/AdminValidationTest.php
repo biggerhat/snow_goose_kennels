@@ -124,8 +124,9 @@ test('deleting a dog or litter keeps its photos in the library', function () {
     $make($litter);
     $make($puppy);
 
-    $this->delete(route('admin.dogs.destroy', $dog));
-    $this->delete(route('admin.litters.destroy', $litter));
+    // Archiving keeps everything; a permanent delete removes it.
+    $dog->forceDelete();
+    $litter->forceDelete();
 
     expect(Photo::count())->toBe(3)->and(Photo::whereNotNull('photoable_type')->count())->toBe(0);
 });

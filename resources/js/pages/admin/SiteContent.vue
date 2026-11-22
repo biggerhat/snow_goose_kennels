@@ -22,6 +22,7 @@ const props = defineProps<{
         facebook: string | null;
     };
     sections: { key: string; title: string; hint: string; body: string }[];
+    owner: Record<string, string>;
 }>();
 
 const state = reactive<Record<string, string>>({
@@ -29,6 +30,7 @@ const state = reactive<Record<string, string>>({
     email: props.contact.email ?? '',
     location: props.contact.location ?? '',
     facebook: props.contact.facebook ?? '',
+    ...props.owner,
     ...Object.fromEntries(props.sections.map((s) => [s.key, s.body])),
 });
 
@@ -121,6 +123,116 @@ function save() {
                             @update:model-value="set('facebook', $event)"
                             type="url"
                             placeholder="https://facebook.com/…"
+                    /></Field>
+                </div>
+            </section>
+
+            <section
+                class="space-y-4 rounded-xl border border-dashed bg-card p-5"
+            >
+                <div>
+                    <h2 class="font-serif text-lg font-semibold">
+                        Kennel owner
+                        <span class="text-sm font-normal text-muted-foreground"
+                            >(private)</span
+                        >
+                    </h2>
+                    <p class="text-sm text-muted-foreground">
+                        Used to fill in AKC forms for you, like the litter
+                        application. It is never shown on the website.
+                    </p>
+                </div>
+                <div class="grid gap-4 sm:grid-cols-2">
+                    <Field
+                        label="First name"
+                        :error="fieldErrors.owner_first_name"
+                        for="owner_first_name"
+                        ><Input
+                            id="owner_first_name"
+                            :model-value="get('owner_first_name')"
+                            @update:model-value="
+                                set('owner_first_name', $event)
+                            "
+                    /></Field>
+                    <Field
+                        label="Last name"
+                        :error="fieldErrors.owner_last_name"
+                        for="owner_last_name"
+                        ><Input
+                            id="owner_last_name"
+                            :model-value="get('owner_last_name')"
+                            @update:model-value="
+                                set('owner_last_name', $event)
+                            "
+                    /></Field>
+                    <Field
+                        label="Street address"
+                        :error="fieldErrors.owner_address"
+                        for="owner_address"
+                        class="sm:col-span-2"
+                        ><Input
+                            id="owner_address"
+                            :model-value="get('owner_address')"
+                            @update:model-value="set('owner_address', $event)"
+                    /></Field>
+                    <Field
+                        label="City"
+                        :error="fieldErrors.owner_city"
+                        for="owner_city"
+                        ><Input
+                            id="owner_city"
+                            :model-value="get('owner_city')"
+                            @update:model-value="set('owner_city', $event)"
+                    /></Field>
+                    <div class="grid grid-cols-2 gap-4">
+                        <Field
+                            label="State"
+                            :error="fieldErrors.owner_state"
+                            for="owner_state"
+                            hint="Two letters, like ID."
+                            ><Input
+                                id="owner_state"
+                                maxlength="2"
+                                :model-value="get('owner_state')"
+                                @update:model-value="
+                                    set(
+                                        'owner_state',
+                                        String($event).toUpperCase(),
+                                    )
+                                "
+                        /></Field>
+                        <Field
+                            label="ZIP code"
+                            :error="fieldErrors.owner_zip"
+                            for="owner_zip"
+                            ><Input
+                                id="owner_zip"
+                                inputmode="numeric"
+                                :model-value="get('owner_zip')"
+                                @update:model-value="set('owner_zip', $event)"
+                        /></Field>
+                    </div>
+                    <Field
+                        label="Phone"
+                        :error="fieldErrors.owner_phone"
+                        for="owner_phone"
+                        hint="Leave empty to use the phone above."
+                        ><Input
+                            id="owner_phone"
+                            type="tel"
+                            :model-value="get('owner_phone')"
+                            @update:model-value="set('owner_phone', $event)"
+                    /></Field>
+                    <Field
+                        label="Email"
+                        :error="fieldErrors.owner_email"
+                        for="owner_email"
+                        hint="Leave empty to use the email above."
+                        ><Input
+                            id="owner_email"
+                            type="email"
+                            :model-value="get('owner_email')"
+                            @update:model-value="set('owner_email', $event)"
                     /></Field>
                 </div>
             </section>

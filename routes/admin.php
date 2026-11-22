@@ -12,8 +12,8 @@ use App\Http\Controllers\Admin\HealthTestController;
 use App\Http\Controllers\Admin\HeatCycleController;
 use App\Http\Controllers\Admin\LitterController;
 use App\Http\Controllers\Admin\PhotoController;
-use App\Http\Controllers\Admin\RecordsController;
 use App\Http\Controllers\Admin\PuppyController;
+use App\Http\Controllers\Admin\RecordsController;
 use App\Http\Controllers\Admin\SiteSettingsController;
 use App\Http\Controllers\Admin\TestimonialController;
 use App\Http\Controllers\Admin\WaitlistController;
@@ -22,7 +22,9 @@ use Illuminate\Support\Facades\Route;
 
 Route::middleware('auth')->prefix('admin')->name('admin.')->group(function () {
     Route::post('dogs/quick', [DogController::class, 'quick'])->name('dogs.quick');
-    Route::resource('dogs', DogController::class)->except('show');
+    Route::resource('dogs', DogController::class)->except('show')->withTrashed(['edit', 'update']);
+    Route::post('dogs/{dog}/restore', [DogController::class, 'restore'])->withTrashed()->name('dogs.restore');
+    Route::delete('dogs/{dog}/purge', [DogController::class, 'purge'])->withTrashed()->name('dogs.purge');
     Route::post('dogs/{dog}/health-tests', [HealthTestController::class, 'store'])->name('health-tests.store');
     Route::put('health-tests/{healthTest}', [HealthTestController::class, 'update'])->name('health-tests.update');
     Route::delete('health-tests/{healthTest}', [HealthTestController::class, 'destroy'])->name('health-tests.destroy');
@@ -30,7 +32,9 @@ Route::middleware('auth')->prefix('admin')->name('admin.')->group(function () {
     Route::post('dogs/{dog}/heat-cycles', [HeatCycleController::class, 'store'])->name('heat-cycles.store');
     Route::delete('heat-cycles/{heatCycle}', [HeatCycleController::class, 'destroy'])->name('heat-cycles.destroy');
 
-    Route::resource('litters', LitterController::class)->except('show');
+    Route::resource('litters', LitterController::class)->except('show')->withTrashed(['edit', 'update']);
+    Route::post('litters/{litter}/restore', [LitterController::class, 'restore'])->withTrashed()->name('litters.restore');
+    Route::delete('litters/{litter}/purge', [LitterController::class, 'purge'])->withTrashed()->name('litters.purge');
     Route::post('litters/{litter}/diary', [DiaryEntryController::class, 'store'])->name('diary.store');
     Route::delete('diary/{diaryEntry}', [DiaryEntryController::class, 'destroy'])->name('diary.destroy');
     Route::post('litters/{litter}/weigh-ins', [WeighInController::class, 'store'])->name('weigh-ins.store');
@@ -55,8 +59,8 @@ Route::middleware('auth')->prefix('admin')->name('admin.')->group(function () {
 
     Route::get('records', [RecordsController::class, 'index'])->name('records');
     Route::get('records/all', [RecordsController::class, 'all'])->name('records.all');
-    Route::get('records/dogs/{dog}', [RecordsController::class, 'dog'])->name('records.dog');
-    Route::get('records/litters/{litter}', [RecordsController::class, 'litter'])->name('records.litter');
+    Route::get('records/dogs/{dog}', [RecordsController::class, 'dog'])->withTrashed()->name('records.dog');
+    Route::get('records/litters/{litter}', [RecordsController::class, 'litter'])->withTrashed()->name('records.litter');
 
     Route::post('photos/bulk', [PhotoController::class, 'bulk'])->name('photos.bulk');
     Route::resource('photos', PhotoController::class)->only(['index', 'store', 'update', 'destroy']);

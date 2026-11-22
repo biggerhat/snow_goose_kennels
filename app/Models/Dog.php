@@ -8,18 +8,21 @@ use App\Enums\DogRole;
 use App\Enums\DogSex;
 use App\Models\Concerns\HasDocuments;
 use App\Models\Concerns\HasSlug;
+use Carbon\CarbonInterface;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
-#[Fillable(['name', 'registered_name', 'sex', 'role', 'color', 'birth_date', 'bio', 'is_public', 'registry_number', 'microchip', 'private_notes', 'sort_order', 'sire_id', 'dam_id', 'is_ours', 'owner_contact_id', 'titles', 'dna_profile', 'acquired_on', 'left_on', 'left_reason'])]
+#[Fillable(['name', 'registered_name', 'sex', 'role', 'color', 'birth_date', 'bio', 'is_public', 'registry_number', 'microchip', 'private_notes', 'sort_order', 'sire_id', 'dam_id', 'is_ours', 'owner_contact_id', 'titles', 'dna_profile', 'acquired_on', 'left_on', 'left_reason', 'co_owner_name'])]
 class Dog extends Model
 {
     use HasDocuments;
     use HasSlug;
+    use SoftDeletes;
 
     protected $attributes = ['is_ours' => true];
 
@@ -48,9 +51,10 @@ class Dog extends Model
         });
 
         // Photos are kept in the library when a dog is deleted.
-        static::deleting(function (Dog $dog) {
+        static::forceDeleting(function (Dog $dog) {
             $dog->photos()->update(['photoable_type' => null, 'photoable_id' => null]);
             $dog->healthRecords()->delete();
+            $dog->achievements()->delete();
         });
     }
 
@@ -61,12 +65,12 @@ class Dog extends Model
 
     public function sire(): BelongsTo
     {
-        return $this->belongsTo(self::class, 'sire_id');
+        return $this->belongsTo(self::class, 'sire_id')->withTrashed();
     }
 
     public function dam(): BelongsTo
     {
-        return $this->belongsTo(self::class, 'dam_id');
+        return $this->belongsTo(self::class, 'dam_id')->withTrashed();
     }
 
     /** Who owns a dog that lives at another kennel. */
@@ -78,6 +82,11 @@ class Dog extends Model
     public function healthTests(): HasMany
     {
         return $this->hasMany(HealthTest::class)->orderBy('name');
+    }
+
+    public function achievements(): HasMany
+    {
+        return $this->hasMany(DogAchievement::class)->orderByDesc('earned_on')->orderByDesc('id');
     }
 
     public function healthRecords(): MorphMany
@@ -93,6 +102,25 @@ class Dog extends Model
     public function photos(): MorphMany
     {
         return $this->morphMany(Photo::class, 'photoable')->orderBy('sort_order')->orderBy('id');
+    }
+
+    /**
+     * AKC asks for ownership and breeding records to be kept for 5 years after a dog dies, is sold or is
+     * given away. Returns the date before which this dog must not be permanently deleted, if any.
+     * A dog added by mistake (new, never bred, never left) can be deleted straight away.
+     */
+    public function purgeBlockedUntil(): ?CarbonInterface
+    {
+        $everBred = Litter::withTrashed()->where(fn ($q) => $q->where('sire_id', $this->id)->orWhere('dam_id', $this->id))->exists();
+
+        if (! $this->left_on && ! $everBred && $this->created_at?->gt(now()->subDays(14))) {
+            return null;
+        }
+
+        $from = collect([$this->left_on, $this->deleted_at ?? now()])->filter()->max();
+        $until = $from->copy()->addYears(5);
+
+        return $until->isFuture() ? $until : null;
     }
 
     protected function ageLabel(): Attribute

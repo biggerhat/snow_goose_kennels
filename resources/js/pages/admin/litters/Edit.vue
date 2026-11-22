@@ -2,6 +2,7 @@
 import { Head, Link, router, useForm, usePage } from '@inertiajs/vue3';
 import { computed, ref, watch } from 'vue';
 import AkcChecklist from '@/components/admin/AkcChecklist.vue';
+import ArchivedBanner from '@/components/admin/ArchivedBanner.vue';
 import type { AkcItem } from '@/components/admin/AkcChecklist.vue';
 import ConfirmDelete from '@/components/admin/ConfirmDelete.vue';
 import DocumentManager from '@/components/admin/DocumentManager.vue';
@@ -24,7 +25,14 @@ import {
     destroy as destroyDiary,
     store as storeDiary,
 } from '@/routes/admin/diary';
-import { destroy, index, store, update } from '@/routes/admin/litters';
+import {
+    destroy,
+    index,
+    purge,
+    restore,
+    store,
+    update,
+} from '@/routes/admin/litters';
 import { store as storePuppy } from '@/routes/admin/puppies';
 import {
     create as newWaitlist,
@@ -198,12 +206,20 @@ const summary = computed(() => {
             help-title="How a litter works"
         >
             <ConfirmDelete
-                v-if="litter"
-                label="Delete litter"
-                :message="`Delete this litter? This also deletes its ${litter.puppies?.length ?? 0} puppies, their weights, documents and the puppy diary. People on the waitlist stay, but lose this litter. Photos stay in your Photos library. This cannot be undone.`"
+                v-if="litter && !litter.deleted_at"
+                label="Archive litter"
+                :message="`Archive this litter? It is hidden from your lists and the website, but the ${litter.puppies?.length ?? 0} puppies, weights, buyers, documents and the puppy diary are all kept, as AKC asks. People on the waitlist stay. You can bring the litter back any time.`"
                 @confirm="router.delete(destroy.url(litter.slug))"
             />
         </PageHeader>
+
+        <ArchivedBanner
+            v-if="litter?.deleted_at"
+            what="This litter"
+            :blocked-until="litter.purge_blocked_until"
+            @restore="router.post(restore.url(litter.slug))"
+            @purge="router.delete(purge.url(litter.slug))"
+        />
 
         <form class="space-y-6" @submit.prevent="submit">
             <section class="space-y-4 rounded-xl border bg-card p-5">

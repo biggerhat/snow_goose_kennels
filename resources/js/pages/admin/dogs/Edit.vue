@@ -2,6 +2,7 @@
 import { Head, Link, router, useForm, usePage } from '@inertiajs/vue3';
 import { computed, ref, watch } from 'vue';
 import AkcChecklist from '@/components/admin/AkcChecklist.vue';
+import ArchivedBanner from '@/components/admin/ArchivedBanner.vue';
 import type { AkcItem } from '@/components/admin/AkcChecklist.vue';
 import ConfirmDelete from '@/components/admin/ConfirmDelete.vue';
 import DocumentManager from '@/components/admin/DocumentManager.vue';
@@ -20,7 +21,14 @@ import PedigreeChart from '@/components/PedigreeChart.vue';
 import type { PedigreeNode } from '@/components/PedigreeChart.vue';
 import { formatDate, labelFor } from '@/lib/format';
 import { edit as editLitter } from '@/routes/admin/litters';
-import { destroy, index, store, update } from '@/routes/admin/dogs';
+import {
+    destroy,
+    index,
+    purge,
+    restore,
+    store,
+    update,
+} from '@/routes/admin/dogs';
 import {
     destroy as destroyHeat,
     store as storeHeat,
@@ -230,12 +238,20 @@ const suggestions = [
             help-title="Adding a dog"
         >
             <ConfirmDelete
-                v-if="dog"
-                label="Delete dog"
-                :message="`Delete ${dog.name}? Her health tests, heat cycles and documents are deleted too. If this dog was sold or passed away, use “Left the kennel” in the private details instead, so your records stay complete. Litters she was in stay, but show no mother or father. Photos stay in your Photos library. This cannot be undone.`"
+                v-if="dog && !dog.deleted_at"
+                label="Archive dog"
+                :message="`Archive ${dog.name}? The dog is hidden from your lists and the website, but health tests, vaccines, papers, the family tree and litters are all kept, as AKC asks. You can bring the dog back any time. If the dog was sold or passed away, also fill in “Left the kennel” in the private details.`"
                 @confirm="router.delete(destroy.url(dog.slug))"
             />
         </PageHeader>
+
+        <ArchivedBanner
+            v-if="dog?.deleted_at"
+            what="This dog"
+            :blocked-until="dog.purge_blocked_until"
+            @restore="router.post(restore.url(dog.slug))"
+            @purge="router.delete(purge.url(dog.slug))"
+        />
 
         <form class="space-y-6" @submit.prevent="submit">
             <section class="space-y-4 rounded-xl border bg-card p-5">

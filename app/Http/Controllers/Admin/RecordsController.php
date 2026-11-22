@@ -16,13 +16,13 @@ class RecordsController extends Controller
     public function index(): Response
     {
         return Inertia::render('admin/Records', [
-            'dogs' => Dog::with('ownerContact:id,name')->orderBy('name')
-                ->get(['id', 'slug', 'name', 'registry_number', 'dna_profile', 'microchip', 'birth_date', 'acquired_on', 'left_on', 'is_ours', 'owner_contact_id']),
-            'litters' => Litter::with(['sire:id,name', 'dam:id,name'])->withCount('puppies')->orderByDesc('born_on')->orderByDesc('due_on')->get()
+            'dogs' => Dog::withTrashed()->with('ownerContact:id,name')->orderBy('name')
+                ->get(['id', 'slug', 'name', 'registry_number', 'dna_profile', 'microchip', 'birth_date', 'acquired_on', 'left_on', 'is_ours', 'owner_contact_id', 'deleted_at']),
+            'litters' => Litter::withTrashed()->with(['sire:id,name', 'dam:id,name'])->withCount('puppies')->orderByDesc('born_on')->orderByDesc('due_on')->get()
                 ->map(fn (Litter $l) => [
                     'id' => $l->id, 'slug' => $l->slug, 'title' => $l->title, 'status' => $l->status->value,
                     'born_on' => $l->born_on?->toDateString(), 'due_on' => $l->due_on?->toDateString(),
-                    'akc_litter_number' => $l->akc_litter_number, 'akc_applied_on' => $l->akc_applied_on?->toDateString(),
+                    'akc_litter_number' => $l->akc_litter_number, 'archived' => $l->trashed(), 'akc_applied_on' => $l->akc_applied_on?->toDateString(),
                     'puppies_count' => $l->puppies_count,
                 ]),
         ]);
@@ -40,12 +40,12 @@ class RecordsController extends Controller
 
     public function all(): View
     {
-        $litters = Litter::orderByDesc('born_on')->get()->each(fn (Litter $l) => $this->loadLitter($l));
+        $litters = Litter::withTrashed()->orderByDesc('born_on')->get()->each(fn (Litter $l) => $this->loadLitter($l));
 
         return view('records.all', [
-            'dogs' => Dog::orderBy('name')->get()->each(fn (Dog $d) => $this->loadDog($d)),
+            'dogs' => Dog::withTrashed()->orderBy('name')->get()->each(fn (Dog $d) => $this->loadDog($d)),
             'litters' => $litters,
-            'litterMap' => Dog::pluck('id')->mapWithKeys(fn ($id) => [$id => $litters->filter(fn (Litter $l) => in_array($id, [$l->sire_id, $l->dam_id], true))->values()]),
+            'litterMap' => Dog::withTrashed()->pluck('id')->mapWithKeys(fn ($id) => [$id => $litters->filter(fn (Litter $l) => in_array($id, [$l->sire_id, $l->dam_id], true))->values()]),
         ]);
     }
 
@@ -62,7 +62,7 @@ class RecordsController extends Controller
     /** @return Collection<int, Litter> */
     private function littersOf(Dog $dog): Collection
     {
-        return Litter::where('sire_id', $dog->id)->orWhere('dam_id', $dog->id)
+        return Litter::withTrashed()->where(fn ($q) => $q->where('sire_id', $dog->id)->orWhere('dam_id', $dog->id))
             ->with(['sire', 'dam', 'puppies'])->orderBy('born_on')->get();
     }
 }

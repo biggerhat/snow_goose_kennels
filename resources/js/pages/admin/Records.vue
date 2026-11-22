@@ -26,6 +26,7 @@ defineProps<{
         birth_date: string | null;
         acquired_on: string | null;
         left_on: string | null;
+        deleted_at?: string | null;
         is_ours: boolean;
         owner_contact?: { name: string } | null;
     }[];
@@ -100,6 +101,9 @@ const sheets = [
                         >
                         <span v-if="d.left_on" class="text-muted-foreground">
                             · left {{ formatDate(d.left_on) }}</span
+                        >
+                        <span v-if="d.deleted_at" class="text-muted-foreground">
+                            · archived</span
                         >
                         <p class="text-xs text-muted-foreground">
                             {{ d.registry_number ?? 'no registration number' }}

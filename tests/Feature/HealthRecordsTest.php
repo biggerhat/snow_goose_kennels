@@ -68,8 +68,9 @@ test('records go when their dog, puppy or litter is deleted', function () {
     $pup = $litter->puppies()->create(['sex' => 'male', 'status' => 'available']);
     $pup->healthRecords()->create(['type' => 'deworming', 'name' => 'Pyrantel', 'given_on' => today()->subDay()]);
 
-    $this->delete(route('admin.dogs.destroy', $dog));
-    $this->delete(route('admin.litters.destroy', $litter));
+    // Archiving keeps everything; a permanent delete removes it.
+    $dog->forceDelete();
+    $litter->forceDelete();
 
     expect(HealthRecord::count())->toBe(0);
 });

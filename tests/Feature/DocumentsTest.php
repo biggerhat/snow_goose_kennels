@@ -125,8 +125,9 @@ test('deleting a dog, litter or contact removes their files', function () {
     $paths = Document::pluck('path');
     expect($paths)->toHaveCount(2);
 
-    $this->delete(route('admin.dogs.destroy', $dog));
-    $this->delete(route('admin.litters.destroy', $litter));
+    // Archiving keeps everything; a permanent delete removes it.
+    $dog->forceDelete();
+    $litter->forceDelete();
 
     expect(Document::count())->toBe(0);
     foreach ($paths as $p) {

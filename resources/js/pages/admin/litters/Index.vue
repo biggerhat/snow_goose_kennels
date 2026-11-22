@@ -6,13 +6,22 @@ import PageHeader from '@/components/admin/PageHeader.vue';
 import StatusBadge from '@/components/admin/StatusBadge.vue';
 import { Button } from '@/components/ui/button';
 import { countdown, formatDate, labelFor, money } from '@/lib/format';
-import { create, edit, index } from '@/routes/admin/litters';
+import { create, edit, index, restore } from '@/routes/admin/litters';
+import { router } from '@inertiajs/vue3';
 import type { Litter, Options } from '@/types';
 
 defineOptions({
     layout: { breadcrumbs: [{ title: 'Litters', href: index() }] },
 });
-const props = defineProps<{ litters: Litter[] }>();
+const props = defineProps<{
+    litters: Litter[];
+    archived: {
+        id: number;
+        slug: string;
+        title: string;
+        born_on: string | null;
+    }[];
+}>();
 const options = computed(() => usePage().props.options as Options);
 
 const groups = computed(() =>
@@ -127,6 +136,43 @@ const groups = computed(() =>
                     </p>
                 </Link>
             </div>
+        </section>
+
+        <section v-if="archived.length" class="space-y-3">
+            <div>
+                <h2 class="font-serif text-xl font-semibold">Archived</h2>
+                <p class="text-sm text-muted-foreground">
+                    Hidden from your lists and the website. Their records are
+                    kept for AKC.
+                </p>
+            </div>
+            <ul class="divide-y rounded-xl border bg-card">
+                <li
+                    v-for="l in archived"
+                    :key="l.id"
+                    class="flex flex-wrap items-center justify-between gap-2 p-3 text-sm"
+                >
+                    <Link
+                        :href="edit(l.slug)"
+                        class="font-medium hover:underline"
+                        >{{ l.title }}</Link
+                    >
+                    <span class="flex items-center gap-3">
+                        <span
+                            v-if="l.born_on"
+                            class="text-xs text-muted-foreground"
+                            >born {{ formatDate(l.born_on) }}</span
+                        >
+                        <Button
+                            type="button"
+                            size="sm"
+                            variant="outline"
+                            @click="router.post(restore.url(l.slug))"
+                            >Bring back</Button
+                        >
+                    </span>
+                </li>
+            </ul>
         </section>
     </div>
 </template>

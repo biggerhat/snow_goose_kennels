@@ -95,6 +95,8 @@ export type Dog = {
     acquired_on?: string | null;
     left_on?: string | null;
     left_reason?: string | null;
+    deleted_at?: string | null;
+    purge_blocked_until?: string | null;
     age_label?: string | null;
     photos?: Photo[];
     documents?: DocumentFile[];
@@ -179,6 +181,8 @@ export type Litter = {
     description: string | null;
     is_public: boolean;
     private_notes: string | null;
+    deleted_at?: string | null;
+    purge_blocked_until?: string | null;
     breeding_method?: string | null;
     bred_place?: string | null;
     bred_handler?: string | null;

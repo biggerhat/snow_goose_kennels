@@ -10,7 +10,12 @@ trait HasDocuments
 {
     public static function bootHasDocuments(): void
     {
+        // Only a permanent delete removes the papers; archiving (soft delete) keeps them.
         static::deleting(function ($model) {
+            if (method_exists($model, 'isForceDeleting') && ! $model->isForceDeleting()) {
+                return;
+            }
+
             $model->documents()->get()->each->delete();
         });
     }

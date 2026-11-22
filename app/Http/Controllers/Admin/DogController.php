@@ -29,6 +29,8 @@ class DogController extends Controller
         return Inertia::render('admin/dogs/Index', [
             'dogs' => Dog::with(['photos' => fn ($q) => $q->limit(1), 'ownerContact:id,name'])
                 ->orderBy('sort_order')->orderBy('name')->get(),
+            'archived' => Dog::onlyTrashed()->orderBy('name')->get(['id', 'slug', 'name', 'left_on', 'deleted_at'])
+                ->map(fn (Dog $d) => [...$d->toArray(), 'purge_blocked_until' => $d->purgeBlockedUntil()?->toDateString()]),
         ]);
     }
 
@@ -45,7 +47,7 @@ class DogController extends Controller
     public function quick(Request $request): RedirectResponse
     {
         $data = $request->validate([
-            'name' => ['required', 'string', 'max:100', Rule::unique('dogs', 'name')],
+            'name' => ['required', 'string', 'max:100', Rule::unique('dogs', 'name')->whereNull('deleted_at')],
             'registered_name' => ['nullable', 'string', 'max:200'],
             'registry_number' => ['nullable', 'string', 'max:100'],
             'sex' => ['required', Rule::enum(DogSex::class)],
@@ -83,7 +85,7 @@ class DogController extends Controller
     public function edit(Dog $dog): Response
     {
         return Inertia::render('admin/dogs/Edit', [
-            'dog' => $dog->load(['healthTests', 'heatCycles', 'photos', 'documents', 'healthRecords']),
+            'dog' => $dog->load(['healthTests', 'heatCycles', 'photos', 'documents', 'healthRecords'])->setAttribute('purge_blocked_until', $dog->trashed() ? $dog->purgeBlockedUntil()?->toDateString() : null),
             'pedigree' => Pedigree::build($dog, 3),
             'akc' => AkcChecks::forDog($dog),
             'litters' => Litter::where('sire_id', $dog->id)->orWhere('dam_id', $dog->id)
@@ -102,11 +104,37 @@ class DogController extends Controller
         return to_route('admin.dogs.edit', $dog->fresh());
     }
 
+    /** Archive, not erase: AKC asks for breeding and ownership records to be kept for 5 years. */
     public function destroy(Dog $dog): RedirectResponse
     {
         $dog->delete();
 
-        Inertia::flash('toast', ['type' => 'success', 'message' => 'Dog removed.']);
+        Inertia::flash('toast', ['type' => 'success', 'message' => "{$dog->name} archived. Their records are kept, and you can bring them back from the Dogs page."]);
+
+        return to_route('admin.dogs.index');
+    }
+
+    public function restore(Dog $dog): RedirectResponse
+    {
+        $dog->restore();
+
+        Inertia::flash('toast', ['type' => 'success', 'message' => "{$dog->name} is back."]);
+
+        return to_route('admin.dogs.edit', $dog);
+    }
+
+    /** Permanent delete, only once the 5 year record-keeping period is over (or the dog was added by mistake). */
+    public function purge(Dog $dog): RedirectResponse
+    {
+        if ($until = $dog->purgeBlockedUntil()) {
+            Inertia::flash('toast', ['type' => 'error', 'message' => "AKC asks you to keep this dog’s records until {$until->format('M j, Y')}. You can delete it for good after that date."]);
+
+            return back();
+        }
+
+        $dog->forceDelete();
+
+        Inertia::flash('toast', ['type' => 'success', 'message' => 'Deleted for good.']);
 
         return to_route('admin.dogs.index');
     }
@@ -117,7 +145,7 @@ class DogController extends Controller
         $this->cleanDigits($request, ['microchip']);
 
         $validator = Validator::make($request->all(), [
-            'name' => ['required', 'string', 'max:100', Rule::unique('dogs', 'name')->ignore($request->route('dog'))],
+            'name' => ['required', 'string', 'max:100', Rule::unique('dogs', 'name')->ignore($request->route('dog'))->whereNull('deleted_at')],
             'registered_name' => ['nullable', 'string', 'max:200'],
             'sex' => ['required', Rule::enum(DogSex::class)],
             'role' => ['required', Rule::enum(DogRole::class)],

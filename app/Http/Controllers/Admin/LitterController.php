@@ -30,6 +30,8 @@ class LitterController extends Controller
                 ->withCount(['puppies', 'waitlistEntries'])
                 ->orderByDesc('due_on')->orderByDesc('born_on')->get()
                 ->append('title'),
+            'archived' => Litter::onlyTrashed()->with(['sire:id,name', 'dam:id,name'])->orderByDesc('born_on')->get()
+                ->map(fn (Litter $l) => ['id' => $l->id, 'slug' => $l->slug, 'title' => $l->title, 'born_on' => $l->born_on?->toDateString(), 'deleted_at' => $l->deleted_at, 'purge_blocked_until' => $l->purgeBlockedUntil()?->toDateString()]),
         ]);
     }
 
@@ -53,6 +55,7 @@ class LitterController extends Controller
 
     public function edit(Litter $litter): Response
     {
+        $litter->setAttribute('purge_blocked_until', $litter->trashed() ? $litter->purgeBlockedUntil()?->toDateString() : null);
         $litter->load(['puppies.buyer:id,name', 'puppies.weights', 'puppies.documents', 'puppies.healthRecords', 'diary', 'photos', 'documents', 'waitlistEntries.contact:id,name,phone,email'])
             ->append('title');
 
@@ -73,11 +76,37 @@ class LitterController extends Controller
         return to_route('admin.litters.edit', $litter->fresh());
     }
 
+    /** Archive, not erase: AKC asks for litter records to be kept for 5 years. */
     public function destroy(Litter $litter): RedirectResponse
     {
         $litter->delete();
 
-        Inertia::flash('toast', ['type' => 'success', 'message' => 'Litter removed.']);
+        Inertia::flash('toast', ['type' => 'success', 'message' => 'Litter archived. Its records are kept, and you can bring it back from the Litters page.']);
+
+        return to_route('admin.litters.index');
+    }
+
+    public function restore(Litter $litter): RedirectResponse
+    {
+        $litter->restore();
+
+        Inertia::flash('toast', ['type' => 'success', 'message' => 'The litter is back.']);
+
+        return to_route('admin.litters.edit', $litter);
+    }
+
+    /** Permanent delete, only once the 5 year record-keeping period is over (or the litter never happened). */
+    public function purge(Litter $litter): RedirectResponse
+    {
+        if ($until = $litter->purgeBlockedUntil()) {
+            Inertia::flash('toast', ['type' => 'error', 'message' => "AKC asks you to keep this litter’s records until {$until->format('M j, Y')}. You can delete it for good after that date."]);
+
+            return back();
+        }
+
+        $litter->forceDelete();
+
+        Inertia::flash('toast', ['type' => 'success', 'message' => 'Deleted for good.']);
 
         return to_route('admin.litters.index');
     }

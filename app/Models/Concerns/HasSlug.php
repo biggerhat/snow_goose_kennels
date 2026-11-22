@@ -20,7 +20,7 @@ trait HasSlug
             $slug = $base;
             $i = 2;
 
-            while (static::where('slug', $slug)->whereKeyNot($model->getKey() ?? 0)->exists()) {
+            while (static::withoutGlobalScopes()->where('slug', $slug)->whereKeyNot($model->getKey() ?? 0)->exists()) {
                 $slug = $base.'-'.$i++;
             }
 

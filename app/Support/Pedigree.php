@@ -23,7 +23,7 @@ class Pedigree
                 break;
             }
 
-            $level = Dog::whereIn('id', $ids)->get()->each(function (Dog $d) use (&$byId) {
+            $level = Dog::withTrashed()->whereIn('id', $ids)->get()->each(function (Dog $d) use (&$byId) {
                 $byId[$d->id] = $d;
             })->all();
         }
@@ -65,7 +65,7 @@ class Pedigree
         $ids = [$dogId];
 
         for ($i = 0; $i < $depth && $ids; $i++) {
-            $parents = Dog::whereIn('id', $ids)->get(['sire_id', 'dam_id'])->flatMap(fn ($d) => [$d->sire_id, $d->dam_id])->filter()->unique()->values()->all();
+            $parents = Dog::withTrashed()->whereIn('id', $ids)->get(['sire_id', 'dam_id'])->flatMap(fn ($d) => [$d->sire_id, $d->dam_id])->filter()->unique()->values()->all();
 
             if (in_array($candidate, $parents, true)) {
                 return true;

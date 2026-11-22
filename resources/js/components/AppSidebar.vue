@@ -8,6 +8,7 @@ import {
     ExternalLink,
     ImageIcon,
     LayoutGrid,
+    Library,
     ListChecks,
     MessageSquareQuote,
     PenLine,
@@ -26,7 +27,7 @@ import {
     SidebarMenuItem,
 } from '@/components/ui/sidebar';
 import { dashboard, home } from '@/routes';
-import { help } from '@/routes/admin';
+import { help, records } from '@/routes/admin';
 import { index as contacts } from '@/routes/admin/contacts';
 import { index as dogs } from '@/routes/admin/dogs';
 import { index as litters } from '@/routes/admin/litters';
@@ -43,6 +44,7 @@ const mainNavItems: NavItem[] = [
     { title: 'Waitlist', href: waitlist(), icon: ListChecks },
     { title: 'Contacts', href: contacts(), icon: BookUser },
     { title: 'Photos', href: photos(), icon: ImageIcon },
+    { title: 'Records', href: records(), icon: Library },
     { title: 'Happy families', href: testimonials(), icon: MessageSquareQuote },
     { title: 'Website text', href: siteContent(), icon: PenLine },
 ];

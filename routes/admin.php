@@ -12,6 +12,7 @@ use App\Http\Controllers\Admin\HealthTestController;
 use App\Http\Controllers\Admin\HeatCycleController;
 use App\Http\Controllers\Admin\LitterController;
 use App\Http\Controllers\Admin\PhotoController;
+use App\Http\Controllers\Admin\RecordsController;
 use App\Http\Controllers\Admin\PuppyController;
 use App\Http\Controllers\Admin\SiteSettingsController;
 use App\Http\Controllers\Admin\TestimonialController;
@@ -51,6 +52,11 @@ Route::middleware('auth')->prefix('admin')->name('admin.')->group(function () {
     Route::put('site', [SiteSettingsController::class, 'update'])->name('site.update');
 
     Route::inertia('help', 'admin/Help')->name('help');
+
+    Route::get('records', [RecordsController::class, 'index'])->name('records');
+    Route::get('records/all', [RecordsController::class, 'all'])->name('records.all');
+    Route::get('records/dogs/{dog}', [RecordsController::class, 'dog'])->name('records.dog');
+    Route::get('records/litters/{litter}', [RecordsController::class, 'litter'])->name('records.litter');
 
     Route::post('photos/bulk', [PhotoController::class, 'bulk'])->name('photos.bulk');
     Route::resource('photos', PhotoController::class)->only(['index', 'store', 'update', 'destroy']);

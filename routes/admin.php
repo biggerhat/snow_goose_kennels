@@ -18,6 +18,7 @@ use App\Http\Controllers\Admin\PhotoController;
 use App\Http\Controllers\Admin\PlannerController;
 use App\Http\Controllers\Admin\PuppyController;
 use App\Http\Controllers\Admin\RecordsController;
+use App\Http\Controllers\Admin\SearchController;
 use App\Http\Controllers\Admin\SiteSettingsController;
 use App\Http\Controllers\Admin\TestimonialController;
 use App\Http\Controllers\Admin\WaitlistController;
@@ -67,6 +68,7 @@ Route::middleware('auth')->prefix('admin')->name('admin.')->group(function () {
     Route::inertia('help', 'admin/Help')->name('help');
 
     Route::post('attention/snooze', [AttentionSnoozeController::class, 'store'])->name('attention.snooze');
+    Route::get('search', SearchController::class)->name('search');
     Route::get('planner', [PlannerController::class, 'index'])->name('planner');
 
     Route::get('records', [RecordsController::class, 'index'])->name('records');

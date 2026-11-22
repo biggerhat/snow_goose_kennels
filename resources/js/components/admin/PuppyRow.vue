@@ -39,6 +39,7 @@ const form = useForm({
     papers_given_on: props.puppy.papers_given_on ?? '',
     went_home_on: props.puppy.went_home_on ?? '',
     vet_checked_on: props.puppy.vet_checked_on ?? '',
+    reunite_enrolled_on: props.puppy.reunite_enrolled_on ?? '',
 });
 
 // The day a puppy is marked as gone home is the go-home date, unless she says otherwise.
@@ -243,6 +244,13 @@ function save() {
                         hint="The check before the puppy goes home."
                     >
                         <Input v-model="form.vet_checked_on" type="date" />
+                    </Field>
+                    <Field
+                        label="Microchip registered on"
+                        :error="form.errors.reunite_enrolled_on"
+                        hint="The day the chip was registered (AKC Reunite or another service)."
+                    >
+                        <Input v-model="form.reunite_enrolled_on" type="date" />
                     </Field>
                 </div>
             </details>

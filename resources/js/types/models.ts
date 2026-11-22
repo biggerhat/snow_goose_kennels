@@ -92,6 +92,7 @@ export type Dog = {
     dam_id?: number | null;
     titles?: string | null;
     dna_profile?: string | null;
+    co_owner_name?: string | null;
     acquired_on?: string | null;
     left_on?: string | null;
     left_reason?: string | null;
@@ -128,6 +129,7 @@ export type Puppy = {
     papers_given_on?: string | null;
     went_home_on?: string | null;
     vet_checked_on?: string | null;
+    reunite_enrolled_on?: string | null;
     buyer?: { id: number; name: string } | null;
     documents?: DocumentFile[];
     health_records?: HealthRecord[];
@@ -191,6 +193,10 @@ export type Litter = {
     stillborn_count?: number | null;
     akc_applied_on?: string | null;
     akc_litter_number?: string | null;
+    sire_owner_signed_on?: string | null;
+    dam_owner_signed_on?: string | null;
+    multiple_sires?: boolean;
+    akc_marketplace_listed_on?: string | null;
     puppies_count?: number;
     waitlist_entries_count?: number;
     puppies?: Puppy[];

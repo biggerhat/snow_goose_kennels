@@ -144,6 +144,10 @@ class LitterController extends Controller
             'stillborn_count' => ['nullable', 'integer', 'min:0', 'max:30'],
             'akc_applied_on' => ['nullable', 'date', 'before_or_equal:today'],
             'akc_litter_number' => ['nullable', 'string', 'max:40'],
+            'sire_owner_signed_on' => ['nullable', 'date', 'before_or_equal:today'],
+            'dam_owner_signed_on' => ['nullable', 'date', 'before_or_equal:today'],
+            'multiple_sires' => ['boolean'],
+            'akc_marketplace_listed_on' => ['nullable', 'date', 'before_or_equal:today'],
         ], [
             'sire_id.different' => 'The sire and the dam must be two different dogs.',
         ]);

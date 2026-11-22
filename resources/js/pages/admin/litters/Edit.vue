@@ -26,6 +26,7 @@ import {
     store as storeDiary,
 } from '@/routes/admin/diary';
 import {
+    akc as akcApplication,
     destroy,
     index,
     purge,
@@ -75,6 +76,10 @@ const form = useForm({
     stillborn_count: props.litter?.stillborn_count ?? null,
     akc_applied_on: props.litter?.akc_applied_on ?? '',
     akc_litter_number: props.litter?.akc_litter_number ?? '',
+    sire_owner_signed_on: props.litter?.sire_owner_signed_on ?? '',
+    dam_owner_signed_on: props.litter?.dam_owner_signed_on ?? '',
+    multiple_sires: props.litter?.multiple_sires ?? false,
+    akc_marketplace_listed_on: props.litter?.akc_marketplace_listed_on ?? '',
 });
 
 useUnsavedWarning(() => form.isDirty);
@@ -447,6 +452,56 @@ const summary = computed(() => {
                             v-model="form.akc_litter_number"
                         />
                     </Field>
+                </div>
+                <div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+                    <Field
+                        label="Sire’s owner signed on"
+                        :error="form.errors.sire_owner_signed_on"
+                        for="sire_owner_signed_on"
+                        help="The litter application has to be signed by the sire’s owner, certifying the mating. If the sire belongs to someone else, you need their signature. Write the date they signed."
+                    >
+                        <Input
+                            id="sire_owner_signed_on"
+                            v-model="form.sire_owner_signed_on"
+                            type="date"
+                        />
+                    </Field>
+                    <Field
+                        label="Dam’s owner(s) signed on"
+                        :error="form.errors.dam_owner_signed_on"
+                        for="dam_owner_signed_on"
+                        help="Every owner or lessee of the dam signs the application. Write the date the last one signed."
+                    >
+                        <Input
+                            id="dam_owner_signed_on"
+                            v-model="form.dam_owner_signed_on"
+                            type="date"
+                        />
+                    </Field>
+                    <Field
+                        label="Listed on AKC Marketplace on"
+                        :error="form.errors.akc_marketplace_listed_on"
+                        for="akc_marketplace_listed_on"
+                        hint="Only if you listed the litter there."
+                    >
+                        <Input
+                            id="akc_marketplace_listed_on"
+                            v-model="form.akc_marketplace_listed_on"
+                            type="date"
+                        />
+                    </Field>
+                </div>
+                <ToggleField
+                    v-model="form.multiple_sires"
+                    label="More than one male could be the father"
+                    hint="For example, the mother was bred to two dogs. AKC then needs DNA profiles for every possible sire, the dam and all the puppies."
+                />
+                <div v-if="litter" class="flex flex-wrap gap-2">
+                    <Button as-child variant="secondary" size="sm">
+                        <Link :href="akcApplication.url(litter.slug)"
+                            >Fill in the AKC litter application</Link
+                        >
+                    </Button>
                 </div>
                 <div v-if="litter && akc" class="space-y-2">
                     <h3 class="font-medium">AKC checklist</h3>

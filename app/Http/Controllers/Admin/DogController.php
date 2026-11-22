@@ -157,6 +157,7 @@ class DogController extends Controller
             'owner_contact_id' => ['nullable', 'exists:contacts,id'],
             'titles' => ['nullable', 'string', 'max:200'],
             'dna_profile' => ['nullable', 'string', 'max:60'],
+            'co_owner_name' => ['nullable', 'string', 'max:150'],
             'acquired_on' => ['nullable', 'date', 'before_or_equal:today'],
             'left_on' => ['nullable', 'date', 'before_or_equal:today'],
             'left_reason' => ['nullable', Rule::enum(DogLeftReason::class), 'required_with:left_on'],

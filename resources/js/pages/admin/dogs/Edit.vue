@@ -105,6 +105,7 @@ const form = useForm({
     dam_id: props.dog?.dam_id ?? null,
     titles: props.dog?.titles ?? '',
     dna_profile: props.dog?.dna_profile ?? '',
+    co_owner_name: props.dog?.co_owner_name ?? '',
     acquired_on: props.dog?.acquired_on ?? '',
     left_on: props.dog?.left_on ?? '',
     left_reason: props.dog?.left_reason ?? null,
@@ -263,11 +264,11 @@ const suggestions = [
                 </h2>
                 <div class="grid gap-4 sm:grid-cols-2">
                     <Field
-                        label="Name"
+                        label="Everyday name (call name)"
                         required
                         :error="form.errors.name"
                         for="name"
-                        hint="The everyday name you call the dog."
+                        hint="What you call the dog. This is the name visitors see on your website."
                     >
                         <Input
                             id="name"
@@ -277,10 +278,10 @@ const suggestions = [
                         />
                     </Field>
                     <Field
-                        label="Registered name"
+                        label="Official registered name"
                         :error="form.errors.registered_name"
                         for="registered_name"
-                        help="The long official name on the dog’s registration papers, such as the AKC certificate. Leave empty if there is none."
+                        help="The long official name on the dog’s registration papers, such as the AKC certificate. It is shown under the everyday name on the dog’s page, and it is the name used on AKC forms. Leave empty if there is none."
                     >
                         <Input
                             id="registered_name"
@@ -483,7 +484,19 @@ const suggestions = [
                     >
                         <Input id="dna_profile" v-model="form.dna_profile" />
                     </Field>
-                    <span />
+                    <Field
+                        label="Co-owner"
+                        :error="form.errors.co_owner_name"
+                        for="co_owner_name"
+                        help="If someone else owns this dog with you, or leases her, AKC wants them on the litter application and they must sign it too."
+                        hint="Leave empty if you are the only owner."
+                    >
+                        <Input
+                            id="co_owner_name"
+                            v-model="form.co_owner_name"
+                            placeholder="First and last name"
+                        />
+                    </Field>
                     <Field
                         label="Came to the kennel on"
                         :error="form.errors.acquired_on"

@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Admin\AkcApplicationController;
 use App\Http\Controllers\Admin\AlbumController;
 use App\Http\Controllers\Admin\ContactController;
 use App\Http\Controllers\Admin\ContactNoteController;
@@ -33,6 +34,8 @@ Route::middleware('auth')->prefix('admin')->name('admin.')->group(function () {
     Route::delete('heat-cycles/{heatCycle}', [HeatCycleController::class, 'destroy'])->name('heat-cycles.destroy');
 
     Route::resource('litters', LitterController::class)->except('show')->withTrashed(['edit', 'update']);
+    Route::get('litters/{litter}/akc-application', [AkcApplicationController::class, 'show'])->withTrashed()->name('litters.akc');
+    Route::get('akc/litter-application.pdf', [AkcApplicationController::class, 'form'])->name('akc.litter-form');
     Route::post('litters/{litter}/restore', [LitterController::class, 'restore'])->withTrashed()->name('litters.restore');
     Route::delete('litters/{litter}/purge', [LitterController::class, 'purge'])->withTrashed()->name('litters.purge');
     Route::post('litters/{litter}/diary', [DiaryEntryController::class, 'store'])->name('diary.store');

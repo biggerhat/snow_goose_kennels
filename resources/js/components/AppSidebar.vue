@@ -6,6 +6,7 @@ import {
     Dog,
     CircleHelp,
     ExternalLink,
+    GitFork,
     ImageIcon,
     LayoutGrid,
     Library,
@@ -27,7 +28,7 @@ import {
     SidebarMenuItem,
 } from '@/components/ui/sidebar';
 import { dashboard, home } from '@/routes';
-import { help, records } from '@/routes/admin';
+import { help, planner, records } from '@/routes/admin';
 import { index as contacts } from '@/routes/admin/contacts';
 import { index as dogs } from '@/routes/admin/dogs';
 import { index as litters } from '@/routes/admin/litters';
@@ -43,6 +44,7 @@ const mainNavItems: NavItem[] = [
     { title: 'Dogs', href: dogs(), icon: Dog },
     { title: 'Waitlist', href: waitlist(), icon: ListChecks },
     { title: 'Contacts', href: contacts(), icon: BookUser },
+    { title: 'Pairing planner', href: planner(), icon: GitFork },
     { title: 'Photos', href: photos(), icon: ImageIcon },
     { title: 'Records', href: records(), icon: Library },
     { title: 'Happy families', href: testimonials(), icon: MessageSquareQuote },

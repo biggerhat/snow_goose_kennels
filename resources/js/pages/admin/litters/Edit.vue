@@ -12,6 +12,7 @@ import NativeSelect from '@/components/admin/NativeSelect.vue';
 import PageHeader from '@/components/admin/PageHeader.vue';
 import PhotoManager from '@/components/admin/PhotoManager.vue';
 import QuickDog from '@/components/admin/QuickDog.vue';
+import { planner as plannerUrl } from '@/routes/admin';
 import PuppyRow from '@/components/admin/PuppyRow.vue';
 import WeighIns from '@/components/admin/WeighIns.vue';
 import StatusBadge from '@/components/admin/StatusBadge.vue';
@@ -46,6 +47,12 @@ const props = defineProps<{
     dogs: Pick<Dog, 'id' | 'name' | 'sex' | 'is_ours'>[];
     contacts?: { id: number; name: string }[];
     akc?: { items: AkcItem[]; todo: number; warn: number };
+    preset?: { sire: number | null; dam: number | null };
+    inbreeding?: {
+        percent: number;
+        generations: number;
+        common: string[];
+    } | null;
 }>();
 const options = computed(() => usePage().props.options as Options);
 
@@ -55,8 +62,8 @@ defineOptions({
 
 const form = useForm({
     name: props.litter?.name ?? '',
-    sire_id: props.litter?.sire_id ?? null,
-    dam_id: props.litter?.dam_id ?? null,
+    sire_id: props.litter?.sire_id ?? props.preset?.sire ?? null,
+    dam_id: props.litter?.dam_id ?? props.preset?.dam ?? null,
     status: props.litter?.status ?? 'planned',
     bred_on: props.litter?.bred_on ?? '',
     due_on: props.litter?.due_on ?? '',
@@ -296,6 +303,33 @@ const summary = computed(() => {
                         />
                     </Field>
                 </div>
+                <p
+                    v-if="inbreeding"
+                    class="rounded-lg border bg-background/50 p-3 text-sm"
+                >
+                    <strong>How closely related the parents are:</strong>
+                    {{ inbreeding.percent }}% expected inbreeding, from
+                    {{ inbreeding.generations }} generation{{
+                        inbreeding.generations === 1 ? '' : 's'
+                    }}
+                    of known ancestors.
+                    <span v-if="inbreeding.common.length">
+                        Both families include
+                        {{ inbreeding.common.join(', ') }}.
+                    </span>
+                    <Link
+                        :href="
+                            plannerUrl.url({
+                                query: {
+                                    sire: form.sire_id ?? undefined,
+                                    dam: form.dam_id ?? undefined,
+                                },
+                            })
+                        "
+                        class="underline underline-offset-2"
+                        >Open the pairing planner</Link
+                    >
+                </p>
                 <div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
                     <Field
                         label="Bred on"

@@ -14,6 +14,7 @@ use App\Http\Controllers\Admin\HealthTestController;
 use App\Http\Controllers\Admin\HeatCycleController;
 use App\Http\Controllers\Admin\LitterController;
 use App\Http\Controllers\Admin\PhotoController;
+use App\Http\Controllers\Admin\PlannerController;
 use App\Http\Controllers\Admin\PuppyController;
 use App\Http\Controllers\Admin\RecordsController;
 use App\Http\Controllers\Admin\SiteSettingsController;
@@ -63,6 +64,8 @@ Route::middleware('auth')->prefix('admin')->name('admin.')->group(function () {
     Route::put('site', [SiteSettingsController::class, 'update'])->name('site.update');
 
     Route::inertia('help', 'admin/Help')->name('help');
+
+    Route::get('planner', [PlannerController::class, 'index'])->name('planner');
 
     Route::get('records', [RecordsController::class, 'index'])->name('records');
     Route::get('records/emergency-plan', [RecordsController::class, 'emergencyPlan'])->name('records.emergency-plan');

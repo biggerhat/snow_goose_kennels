@@ -11,6 +11,7 @@ use App\Models\Contact;
 use App\Models\Dog;
 use App\Models\Litter;
 use App\Support\AkcChecks;
+use App\Support\Inbreeding;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
@@ -35,10 +36,11 @@ class LitterController extends Controller
         ]);
     }
 
-    public function create(): Response
+    public function create(Request $request): Response
     {
         return Inertia::render('admin/litters/Edit', [
             'litter' => null,
+            'preset' => ['sire' => $request->integer('sire') ?: null, 'dam' => $request->integer('dam') ?: null],
             'dogs' => $this->dogs(),
             'contacts' => Contact::orderBy('name')->get(['id', 'name']),
         ]);
@@ -64,6 +66,7 @@ class LitterController extends Controller
             'dogs' => $this->dogs(),
             'contacts' => Contact::orderBy('name')->get(['id', 'name']),
             'akc' => AkcChecks::forLitter($litter),
+            'inbreeding' => $litter->sire && $litter->dam ? Inbreeding::forMating($litter->sire, $litter->dam) : null,
         ]);
     }
 

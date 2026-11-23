@@ -74,3 +74,9 @@ it('copies existing files to the new disks, keeps the originals unless told othe
 it('does nothing when the files are already where settings say', function () {
     $this->artisan('kennel:move-files')->expectsOutputToContain('already on')->assertSuccessful();
 });
+
+it('writes to the public photo bucket as public and to the documents bucket as private', function () {
+    // A public Backblaze bucket refuses the 'private' ACL that is Flysystem's default, so this must stay explicit.
+    expect(config('filesystems.disks.b2_photos.visibility'))->toBe('public')
+        ->and(config('filesystems.disks.b2_documents.visibility'))->toBe('private');
+});

@@ -60,6 +60,8 @@ return [
             // The public address of the bucket, e.g. https://f004.backblazeb2.com/file/<bucket-name>
             'url' => env('B2_PHOTOS_URL'),
             'use_path_style_endpoint' => true,
+            // A public bucket only accepts the public-read ACL; without this every write is sent as 'private' and refused.
+            'visibility' => 'public',
             // Photo files never change once stored, so browsers may keep them.
             'options' => ['CacheControl' => 'public, max-age=31536000, immutable'],
             'request_checksum_calculation' => 'when_required',

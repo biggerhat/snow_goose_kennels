@@ -25,6 +25,7 @@ class ApplicationController extends Controller
     public function create(Request $request): Response
     {
         return Inertia::render('public/Apply', [
+            'meta' => SiteController::meta('Apply for a puppy', 'Tell us about your home and what you are looking for in a Lab.'),
             'litters' => Litter::query()
                 ->where('is_public', true)
                 ->whereIn('status', [LitterStatus::Planned, LitterStatus::Expected, LitterStatus::OnGround])

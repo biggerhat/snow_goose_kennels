@@ -2,34 +2,50 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Enums\BreedingMethod;
+use App\Enums\DogSex;
 use App\Enums\LitterStatus;
+use App\Http\Controllers\Admin\Concerns\CleansInput;
 use App\Http\Controllers\Controller;
 use App\Models\Contact;
 use App\Models\Dog;
 use App\Models\Litter;
+use App\Support\AkcChecks;
+use App\Support\Inbreeding;
+use App\Support\LitterHistory;
+use App\Support\PuppySchedule;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
 use Inertia\Inertia;
 use Inertia\Response;
 
 class LitterController extends Controller
 {
+    use CleansInput;
+
     public function index(): Response
     {
         return Inertia::render('admin/litters/Index', [
             'litters' => Litter::with(['sire:id,name', 'dam:id,name'])
                 ->withCount(['puppies', 'waitlistEntries'])
                 ->orderByDesc('due_on')->orderByDesc('born_on')->get()
-                ->append('title'),
+                ->append('title')
+                ->each(fn (Litter $l) => $l->setAttribute('next_step', $this->nextStep($l))),
+            'archived' => Litter::onlyTrashed()->with(['sire:id,name', 'dam:id,name'])->orderByDesc('born_on')->get()
+                ->map(fn (Litter $l) => ['id' => $l->id, 'slug' => $l->slug, 'title' => $l->title, 'born_on' => $l->born_on?->toDateString(), 'deleted_at' => $l->deleted_at, 'purge_blocked_until' => $l->purgeBlockedUntil()?->toDateString()]),
         ]);
     }
 
-    public function create(): Response
+    public function create(Request $request): Response
     {
         return Inertia::render('admin/litters/Edit', [
             'litter' => null,
+            'preset' => ['sire' => $request->integer('sire') ?: null, 'dam' => $request->integer('dam') ?: null],
             'dogs' => $this->dogs(),
+            'contacts' => Contact::orderBy('name')->get(['id', 'name']),
         ]);
     }
 
@@ -44,50 +60,103 @@ class LitterController extends Controller
 
     public function edit(Litter $litter): Response
     {
-        $litter->load(['puppies.buyer:id,name', 'puppies.weights', 'diary', 'photos', 'waitlistEntries.contact:id,name,phone,email'])
+        $litter->setAttribute('purge_blocked_until', $litter->trashed() ? $litter->purgeBlockedUntil()?->toDateString() : null);
+        $litter->load(['puppies.buyer:id,name', 'puppies.weights', 'puppies.documents', 'puppies.healthRecords', 'tasks', 'messages', 'diary', 'photos', 'documents', 'waitlistEntries.contact:id,name,phone,email'])
             ->append('title');
 
         return Inertia::render('admin/litters/Edit', [
             'litter' => $litter,
             'dogs' => $this->dogs(),
             'contacts' => Contact::orderBy('name')->get(['id', 'name']),
+            'akc' => AkcChecks::forLitter($litter),
+            'damHistory' => LitterHistory::forDam($litter->dam, $litter),
+            'inbreeding' => $litter->sire && $litter->dam ? Inbreeding::forMating($litter->sire, $litter->dam) : null,
         ]);
     }
 
     public function update(Request $request, Litter $litter): RedirectResponse
     {
+        $hadBirthDate = (bool) $litter->born_on;
         $litter->update($this->validated($request));
 
-        Inertia::flash('toast', ['type' => 'success', 'message' => 'Saved.']);
+        // A litter gets the usual puppy schedule the moment its birth date is first entered, so nothing is forgotten.
+        // After that the steps are hers: deleting them or changing the date does not bring them back.
+        $made = ! $hadBirthDate && $litter->born_on && $litter->tasks()->doesntExist() ? PuppySchedule::create($litter) : 0;
+
+        Inertia::flash('toast', ['type' => 'success', 'message' => $made ? 'Saved. I also made a puppy schedule for you. Find it on the Health & diary tab.' : 'Saved.']);
 
         return to_route('admin.litters.edit', $litter->fresh());
     }
 
+    /** Archive, not erase: AKC asks for litter records to be kept for 5 years. */
     public function destroy(Litter $litter): RedirectResponse
     {
         $litter->delete();
 
-        Inertia::flash('toast', ['type' => 'success', 'message' => 'Litter removed.']);
+        Inertia::flash('toast', ['type' => 'success', 'message' => 'Litter archived. Its records are kept.', 'action' => ['label' => 'Undo', 'url' => route('admin.litters.restore', $litter)]]);
 
         return to_route('admin.litters.index');
     }
 
+    public function restore(Litter $litter): RedirectResponse
+    {
+        $litter->restore();
+
+        Inertia::flash('toast', ['type' => 'success', 'message' => 'The litter is back.']);
+
+        return to_route('admin.litters.edit', $litter);
+    }
+
+    /** Permanent delete, only once the 5 year record-keeping period is over (or the litter never happened). */
+    public function purge(Litter $litter): RedirectResponse
+    {
+        if ($until = $litter->purgeBlockedUntil()) {
+            Inertia::flash('toast', ['type' => 'error', 'message' => "AKC asks you to keep this litter’s records until {$until->format('M j, Y')}. You can delete it for good after that date."]);
+
+            return back();
+        }
+
+        $litter->forceDelete();
+
+        Inertia::flash('toast', ['type' => 'success', 'message' => 'Deleted for good.']);
+
+        return to_route('admin.litters.index');
+    }
+
+    /** One plain sentence on what to do next for this litter, or null. */
+    private function nextStep(Litter $litter): ?string
+    {
+        if ($litter->born_on && ! $litter->akc_applied_on && $litter->born_on->gt(today()->subYears(2))) {
+            $by = $litter->born_on->copy()->addMonths(6);
+
+            return $by->lt(today()) ? 'The AKC application is past its 6-month deadline' : 'Send the AKC application by '.$by->format('M j, Y');
+        }
+
+        if ($litter->status === LitterStatus::OnGround && $litter->puppies_count === 0) {
+            return 'Add the puppies';
+        }
+
+        return null;
+    }
+
     private function dogs()
     {
-        return Dog::orderBy('name')->get(['id', 'name', 'sex']);
+        return Dog::orderBy('name')->get(['id', 'name', 'sex', 'is_ours']);
     }
 
     /** @return array<string, mixed> */
     private function validated(Request $request): array
     {
-        return $request->validate([
+        $this->cleanMoney($request, ['price', 'deposit', 'stud_fee']);
+
+        $validator = Validator::make($request->all(), [
             'name' => ['nullable', 'string', 'max:150'],
-            'sire_id' => ['nullable', 'exists:dogs,id'],
+            'sire_id' => ['nullable', 'exists:dogs,id', 'different:dam_id'],
             'dam_id' => ['nullable', 'exists:dogs,id'],
             'status' => ['required', Rule::enum(LitterStatus::class)],
-            'bred_on' => ['nullable', 'date'],
+            'bred_on' => ['nullable', 'date', 'before_or_equal:today'],
             'due_on' => ['nullable', 'date'],
-            'born_on' => ['nullable', 'date'],
+            'born_on' => ['nullable', 'date', 'before_or_equal:today'],
             'go_home_on' => ['nullable', 'date'],
             'price' => ['nullable', 'integer', 'min:0', 'max:100000'],
             'deposit' => ['nullable', 'integer', 'min:0', 'max:100000'],
@@ -95,6 +164,61 @@ class LitterController extends Controller
             'description' => ['nullable', 'string', 'max:5000'],
             'is_public' => ['boolean'],
             'private_notes' => ['nullable', 'string', 'max:10000'],
+            'breeding_method' => ['nullable', Rule::enum(BreedingMethod::class)],
+            'bred_place' => ['nullable', 'string', 'max:150'],
+            'bred_handler' => ['nullable', 'string', 'max:150'],
+            'stud_fee' => ['nullable', 'integer', 'min:0', 'max:100000'],
+            'stud_fee_paid_on' => ['nullable', 'date', 'before_or_equal:today'],
+            'stillborn_count' => ['nullable', 'integer', 'min:0', 'max:30'],
+            'akc_applied_on' => ['nullable', 'date', 'before_or_equal:today'],
+            'akc_litter_number' => ['nullable', 'string', 'max:40'],
+            'sire_owner_signed_on' => ['nullable', 'date', 'before_or_equal:today'],
+            'dam_owner_signed_on' => ['nullable', 'date', 'before_or_equal:today'],
+            'multiple_sires' => ['boolean'],
+            'akc_marketplace_listed_on' => ['nullable', 'date', 'before_or_equal:today'],
+        ], [
+            'sire_id.different' => 'The sire and the dam must be two different dogs.',
         ]);
+
+        $validator->after(function ($v) {
+            $in = $v->getData();
+            $date = fn (string $k) => filled($in[$k] ?? null) ? Carbon::parse($in[$k]) : null;
+
+            foreach (['sire_id' => [DogSex::Male, 'sire (father)', 'male'], 'dam_id' => [DogSex::Female, 'dam (mother)', 'female']] as $key => [$sex, $label, $word]) {
+                $dog = filled($in[$key] ?? null) ? Dog::find($in[$key]) : null;
+
+                if ($dog && $dog->sex !== $sex) {
+                    $v->errors()->add($key, "{$dog->name} is marked as {$dog->sex->value}, but the {$label} should be a {$word} dog. Pick another dog, or fix the dog's sex on its page.");
+                }
+            }
+
+            [$bred, $due, $born, $home] = [$date('bred_on'), $date('due_on'), $date('born_on'), $date('go_home_on')];
+
+            if ($bred && $due && $due->lt($bred)) {
+                $v->errors()->add('due_on', 'The due date cannot be before the date bred.');
+            }
+
+            if ($bred && $born && $born->lt($bred)) {
+                $v->errors()->add('born_on', 'Puppies cannot be born before the date bred.');
+            }
+
+            if ($born && $home && $home->lt($born)) {
+                $v->errors()->add('go_home_on', 'The go-home date cannot be before the puppies were born.');
+            }
+
+            if (in_array($in['status'] ?? null, [LitterStatus::OnGround->value, LitterStatus::AllHome->value], true) && ! $born) {
+                $v->errors()->add('born_on', 'Add the date the puppies were born, because this litter is marked as born.');
+            }
+
+            if ($born && filled($in['akc_applied_on'] ?? null) && Carbon::parse($in['akc_applied_on'])->lt($born)) {
+                $v->errors()->add('akc_applied_on', 'The AKC application cannot be sent before the puppies were born.');
+            }
+
+            if (filled($in['price'] ?? null) && filled($in['deposit'] ?? null) && (int) $in['deposit'] > (int) $in['price']) {
+                $v->errors()->add('deposit', 'The deposit is more than the price. Check both amounts.');
+            }
+        });
+
+        return $validator->validate();
     }
 }

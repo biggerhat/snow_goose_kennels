@@ -2,12 +2,18 @@
 
 namespace App\Support;
 
+use App\Enums\AchievementKind;
+use App\Enums\BreedingMethod;
 use App\Enums\CoatColor;
 use App\Enums\ContactType;
+use App\Enums\DocumentCategory;
+use App\Enums\DogLeftReason;
 use App\Enums\DogRole;
 use App\Enums\DogSex;
+use App\Enums\HealthRecordType;
 use App\Enums\LitterStatus;
 use App\Enums\PuppyStatus;
+use App\Enums\RegistrationType;
 use App\Enums\WaitlistStatus;
 
 class Options
@@ -18,6 +24,12 @@ class Options
         return [
             'sex' => DogSex::options(),
             'role' => DogRole::options(),
+            'leftReason' => DogLeftReason::options(),
+            'documentCategory' => DocumentCategory::options(),
+            'healthRecordType' => HealthRecordType::options(),
+            'breedingMethod' => BreedingMethod::options(),
+            'achievementKind' => AchievementKind::options(),
+            'registrationType' => RegistrationType::options(),
             'color' => CoatColor::options(),
             'litterStatus' => LitterStatus::options(),
             'puppyStatus' => PuppyStatus::options(),

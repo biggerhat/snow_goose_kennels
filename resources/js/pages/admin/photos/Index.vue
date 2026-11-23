@@ -3,6 +3,7 @@ import { Head, Link, router } from '@inertiajs/vue3';
 import { FolderPlus, Globe, Lock, Pencil } from '@lucide/vue';
 import { computed, reactive, ref, watch } from 'vue';
 import ConfirmDelete from '@/components/admin/ConfirmDelete.vue';
+import ConfirmDialog from '@/components/admin/ConfirmDialog.vue';
 import EmptyState from '@/components/admin/EmptyState.vue';
 import NativeSelect from '@/components/admin/NativeSelect.vue';
 import PageHeader from '@/components/admin/PageHeader.vue';
@@ -188,10 +189,9 @@ function bulkDo(action: 'move' | 'show' | 'hide' | 'delete') {
     );
 }
 
+const confirmDelete = ref(false);
 function removeSelected() {
-    if (window.confirm(`Delete ${selected.value.length} photo(s) for good?`)) {
-        bulkDo('delete');
-    }
+    confirmDelete.value = true;
 }
 
 // ---- single photo edits ------------------------------------------------------
@@ -230,6 +230,15 @@ const subjectLabel: Record<string, string> = {
         <PageHeader
             title="Photo library"
             description="Your private photo box. Keep everything here, sort it into albums, and choose which photos visitors can see."
+            :help="[
+                'This is where all your photos live. A photo is private until you choose Show on the website, so you can keep vet photos, records and family pictures here safely.',
+                'Tap the box to add photos from your phone or computer. You can add many at once. They are shrunk automatically so the website stays fast.',
+                'Albums are folders for you. Make one like Vet visits, then pick it when you add photos or move photos into it. Visitors never see albums.',
+                'Tick the little box on several photos to move them, show them on the website, make them private or delete them all at once.',
+                'To show a photo on a particular dog or litter page, add it from that dog’s or litter’s own page.',
+            ]"
+            help-title="The photo library"
+            help-topic="Add photos"
         />
 
         <!-- Totals -->
@@ -261,7 +270,10 @@ const subjectLabel: Record<string, string> = {
         </dl>
 
         <!-- Albums -->
-        <nav aria-label="Albums" class="flex flex-wrap items-center gap-2">
+        <nav
+            aria-label="Albums"
+            class="-mx-4 flex flex-nowrap items-center gap-2 overflow-x-auto px-4 pb-1 sm:mx-0 sm:flex-wrap sm:px-0 [&>*]:shrink-0"
+        >
             <Link
                 :href="index.url()"
                 preserve-scroll
@@ -378,7 +390,11 @@ const subjectLabel: Record<string, string> = {
                 </div>
             </template>
             <form v-else class="space-y-2" @submit.prevent="saveAlbum">
-                <Input v-model="albumForm.name" placeholder="Album name" />
+                <Input
+                    v-model="albumForm.name"
+                    placeholder="Album name"
+                    aria-label="Album name"
+                />
                 <Input
                     v-model="albumForm.description"
                     placeholder="Notes (optional)"
@@ -410,6 +426,7 @@ const subjectLabel: Record<string, string> = {
                 v-model="query.q"
                 class="w-full sm:w-64"
                 placeholder="Search captions and credits"
+                aria-label="Search captions and credits"
             />
             <div class="w-full sm:w-44">
                 <NativeSelect
@@ -419,6 +436,7 @@ const subjectLabel: Record<string, string> = {
                         { value: 'private', label: 'Private' },
                     ]"
                     placeholder="Website: any"
+                    aria-label="Filter by website visibility"
                     @update:model-value="go()"
                 />
             </div>
@@ -432,6 +450,7 @@ const subjectLabel: Record<string, string> = {
                         { value: 'none', label: 'Nothing (loose)' },
                     ]"
                     placeholder="Linked to: anything"
+                    aria-label="Filter by what the photo is linked to"
                     @update:model-value="go()"
                 />
             </div>
@@ -470,6 +489,7 @@ const subjectLabel: Record<string, string> = {
                         v-model="moveTo"
                         :options="albumOptions"
                         placeholder="No album"
+                        aria-label="Move selected photos to album"
                     />
                 </div>
                 <Button
@@ -485,7 +505,7 @@ const subjectLabel: Record<string, string> = {
                     variant="outline"
                     @click="bulkDo('show')"
                 >
-                    <Globe class="size-4" /> Show on website
+                    <Globe class="size-4" /> Show on the website
                 </Button>
                 <Button
                     type="button"
@@ -507,10 +527,17 @@ const subjectLabel: Record<string, string> = {
             </template>
         </div>
 
+        <ConfirmDialog
+            v-model:open="confirmDelete"
+            :message="`Delete ${selected.length} photo(s) for good? This cannot be undone.`"
+            confirm-label="Delete photos"
+            @confirm="bulkDo('delete')"
+        />
+
         <!-- Grid -->
         <ul
             v-if="photos.data.length"
-            class="grid gap-4 sm:grid-cols-2 xl:grid-cols-3"
+            class="grid grid-cols-2 gap-3 sm:gap-4 lg:grid-cols-3"
         >
             <li
                 v-for="photo in photos.data"
@@ -571,7 +598,9 @@ const subjectLabel: Record<string, string> = {
                     </p>
                     <Input
                         v-model="photo.caption"
+                        class="max-sm:hidden"
                         placeholder="Caption"
+                        aria-label="Caption"
                         @change="save(photo, { caption: photo.caption })"
                     />
                     <details class="group text-sm">
@@ -581,6 +610,15 @@ const subjectLabel: Record<string, string> = {
                             More details
                         </summary>
                         <div class="mt-2 space-y-2">
+                            <Input
+                                v-model="photo.caption"
+                                class="sm:hidden"
+                                placeholder="Caption"
+                                aria-label="Caption"
+                                @change="
+                                    save(photo, { caption: photo.caption })
+                                "
+                            />
                             <Input
                                 v-model="photo.credit"
                                 placeholder="Credit (other people's photos)"
@@ -608,6 +646,7 @@ const subjectLabel: Record<string, string> = {
                                     "
                                     :options="albumOptions"
                                     placeholder="No album"
+                                    aria-label="Album"
                                     @update:model-value="
                                         (v) => {
                                             photo.album_id = v
@@ -622,7 +661,7 @@ const subjectLabel: Record<string, string> = {
                             </label>
                             <ToggleField
                                 :model-value="photo.is_public"
-                                label="Show on website"
+                                label="Show on the website"
                                 @update:model-value="
                                     save(photo, { is_public: $event })
                                 "

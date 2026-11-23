@@ -49,11 +49,16 @@ const open = ref<number | null>(null);
                 <button
                     type="button"
                     class="photo-frame block w-full text-left transition-transform hover:-translate-y-0.5"
+                    :aria-label="
+                        p.caption
+                            ? `View photo: ${p.caption}`
+                            : `View photo ${i + 1} of ${photos.length}`
+                    "
                     @click="open = i"
                 >
                     <img
                         :src="p.thumb_url"
-                        :alt="p.caption ?? ''"
+                        alt=""
                         class="w-full"
                         loading="lazy"
                     />

@@ -44,6 +44,12 @@ watch([q, type], () => {
         <PageHeader
             title="Contacts"
             description="Buyers, vets, stud owners and everyone else."
+            :help="[
+                'Your address book. Search by name, phone, email or city.',
+                'Tap a person to see their details and the log of everything you have talked about. If they have a phone number, tap Call next to their name to ring them.',
+                'Nothing in Contacts is ever shown on the website.',
+            ]"
+            help-title="Your contacts"
         >
             <Button as-child><Link :href="create()">Add contact</Link></Button>
         </PageHeader>
@@ -53,6 +59,7 @@ watch([q, type], () => {
                 v-model="q"
                 type="search"
                 placeholder="Search name, phone, email or city…"
+                aria-label="Search contacts"
                 class="max-w-sm"
             />
             <div class="w-48">
@@ -60,14 +67,19 @@ watch([q, type], () => {
                     v-model="type"
                     :options="options.contactType"
                     placeholder="All types"
+                    aria-label="Filter by type"
                 />
             </div>
         </div>
 
         <EmptyState
             v-if="!contacts.length"
-            title="No contacts found"
-            description="Add buyers and everyone you work with so their info is in one place."
+            :title="q || type ? 'Nobody matches that' : 'No contacts yet'"
+            :description="
+                q || type
+                    ? 'Try a shorter search, or clear the type filter.'
+                    : 'Add buyers and everyone you work with so their info is in one place.'
+            "
         >
             <Button as-child
                 ><Link :href="create()">Add a contact</Link></Button
@@ -75,10 +87,10 @@ watch([q, type], () => {
         </EmptyState>
 
         <ul v-else class="divide-y rounded-xl border bg-card">
-            <li v-for="c in contacts" :key="c.id">
+            <li v-for="c in contacts" :key="c.id" class="flex items-center">
                 <Link
                     :href="edit(c.id)"
-                    class="flex flex-wrap items-center justify-between gap-x-4 gap-y-1 p-4 transition-colors hover:bg-muted/50"
+                    class="flex min-w-0 flex-1 flex-wrap items-center justify-between gap-x-4 gap-y-1 p-4 transition-colors hover:bg-muted/50"
                 >
                     <div class="min-w-0">
                         <p class="font-medium">{{ c.name }}</p>
@@ -112,6 +124,13 @@ watch([q, type], () => {
                         />
                     </div>
                 </Link>
+                <a
+                    v-if="c.phone"
+                    :href="`tel:${c.phone.replace(/[^0-9+]/g, '')}`"
+                    class="mr-3 inline-flex shrink-0 items-center gap-1.5 rounded-md border px-3 py-2 text-sm font-medium hover:bg-muted"
+                    :aria-label="`Call ${c.name}`"
+                    ><Phone class="size-4" />Call</a
+                >
             </li>
         </ul>
     </div>

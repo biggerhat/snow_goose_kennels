@@ -8,6 +8,7 @@ use App\Mail\DailyReminders;
 use App\Models\Litter;
 use App\Models\User;
 use App\Models\WaitlistEntry;
+use App\Support\Attention;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Mail;
 
@@ -36,7 +37,9 @@ class SendReminders extends Command
             ->where('created_at', '<=', now()->subDays(2))
             ->oldest()->get();
 
-        if ($due->isEmpty() && $goingHome->isEmpty() && $unanswered->isEmpty()) {
+        $attention = Attention::items();
+
+        if ($due->isEmpty() && $goingHome->isEmpty() && $unanswered->isEmpty() && $attention->isEmpty()) {
             $this->info('Nothing to remind about today.');
 
             return self::SUCCESS;
@@ -50,7 +53,7 @@ class SendReminders extends Command
             return self::SUCCESS;
         }
 
-        Mail::to($to)->send(new DailyReminders($due, $goingHome, $unanswered));
+        Mail::to($to)->send(new DailyReminders($due, $goingHome, $unanswered, $attention));
         $this->info('Reminder email sent to '.count($to).' login(s).');
 
         return self::SUCCESS;

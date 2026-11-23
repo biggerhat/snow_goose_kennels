@@ -21,6 +21,19 @@ class SiteContent
         ['key' => 'takeback_policy', 'title' => 'If a dog cannot be kept', 'hint' => 'Whether you will take a dog back at any age. Buyer guides look for this.'],
     ];
 
+    /**
+     * Wording for the printed papers (go-home packet, sales agreement, receipts). Private: never shown on the website.
+     * Blank until the owner writes it, so a printed paper never contains terms she did not choose.
+     */
+    public const PAPERS = [
+        ['key' => 'payment_instructions', 'title' => 'How buyers pay', 'hint' => 'Printed on deposit receipts and sales agreements. For example: check made out to…, Venmo @name, Zelle to this phone number.'],
+        ['key' => 'packet_food', 'title' => 'What the puppies eat', 'hint' => 'The food brand and how much, so buyers can keep the same food at first. Printed in the go-home packet.'],
+        ['key' => 'packet_care', 'title' => 'First weeks at home', 'hint' => 'Your tips for the first days: feeding times, crate, sleep, when to see a vet. Printed in the go-home packet.'],
+        ['key' => 'packet_vet', 'title' => 'Your vet', 'hint' => 'Name and phone number of the vet who saw the puppies. Printed in the go-home packet.'],
+        ['key' => 'contract_extra', 'title' => 'Extra terms for the sales agreement', 'hint' => 'Anything else you want in the agreement, like a registration or breeding-rights clause. Your deposit, refund, health guarantee, spay/neuter and take-back wording from How it works is added automatically.'],
+        ['key' => 'stud_terms', 'title' => 'Terms for the stud agreement', 'hint' => 'What you agree with the owner of a stud or dam: fee, return service, what happens if there are no puppies. Printed on the stud agreement.'],
+    ];
+
     /** @return list<array{key: string, title: string, body: string}> Sections that have text. */
     public static function filled(): array
     {

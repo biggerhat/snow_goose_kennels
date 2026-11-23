@@ -10,8 +10,10 @@ use App\Models\Litter;
 use App\Models\Photo;
 use App\Models\Setting;
 use App\Models\Testimonial;
+use App\Support\Pedigree;
 use App\Support\SiteContent;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Str;
 use Inertia\Inertia;
 use Inertia\Response;
 
@@ -26,6 +28,7 @@ class SiteController extends Controller
         $litters = $this->publicLitters();
 
         return Inertia::render('public/Home', [
+            'meta' => self::meta(null, 'Family-raised black, chocolate and yellow Labrador retrievers. Upcoming litters, dates, prices and health testing.'),
             'next' => $litters->first(fn ($l) => in_array($l['status'], ['planned', 'expected'])),
             'onGround' => $litters->where('status', 'on_ground')->values(),
             'dogs' => $this->publicDogs()->whereIn('role', ['stud', 'dam'])->take(4)->values(),
@@ -40,6 +43,7 @@ class SiteController extends Controller
         $litters = $this->publicLitters();
 
         return Inertia::render('public/Litters', [
+            'meta' => self::meta('Litters', 'Upcoming, current and past Labrador litters with due dates, prices, deposits and parents.'),
             'upcoming' => $litters->whereIn('status', ['planned', 'expected'])->values(),
             'onGround' => $litters->where('status', 'on_ground')->values(),
             'past' => $litters->where('status', 'all_home')->values(),
@@ -49,24 +53,29 @@ class SiteController extends Controller
 
     public function dogs(): Response
     {
-        return Inertia::render('public/Dogs', ['dogs' => $this->publicDogs()]);
+        return Inertia::render('public/Dogs', ['dogs' => $this->publicDogs(), 'meta' => self::meta('Our dogs', 'The studs and dams behind every litter, with their health clearances.')]);
     }
 
     public function dog(Dog $dog): Response
     {
         abort_unless($dog->is_public, 404);
 
-        return Inertia::render('public/DogShow', ['dog' => $this->dogData($dog->load(['photos' => fn ($q) => $q->where('is_public', true), 'healthTests' => fn ($q) => $q->where('is_public', true)]))]);
+        return Inertia::render('public/DogShow', [
+            'dog' => $this->dogData($dog->load(['photos' => fn ($q) => $q->where('is_public', true), 'healthTests' => fn ($q) => $q->where('is_public', true)])),
+            'pedigree' => ($dog->sire_id || $dog->dam_id) ? Pedigree::build($dog, 3, public: true) : null,
+            'meta' => self::meta($dog->name, self::dogDescription($dog), $dog->photos->where('is_public', true)->first()?->url),
+        ]);
     }
 
     public function gallery(): Response
     {
-        return Inertia::render('public/Gallery', ['photos' => $this->galleryPhotos()]);
+        return Inertia::render('public/Gallery', ['photos' => $this->galleryPhotos(), 'meta' => self::meta('Gallery', 'Photos of our Labrador retrievers and puppies.')]);
     }
 
     public function families(): Response
     {
         return Inertia::render('public/Families', [
+            'meta' => self::meta('Happy families', 'Kind words from families who took a puppy home.'),
             'testimonials' => Testimonial::where('is_public', true)->orderBy('sort_order')->latest('id')
                 ->get(['id', 'name', 'location', 'puppy_name', 'body']),
         ]);
@@ -75,14 +84,40 @@ class SiteController extends Controller
     public function howItWorks(): Response
     {
         return Inertia::render('public/HowItWorks', [
+            'meta' => self::meta('How it works', 'From first call to go-home day: deposits, picking a puppy and what to expect.'),
             'sections' => SiteContent::filled(),
+            'contact' => Setting::contact(),
+        ]);
+    }
+
+    public function privacy(): Response
+    {
+        return Inertia::render('public/Privacy', [
+            'meta' => self::meta('Privacy', 'What information we collect through this website, how we use it, and who sees it.'),
+            'contact' => Setting::contact(),
+        ]);
+    }
+
+    public function healthTesting(): Response
+    {
+        $dogs = Dog::query()->where('is_public', true)->where('is_ours', true)
+            ->with(['photos' => fn ($q) => $q->where('is_public', true), 'healthTests' => fn ($q) => $q->where('is_public', true)])
+            ->get()
+            ->filter(fn (Dog $d) => in_array($d->role, [DogRole::Stud, DogRole::Dam], true))
+            ->sortBy(fn (Dog $d) => [array_search($d->role, [DogRole::Stud, DogRole::Dam]), $d->sort_order, $d->name])
+            ->values()
+            ->map(fn (Dog $d) => $this->dogData($d));
+
+        return Inertia::render('public/HealthTesting', [
+            'meta' => self::meta('Health testing', 'The health clearances for each of our breeding dogs, with links to the public records.'),
+            'dogs' => $dogs,
             'contact' => Setting::contact(),
         ]);
     }
 
     public function sitemap()
     {
-        $urls = collect(['/', '/litters', '/our-dogs', '/gallery', '/how-it-works', '/happy-families', '/apply', '/contact'])
+        $urls = collect(['/', '/litters', '/our-dogs', '/gallery', '/how-it-works', '/health-testing', '/happy-families', '/apply', '/contact', '/privacy'])
             ->map(fn ($p) => url($p))
             ->merge(Dog::where('is_public', true)->pluck('slug')->map(fn ($slug) => url("/our-dogs/$slug")));
 
@@ -95,7 +130,26 @@ class SiteController extends Controller
 
     public function contact(): Response
     {
-        return Inertia::render('public/Contact', ['contact' => Setting::contact()]);
+        return Inertia::render('public/Contact', ['contact' => Setting::contact(), 'meta' => self::meta('Contact', 'Call, email or apply for a puppy.')]);
+    }
+
+    /**
+     * What search engines and link previews should show for a page. The browser sets the same things
+     * with JavaScript, but crawlers and chat apps read them from the first response.
+     *
+     * @return array{title: string|null, description: string|null, image: string|null}
+     */
+    public static function meta(?string $title, ?string $description = null, ?string $image = null): array
+    {
+        return ['title' => $title, 'description' => $description, 'image' => $image];
+    }
+
+    private static function dogDescription(Dog $dog): string
+    {
+        $color = $dog->color ? strtolower($dog->color->label()).' ' : '';
+        $base = "{$dog->name}".($dog->registered_name ? " ({$dog->registered_name})" : '').", a {$color}Labrador retriever at ".config('app.name').'.';
+
+        return Str::limit(trim($base.' '.($dog->bio ?? '')), 200);
     }
 
     /** @return Collection<int, array<string, mixed>> */
@@ -106,7 +160,7 @@ class SiteController extends Controller
             ->with([
                 'sire.photos' => fn ($q) => $q->where('is_public', true),
                 'dam.photos' => fn ($q) => $q->where('is_public', true),
-                'puppies',
+                'puppies.photos',
                 'diary' => fn ($q) => $q->where('is_public', true)->limit(5),
                 'photos' => fn ($q) => $q->where('is_public', true),
             ])
@@ -135,6 +189,7 @@ class SiteController extends Controller
                     'sex' => $p->sex->value,
                     'color' => $p->color?->value,
                     'status' => $p->status->value,
+                    'photo' => ($ph = $p->photos->firstWhere('is_public', true)) ? $this->photo($ph) : null,
                 ])->values(),
                 'diary' => $l->diary->map(fn ($d) => ['id' => $d->id, 'posted_on' => $d->posted_on->format('Y-m-d'), 'title' => $d->title, 'body' => $d->body])->values(),
                 'photos' => $l->photos->map(fn ($p) => $this->photo($p))->values(),
@@ -171,6 +226,7 @@ class SiteController extends Controller
             'slug' => $dog->slug,
             'name' => $dog->name,
             'registered_name' => $dog->registered_name,
+            'titles' => $dog->titles,
             'sex' => $dog->sex->value,
             'role' => $dog->role->value,
             'color' => $dog->color?->value,

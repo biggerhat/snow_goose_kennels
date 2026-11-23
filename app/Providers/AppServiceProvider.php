@@ -2,7 +2,9 @@
 
 namespace App\Providers;
 
+use App\Models\Contact;
 use App\Models\Dog;
+use App\Models\KennelProfile;
 use App\Models\Litter;
 use App\Models\Puppy;
 use Carbon\CarbonImmutable;
@@ -33,6 +35,8 @@ class AppServiceProvider extends ServiceProvider
             'dog' => Dog::class,
             'litter' => Litter::class,
             'puppy' => Puppy::class,
+            'contact' => Contact::class,
+            'kennel' => KennelProfile::class,
         ]);
     }
 

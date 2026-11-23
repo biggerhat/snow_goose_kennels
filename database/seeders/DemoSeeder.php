@@ -52,6 +52,8 @@ class DemoSeeder extends Seeder
         $this->testimonials();
         $this->gallery();
         $this->call(DemoAlbumsSeeder::class);
+        $this->call(DemoRecordsSeeder::class);
+        $this->call(DemoAkcSeeder::class);
     }
 
     private function settings(): void

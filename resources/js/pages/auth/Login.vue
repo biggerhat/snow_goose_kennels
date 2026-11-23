@@ -13,8 +13,8 @@ import { request } from '@/routes/password';
 
 defineOptions({
     layout: {
-        title: 'Log in to your account',
-        description: 'Enter your email and password below to log in',
+        title: 'Welcome back',
+        description: 'Log in to the Snow Goose Kennels owner area',
     },
 });
 
@@ -81,8 +81,13 @@ defineProps<{
 
             <div class="flex items-center justify-between">
                 <Label for="remember" class="flex items-center space-x-3">
-                    <Checkbox id="remember" name="remember" :tabindex="3" />
-                    <span>Remember me</span>
+                    <Checkbox
+                        id="remember"
+                        name="remember"
+                        :default-value="true"
+                        :tabindex="3"
+                    />
+                    <span>Keep me logged in on this device</span>
                 </Label>
             </div>
 

@@ -31,6 +31,7 @@ type PublicLitter = {
         sex: string;
         color: string | null;
         status: string;
+        photo?: { thumb_url: string } | null;
     }[];
     diary?: {
         id: number;
@@ -161,54 +162,62 @@ const available = computed(
                 {{ litter.description }}
             </p>
 
-            <dl class="flex flex-wrap gap-3 text-sm">
-                <div
-                    v-if="litter.price"
-                    class="rounded-full bg-secondary px-4 py-1.5"
-                >
-                    <dt class="mr-1.5 inline text-muted-foreground">Price</dt>
-                    <dd class="inline font-semibold">
-                        {{ money(litter.price) }}
-                    </dd>
-                </div>
-                <div
-                    v-if="litter.deposit"
-                    class="rounded-full bg-secondary px-4 py-1.5"
-                >
-                    <dt class="mr-1.5 inline text-muted-foreground">Deposit</dt>
-                    <dd class="inline font-semibold">
-                        {{ money(litter.deposit) }}
-                    </dd>
-                </div>
-                <div
-                    v-if="litter.go_home_on"
-                    class="rounded-full bg-secondary px-4 py-1.5"
-                >
-                    <dt class="mr-1.5 inline text-muted-foreground">Home</dt>
-                    <dd class="inline font-semibold">
-                        {{ formatDate(litter.go_home_on) }}
-                    </dd>
-                </div>
-                <div
-                    v-if="litter.expected_count && !litter.puppies.length"
-                    class="rounded-full bg-secondary px-4 py-1.5"
-                >
-                    <dt class="mr-1.5 inline text-muted-foreground">
-                        Expecting
-                    </dt>
-                    <dd class="inline font-semibold">
-                        ~{{ litter.expected_count }} pups
-                    </dd>
-                </div>
-                <div
+            <div class="flex flex-wrap gap-3 text-sm">
+                <dl class="contents">
+                    <div
+                        v-if="litter.price"
+                        class="rounded-full bg-secondary px-4 py-1.5"
+                    >
+                        <dt class="mr-1.5 inline text-muted-foreground">
+                            Price
+                        </dt>
+                        <dd class="inline font-semibold">
+                            {{ money(litter.price) }}
+                        </dd>
+                    </div>
+                    <div
+                        v-if="litter.deposit"
+                        class="rounded-full bg-secondary px-4 py-1.5"
+                    >
+                        <dt class="mr-1.5 inline text-muted-foreground">
+                            Deposit
+                        </dt>
+                        <dd class="inline font-semibold">
+                            {{ money(litter.deposit) }}
+                        </dd>
+                    </div>
+                    <div
+                        v-if="litter.go_home_on"
+                        class="rounded-full bg-secondary px-4 py-1.5"
+                    >
+                        <dt class="mr-1.5 inline text-muted-foreground">
+                            Home
+                        </dt>
+                        <dd class="inline font-semibold">
+                            {{ formatDate(litter.go_home_on) }}
+                        </dd>
+                    </div>
+                    <div
+                        v-if="litter.expected_count && !litter.puppies.length"
+                        class="rounded-full bg-secondary px-4 py-1.5"
+                    >
+                        <dt class="mr-1.5 inline text-muted-foreground">
+                            Expecting
+                        </dt>
+                        <dd class="inline font-semibold">
+                            ~{{ litter.expected_count }} pups
+                        </dd>
+                    </div>
+                </dl>
+                <p
                     v-if="
                         litter.puppies.length && litter.status === 'on_ground'
                     "
                     class="rounded-full bg-accent px-4 py-1.5 font-semibold"
                 >
                     {{ available }} available
-                </div>
-            </dl>
+                </p>
+            </div>
 
             <ul
                 v-if="litter.puppies.length && litter.status === 'on_ground'"
@@ -220,6 +229,13 @@ const available = computed(
                     class="flex items-center justify-between gap-3 rounded-lg border px-3 py-2 text-sm"
                 >
                     <span class="flex items-center gap-2">
+                        <img
+                            v-if="p.photo"
+                            :src="p.photo.thumb_url"
+                            :alt="p.name || 'Puppy'"
+                            class="size-10 rounded-md object-cover"
+                            loading="lazy"
+                        />
                         <span
                             v-if="p.collar"
                             class="size-3.5 rounded-full ring-1 ring-black/20"
@@ -283,6 +299,9 @@ const available = computed(
             <div
                 v-if="litter.photos.length"
                 class="flex gap-2 overflow-x-auto pb-1"
+                role="region"
+                tabindex="0"
+                aria-label="Photos of this litter"
             >
                 <img
                     v-for="ph in litter.photos"

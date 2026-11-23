@@ -2,13 +2,20 @@
 import { Head, Link, router, useForm, usePage } from '@inertiajs/vue3';
 import { computed } from 'vue';
 import ConfirmDelete from '@/components/admin/ConfirmDelete.vue';
+import DocumentManager from '@/components/admin/DocumentManager.vue';
 import Field from '@/components/admin/Field.vue';
 import NativeSelect from '@/components/admin/NativeSelect.vue';
 import PageHeader from '@/components/admin/PageHeader.vue';
+import PageTabs from '@/components/admin/PageTabs.vue';
+import type { PageTab } from '@/components/admin/PageTabs.vue';
+import StickySave from '@/components/admin/StickySave.vue';
+import TabPanel from '@/components/admin/TabPanel.vue';
+import { usePageTabs } from '@/composables/usePageTabs';
 import StatusBadge from '@/components/admin/StatusBadge.vue';
 import TextArea from '@/components/admin/TextArea.vue';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
+import { useUnsavedWarning } from '@/composables/useUnsavedWarning';
 import { formatDateTime, labelFor, money } from '@/lib/format';
 import {
     destroy as destroyNote,
@@ -25,6 +32,31 @@ import type { Contact, Options } from '@/types';
 const props = defineProps<{ contact: Contact | null }>();
 const options = computed(() => usePage().props.options as Options);
 
+const tabs = computed<PageTab[]>(() => [
+    { key: 'details', label: 'Details' },
+    {
+        key: 'conversations',
+        label: 'Conversations',
+        count: props.contact?.contact_notes?.length,
+    },
+    {
+        key: 'lists',
+        label: 'Waitlist & puppies',
+        count:
+            (props.contact?.waitlist_entries?.length ?? 0) +
+            (props.contact?.puppies?.length ?? 0),
+    },
+    {
+        key: 'papers',
+        label: 'Papers',
+        count: props.contact?.documents?.length,
+    },
+]);
+const tab = usePageTabs(
+    ['details', 'conversations', 'lists', 'papers'],
+    'details',
+);
+
 defineOptions({
     layout: { breadcrumbs: [{ title: 'Contacts', href: index() }] },
 });
@@ -40,6 +72,11 @@ const form = useForm({
     postal_code: props.contact?.postal_code ?? '',
     notes: props.contact?.notes ?? '',
 });
+
+useUnsavedWarning(() => form.isDirty);
+const formDirty = computed(() => form.isDirty);
+const formBusy = computed(() => form.processing);
+const discardChanges = () => form.reset();
 
 function submit() {
     if (props.contact) {
@@ -70,8 +107,15 @@ function addNote() {
             :description="
                 contact
                     ? labelFor(options.contactType, contact.type)
-                    : undefined
+                    : 'Anyone you talk to: buyers, your vet, friends. Only the name is needed.'
             "
+            :help="[
+                'Contacts is your address book. Everyone who calls, texts or applies can live here, with a running log of what you talked about.',
+                'Add a person here, or just add them from the Waitlist page and they appear here automatically.',
+                'After you save, use the Conversations tab to jot down each call or text, with the date. The Waitlist & puppies tab shows what they are waiting for or bought, and Papers keeps their agreements.',
+                'Nothing here is ever shown on the website.',
+            ]"
+            help-title="About this page"
         >
             <template v-if="contact">
                 <Button v-if="contact.phone" as-child variant="outline"
@@ -82,24 +126,42 @@ function addNote() {
                 >
                 <ConfirmDelete
                     label="Delete"
-                    :message="`Delete ${contact.name}? Their waitlist entries go too.`"
+                    :message="`Delete ${contact.name}? Their conversation notes and waitlist entries are deleted too, and any puppy they bought will show no buyer. This cannot be undone.`"
                     @confirm="router.delete(destroy.url(contact.id))"
                 />
             </template>
         </PageHeader>
 
-        <form class="space-y-6" @submit.prevent="submit">
+        <PageTabs v-if="contact" v-model="tab" :tabs="tabs" />
+
+        <form
+            v-show="!contact || tab === 'details'"
+            id="main-form"
+            class="space-y-6"
+            @submit.prevent="submit"
+        >
             <section class="space-y-4 rounded-xl border bg-card p-5">
                 <div class="grid gap-4 sm:grid-cols-2">
-                    <Field label="Name" :error="form.errors.name" for="name"
+                    <Field
+                        label="Name"
+                        required
+                        :error="form.errors.name"
+                        for="name"
                         ><Input id="name" v-model="form.name" required
                     /></Field>
-                    <Field label="Type" :error="form.errors.type"
+                    <Field
+                        label="Type"
+                        :error="form.errors.type"
+                        help="Why this person is in your book, such as a puppy buyer, your vet, or the owner of a stud dog. It only helps you search."
                         ><NativeSelect
                             v-model="form.type"
                             :options="options.contactType"
                     /></Field>
-                    <Field label="Phone" :error="form.errors.phone" for="phone"
+                    <Field
+                        label="Phone"
+                        :error="form.errors.phone"
+                        hint="With area code, like (208) 555-0123."
+                        for="phone"
                         ><Input
                             id="phone"
                             v-model="form.phone"
@@ -153,115 +215,166 @@ function addNote() {
         </form>
 
         <template v-if="contact">
-            <section class="space-y-3 rounded-xl border bg-card p-5">
-                <div class="flex items-center justify-between">
-                    <h2 class="font-serif text-lg font-semibold">Waitlist</h2>
-                    <Button as-child size="sm" variant="secondary"
-                        ><Link
-                            :href="
-                                newWaitlist({ query: { contact: contact.id } })
-                            "
-                            >Add to a litter</Link
-                        ></Button
-                    >
-                </div>
-                <p
-                    v-if="!contact.waitlist_entries?.length"
-                    class="text-sm text-muted-foreground"
-                >
-                    Not on any waitlist.
-                </p>
-                <ul class="divide-y">
-                    <li v-for="e in contact.waitlist_entries" :key="e.id">
-                        <Link
-                            :href="editWaitlist(e.id)"
-                            class="flex items-center justify-between gap-3 py-2 text-sm hover:underline"
+            <TabPanel name="conversations" :active="tab === 'conversations'">
+                <section class="space-y-4 rounded-xl border bg-card p-5">
+                    <h2 class="font-serif text-lg font-semibold">
+                        Conversation log
+                    </h2>
+                    <form class="space-y-2" @submit.prevent="addNote">
+                        <TextArea
+                            v-model="noteForm.body"
+                            :rows="2"
+                            placeholder="Called Tuesday, wants a female, will send deposit Friday…"
+                        />
+                        <Button
+                            type="submit"
+                            size="sm"
+                            variant="secondary"
+                            :disabled="noteForm.processing || !noteForm.body"
+                            >Add note</Button
                         >
-                            <span
-                                >{{ e.litter?.title ?? 'Any upcoming litter' }}
-                                <span
-                                    v-if="e.deposit_amount"
-                                    class="text-muted-foreground"
-                                    >· deposit
-                                    {{ money(e.deposit_amount) }}</span
-                                ></span
-                            >
-                            <StatusBadge
-                                :value="e.status"
-                                :label="
-                                    labelFor(options.waitlistStatus, e.status)
+                    </form>
+                    <ul class="divide-y">
+                        <li
+                            v-for="n in contact.contact_notes"
+                            :key="n.id"
+                            class="flex items-start justify-between gap-3 py-3"
+                        >
+                            <div>
+                                <p class="text-xs text-muted-foreground">
+                                    {{ formatDateTime(n.noted_at) }}
+                                </p>
+                                <p class="text-sm whitespace-pre-line">
+                                    {{ n.body }}
+                                </p>
+                            </div>
+                            <ConfirmDelete
+                                icon
+                                message="Delete this note?"
+                                @confirm="
+                                    router.delete(destroyNote.url(n.id), {
+                                        preserveScroll: true,
+                                    })
                                 "
                             />
-                        </Link>
-                    </li>
-                </ul>
-            </section>
-
-            <section
-                v-if="contact.puppies?.length"
-                class="space-y-3 rounded-xl border bg-card p-5"
-            >
-                <h2 class="font-serif text-lg font-semibold">Puppies</h2>
-                <ul class="divide-y text-sm">
-                    <li v-for="p in contact.puppies" :key="p.id" class="py-2">
-                        {{ p.name || p.collar || 'Puppy' }} ·
-                        <Link
-                            v-if="p.litter"
-                            :href="editLitter(p.litter.slug)"
-                            class="underline"
-                            >{{ p.litter.title }}</Link
+                        </li>
+                    </ul>
+                </section>
+            </TabPanel>
+            <TabPanel name="lists" :active="tab === 'lists'">
+                <section class="space-y-3 rounded-xl border bg-card p-5">
+                    <div class="flex items-center justify-between">
+                        <h2 class="font-serif text-lg font-semibold">
+                            Waitlist
+                        </h2>
+                        <Button as-child size="sm" variant="secondary"
+                            ><Link
+                                :href="
+                                    newWaitlist({
+                                        query: { contact: contact.id },
+                                    })
+                                "
+                                >Add to a litter</Link
+                            ></Button
                         >
-                        <span v-if="p.sale_price" class="text-muted-foreground">
-                            · {{ money(p.sale_price) }}</span
+                    </div>
+                    <p
+                        v-if="!contact.waitlist_entries?.length"
+                        class="text-sm text-muted-foreground"
+                    >
+                        Not on any waitlist.
+                    </p>
+                    <ul class="divide-y">
+                        <li v-for="e in contact.waitlist_entries" :key="e.id">
+                            <Link
+                                :href="editWaitlist(e.id)"
+                                class="flex items-center justify-between gap-3 py-2 text-sm hover:underline"
+                            >
+                                <span
+                                    >{{
+                                        e.litter?.title ?? 'Any upcoming litter'
+                                    }}
+                                    <span
+                                        v-if="e.deposit_amount"
+                                        class="text-muted-foreground"
+                                        >· deposit
+                                        {{ money(e.deposit_amount) }}</span
+                                    ></span
+                                >
+                                <StatusBadge
+                                    :value="e.status"
+                                    :label="
+                                        labelFor(
+                                            options.waitlistStatus,
+                                            e.status,
+                                        )
+                                    "
+                                />
+                            </Link>
+                        </li>
+                    </ul>
+                </section>
+                <section
+                    v-if="contact.puppies?.length"
+                    class="space-y-3 rounded-xl border bg-card p-5"
+                >
+                    <h2 class="font-serif text-lg font-semibold">Puppies</h2>
+                    <ul class="divide-y text-sm">
+                        <li
+                            v-for="p in contact.puppies"
+                            :key="p.id"
+                            class="py-2"
                         >
-                    </li>
-                </ul>
-            </section>
-
-            <section class="space-y-4 rounded-xl border bg-card p-5">
-                <h2 class="font-serif text-lg font-semibold">
-                    Conversation log
-                </h2>
-                <form class="space-y-2" @submit.prevent="addNote">
-                    <TextArea
-                        v-model="noteForm.body"
-                        :rows="2"
-                        placeholder="Called Tuesday, wants a female, will send deposit Friday…"
+                            {{ p.name || p.collar || 'Puppy' }} ·
+                            <Link
+                                v-if="p.litter"
+                                :href="editLitter(p.litter.slug)"
+                                class="underline"
+                                >{{ p.litter.title }}</Link
+                            >
+                            <span
+                                v-if="p.sale_price"
+                                class="text-muted-foreground"
+                            >
+                                · {{ money(p.sale_price) }}</span
+                            >
+                        </li>
+                    </ul>
+                </section>
+            </TabPanel>
+            <TabPanel name="papers" :active="tab === 'papers'">
+                <section
+                    v-if="contact"
+                    class="space-y-3 rounded-xl border bg-card p-5"
+                >
+                    <div>
+                        <h2 class="font-serif text-lg font-semibold">
+                            Agreements &amp; papers
+                            <span
+                                class="text-sm font-normal text-muted-foreground"
+                                >(private)</span
+                            >
+                        </h2>
+                        <p class="text-sm text-muted-foreground">
+                            A signed stud agreement, a bill of sale or anything
+                            else to do with this person.
+                        </p>
+                    </div>
+                    <DocumentManager
+                        type="contact"
+                        :id="contact.id"
+                        :documents="contact.documents ?? []"
+                        category="sale"
                     />
-                    <Button
-                        type="submit"
-                        size="sm"
-                        variant="secondary"
-                        :disabled="noteForm.processing || !noteForm.body"
-                        >Add note</Button
-                    >
-                </form>
-                <ul class="divide-y">
-                    <li
-                        v-for="n in contact.contact_notes"
-                        :key="n.id"
-                        class="flex items-start justify-between gap-3 py-3"
-                    >
-                        <div>
-                            <p class="text-xs text-muted-foreground">
-                                {{ formatDateTime(n.noted_at) }}
-                            </p>
-                            <p class="text-sm whitespace-pre-line">
-                                {{ n.body }}
-                            </p>
-                        </div>
-                        <ConfirmDelete
-                            icon
-                            message="Delete this note?"
-                            @confirm="
-                                router.delete(destroyNote.url(n.id), {
-                                    preserveScroll: true,
-                                })
-                            "
-                        />
-                    </li>
-                </ul>
-            </section>
+                </section>
+            </TabPanel>
         </template>
+
+        <StickySave
+            :dirty="formDirty"
+            :processing="formBusy"
+            form-id="main-form"
+            @discard="discardChanges"
+        />
     </div>
 </template>

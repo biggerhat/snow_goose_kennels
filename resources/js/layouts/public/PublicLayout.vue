@@ -17,6 +17,9 @@ const nav = computed(() => [
     ...((page.props.site as { hasProcess: boolean }).hasProcess
         ? [{ label: 'How it works', href: '/how-it-works' }]
         : []),
+    ...((page.props.site as { hasHealth: boolean }).hasHealth
+        ? [{ label: 'Health testing', href: '/health-testing' }]
+        : []),
     ...((page.props.site as { hasFamilies: boolean }).hasFamilies
         ? [{ label: 'Happy families', href: '/happy-families' }]
         : []),
@@ -72,7 +75,14 @@ const isActive = (href: string) =>
                 class="mx-auto mt-6 flex max-w-6xl flex-col items-center gap-5 px-5 text-center text-sm text-muted-foreground"
             >
                 <PaletteHeads />
-                <p>© {{ new Date().getFullYear() }} {{ name }}</p>
+                <p>
+                    © {{ new Date().getFullYear() }} {{ name }} ·
+                    <Link
+                        href="/privacy"
+                        class="underline-offset-4 hover:underline"
+                        >Privacy</Link
+                    >
+                </p>
                 <Link
                     :href="user ? dashboard() : login()"
                     class="underline-offset-4 hover:underline"

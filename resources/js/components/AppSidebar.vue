@@ -1,12 +1,17 @@
 <script setup lang="ts">
-import { Link } from '@inertiajs/vue3';
+import { Link, usePage } from '@inertiajs/vue3';
+import { computed } from 'vue';
 import {
     Baby,
     BookUser,
     Dog,
+    CircleHelp,
     ExternalLink,
+    GitFork,
     ImageIcon,
     LayoutGrid,
+    Library,
+    Wallet,
     ListChecks,
     MessageSquareQuote,
     PenLine,
@@ -25,6 +30,7 @@ import {
     SidebarMenuItem,
 } from '@/components/ui/sidebar';
 import { dashboard, home } from '@/routes';
+import { help, money, planner, records } from '@/routes/admin';
 import { index as contacts } from '@/routes/admin/contacts';
 import { index as dogs } from '@/routes/admin/dogs';
 import { index as litters } from '@/routes/admin/litters';
@@ -34,18 +40,64 @@ import { index as testimonials } from '@/routes/admin/testimonials';
 import { index as waitlist } from '@/routes/admin/waitlist';
 import type { NavItem } from '@/types';
 
-const mainNavItems: NavItem[] = [
-    { title: 'Dashboard', href: dashboard(), icon: LayoutGrid },
-    { title: 'Litters', href: litters(), icon: Baby },
-    { title: 'Dogs', href: dogs(), icon: Dog },
-    { title: 'Waitlist', href: waitlist(), icon: ListChecks },
-    { title: 'Contacts', href: contacts(), icon: BookUser },
-    { title: 'Photos', href: photos(), icon: ImageIcon },
-    { title: 'Happy families', href: testimonials(), icon: MessageSquareQuote },
-    { title: 'Website text', href: siteContent(), icon: PenLine },
-];
+const nav = computed(
+    () =>
+        usePage().props.nav as {
+            applications: number;
+            attention: number;
+        } | null,
+);
+
+const groups = computed<{ label: string; items: NavItem[] }[]>(() => [
+    {
+        label: 'Every day',
+        items: [
+            {
+                title: 'Dashboard',
+                href: dashboard(),
+                icon: LayoutGrid,
+                badge: nav.value?.attention,
+            },
+            {
+                title: 'Waitlist',
+                href: waitlist(),
+                icon: ListChecks,
+                badge: nav.value?.applications,
+            },
+            { title: 'Contacts', href: contacts(), icon: BookUser },
+        ],
+    },
+    {
+        label: 'Dogs & litters',
+        items: [
+            { title: 'Litters', href: litters(), icon: Baby },
+            { title: 'Dogs', href: dogs(), icon: Dog },
+            { title: 'Pairing planner', href: planner(), icon: GitFork },
+        ],
+    },
+    {
+        label: 'Website',
+        items: [
+            { title: 'Photos', href: photos(), icon: ImageIcon },
+            {
+                title: 'Happy families',
+                href: testimonials(),
+                icon: MessageSquareQuote,
+            },
+            { title: 'Website text', href: siteContent(), icon: PenLine },
+        ],
+    },
+    {
+        label: 'Records',
+        items: [
+            { title: 'Records', href: records(), icon: Library },
+            { title: 'Money', href: money(), icon: Wallet },
+        ],
+    },
+]);
 
 const footerNavItems: NavItem[] = [
+    { title: 'Help', href: help(), icon: CircleHelp },
     { title: 'View website', href: home(), icon: ExternalLink },
 ];
 </script>
@@ -65,7 +117,12 @@ const footerNavItems: NavItem[] = [
         </SidebarHeader>
 
         <SidebarContent>
-            <NavMain :items="mainNavItems" />
+            <NavMain
+                v-for="g in groups"
+                :key="g.label"
+                :items="g.items"
+                :label="g.label"
+            />
         </SidebarContent>
 
         <SidebarFooter>

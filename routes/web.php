@@ -12,6 +12,8 @@ Route::get('our-dogs/{dog}', [SiteController::class, 'dog'])->name('site.dog');
 Route::get('gallery', [SiteController::class, 'gallery'])->name('site.gallery');
 Route::get('happy-families', [SiteController::class, 'families'])->name('site.families');
 Route::get('how-it-works', [SiteController::class, 'howItWorks'])->name('site.how');
+Route::get('health-testing', [SiteController::class, 'healthTesting'])->name('site.health');
+Route::get('privacy', [SiteController::class, 'privacy'])->name('site.privacy');
 Route::get('contact', [SiteController::class, 'contact'])->name('site.contact');
 Route::get('apply', [ApplicationController::class, 'create'])->name('site.apply');
 Route::post('apply', [ApplicationController::class, 'store'])->middleware('throttle:5,10')->name('site.apply.store');

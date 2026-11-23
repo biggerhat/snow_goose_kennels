@@ -22,12 +22,16 @@ class DiaryEntryController extends Controller
 
         Inertia::flash('toast', ['type' => 'success', 'message' => 'Update posted.']);
 
+        Inertia::flash('toast', ['type' => 'success', 'message' => 'Update posted.']);
+
         return back();
     }
 
     public function destroy(DiaryEntry $diaryEntry): RedirectResponse
     {
         $diaryEntry->delete();
+
+        Inertia::flash('toast', ['type' => 'success', 'message' => 'Update removed.']);
 
         return back();
     }

@@ -6,18 +6,22 @@ use App\Enums\CoatColor;
 use App\Enums\ContactType;
 use App\Enums\DogSex;
 use App\Enums\WaitlistStatus;
+use App\Http\Controllers\Admin\Concerns\CleansInput;
 use App\Http\Controllers\Controller;
 use App\Models\Contact;
 use App\Models\Litter;
 use App\Models\WaitlistEntry;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
 use Inertia\Inertia;
 use Inertia\Response;
 
 class WaitlistController extends Controller
 {
+    use CleansInput;
+
     public function index(): Response
     {
         return Inertia::render('admin/waitlist/Index', [
@@ -63,7 +67,7 @@ class WaitlistController extends Controller
     public function edit(WaitlistEntry $waitlist): Response
     {
         return Inertia::render('admin/waitlist/Edit', [
-            'entry' => $waitlist->load('contact:id,name'),
+            'entry' => $waitlist->load('contact:id,name,phone,email'),
             'contacts' => Contact::orderBy('name')->get(['id', 'name']),
             'litters' => $this->litters(),
             'puppies' => $waitlist->litter?->puppies()->get(['id', 'name', 'collar', 'sex']) ?? [],
@@ -93,14 +97,19 @@ class WaitlistController extends Controller
 
     private function litters()
     {
+        $next = WaitlistEntry::query()->whereNotNull('litter_id')->groupBy('litter_id')
+            ->selectRaw('litter_id, max(pick_order) as top')->pluck('top', 'litter_id');
+
         return Litter::with(['sire:id,name', 'dam:id,name'])->latest('due_on')->get()
-            ->map(fn ($l) => ['id' => $l->id, 'title' => $l->title]);
+            ->map(fn ($l) => ['id' => $l->id, 'title' => $l->title, 'next_pick' => ((int) ($next[$l->id] ?? 0)) + 1]);
     }
 
     /** @return array<string, mixed> */
     private function validated(Request $request, bool $creating = true): array
     {
-        return $request->validate([
+        $this->cleanMoney($request, ['deposit_amount']);
+
+        $validator = Validator::make($request->all(), [
             'contact_id' => $creating
                 ? ['nullable', 'exists:contacts,id', 'required_without:new_name']
                 : ['required', 'exists:contacts,id'],
@@ -114,8 +123,35 @@ class WaitlistController extends Controller
             'pick_order' => ['nullable', 'integer', 'min:1', 'max:99'],
             'status' => ['required', Rule::enum(WaitlistStatus::class)],
             'deposit_amount' => ['nullable', 'integer', 'min:0', 'max:100000'],
-            'deposit_paid_on' => ['nullable', 'date'],
+            'deposit_paid_on' => ['nullable', 'date', 'before_or_equal:today'],
             'notes' => ['nullable', 'string', 'max:5000'],
+        ], [
+            'contact_id.required_without' => 'Choose a person from the list, or type a new name below.',
         ]);
+
+        $validator->after(function ($v) use ($request) {
+            $in = $v->getData();
+
+            if (filled($in['pick_order'] ?? null) && filled($in['litter_id'] ?? null)) {
+                $taken = WaitlistEntry::where('litter_id', $in['litter_id'])
+                    ->where('pick_order', $in['pick_order'])
+                    ->when($request->route('waitlist'), fn ($q, $e) => $q->whereKeyNot($e->getKey()))
+                    ->with('contact:id,name')->first();
+
+                if ($taken) {
+                    $v->errors()->add('pick_order', "Pick #{$in['pick_order']} for this litter already belongs to {$taken->contact->name}. Choose a different number.");
+                }
+            }
+
+            if (filled($in['deposit_paid_on'] ?? null) && ! filled($in['deposit_amount'] ?? null)) {
+                $v->errors()->add('deposit_amount', 'You entered the date the deposit was paid. How much was it?');
+            }
+
+            if (! empty($in['puppy_id']) && empty($in['litter_id'])) {
+                $v->errors()->add('puppy_id', 'Choose the litter first, then the puppy.');
+            }
+        });
+
+        return $validator->validate();
     }
 }

@@ -2,6 +2,8 @@
 import { Head, Link, usePage } from '@inertiajs/vue3';
 import { computed, ref } from 'vue';
 import { formatDate, labelFor } from '@/lib/format';
+import PedigreeChart from '@/components/PedigreeChart.vue';
+import type { PedigreeNode } from '@/components/PedigreeChart.vue';
 import type { Options } from '@/types';
 
 const props = defineProps<{
@@ -9,6 +11,7 @@ const props = defineProps<{
         slug: string;
         name: string;
         registered_name: string | null;
+        titles: string | null;
         sex: string;
         role: string;
         color: string | null;
@@ -30,6 +33,7 @@ const props = defineProps<{
             verification_url: string | null;
         }[];
     };
+    pedigree?: PedigreeNode | null;
 }>();
 const options = computed(() => usePage().props.options as Options);
 const active = ref(0);
@@ -75,6 +79,8 @@ const photo = computed(() => props.dog.photos[active.value]);
                         v-for="(p, i) in dog.photos"
                         :key="p.id"
                         type="button"
+                        :aria-label="`Show photo ${i + 1} of ${dog.photos.length}`"
+                        :aria-pressed="i === active"
                         :class="[
                             'size-16 overflow-hidden rounded ring-offset-2 ring-offset-background',
                             i === active
@@ -109,6 +115,9 @@ const photo = computed(() => props.dog.photos[active.value]);
                         class="text-muted-foreground italic"
                     >
                         {{ dog.registered_name }}
+                    </p>
+                    <p v-if="dog.titles" class="text-sm font-medium">
+                        {{ dog.titles }}
                     </p>
                 </header>
 
@@ -184,5 +193,10 @@ const photo = computed(() => props.dog.photos[active.value]);
                 </section>
             </div>
         </div>
+
+        <section v-if="pedigree" class="space-y-3">
+            <h2 class="font-serif text-xl font-semibold">Pedigree</h2>
+            <PedigreeChart :tree="pedigree" />
+        </section>
     </div>
 </template>

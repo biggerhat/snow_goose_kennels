@@ -65,8 +65,8 @@
 }
 
 :root {
-    --destructive: oklch(0.577 0.245 27.325);
-    --destructive-foreground: oklch(0.577 0.245 27.325);
+    --destructive: oklch(0.51 0.21 27);
+    --destructive-foreground: oklch(0.51 0.21 27);
     --chart-1: oklch(0.646 0.222 41.116);
     --chart-2: oklch(0.6 0.118 184.704);
     --chart-3: oklch(0.398 0.07 227.392);
@@ -139,5 +139,36 @@
         .sway {
             animation: none;
         }
+    }
+}
+
+/* A field with a problem: make the box itself red, not just the message. */
+.field-error :is(input, select, textarea) {
+    border-color: var(--destructive);
+    box-shadow: 0 0 0 3px
+        color-mix(in oklch, var(--destructive) 20%, transparent);
+}
+
+/* Fingers are bigger than mouse pointers: give touch screens comfortable targets. */
+@media (pointer: coarse) {
+    [data-slot='button'] {
+        min-height: 2.5rem;
+    }
+    [data-slot='button'][data-size='icon'] {
+        min-width: 2.5rem;
+    }
+    [data-slot='input'],
+    select,
+    textarea {
+        min-height: 2.75rem;
+    }
+    input[type='checkbox'] {
+        width: 1.25rem;
+        height: 1.25rem;
+    }
+    summary {
+        min-height: 2.5rem;
+        display: list-item;
+        padding-block: 0.4rem;
     }
 }

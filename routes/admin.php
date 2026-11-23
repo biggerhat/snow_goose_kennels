@@ -1,16 +1,29 @@
 <?php
 
+use App\Http\Controllers\Admin\AkcApplicationController;
+use App\Http\Controllers\Admin\AkcProgramsController;
 use App\Http\Controllers\Admin\AlbumController;
+use App\Http\Controllers\Admin\AttentionSnoozeController;
 use App\Http\Controllers\Admin\ContactController;
 use App\Http\Controllers\Admin\ContactNoteController;
 use App\Http\Controllers\Admin\DiaryEntryController;
+use App\Http\Controllers\Admin\DocumentController;
+use App\Http\Controllers\Admin\DogAchievementController;
 use App\Http\Controllers\Admin\DogController;
+use App\Http\Controllers\Admin\ExpenseController;
 use App\Http\Controllers\Admin\ExportController;
+use App\Http\Controllers\Admin\HealthRecordController;
 use App\Http\Controllers\Admin\HealthTestController;
 use App\Http\Controllers\Admin\HeatCycleController;
 use App\Http\Controllers\Admin\LitterController;
+use App\Http\Controllers\Admin\LitterMessageController;
+use App\Http\Controllers\Admin\LitterTaskController;
+use App\Http\Controllers\Admin\PaperworkController;
 use App\Http\Controllers\Admin\PhotoController;
+use App\Http\Controllers\Admin\PlannerController;
 use App\Http\Controllers\Admin\PuppyController;
+use App\Http\Controllers\Admin\RecordsController;
+use App\Http\Controllers\Admin\SearchController;
 use App\Http\Controllers\Admin\SiteSettingsController;
 use App\Http\Controllers\Admin\TestimonialController;
 use App\Http\Controllers\Admin\WaitlistController;
@@ -18,19 +31,34 @@ use App\Http\Controllers\Admin\WeighInController;
 use Illuminate\Support\Facades\Route;
 
 Route::middleware('auth')->prefix('admin')->name('admin.')->group(function () {
-    Route::resource('dogs', DogController::class)->except('show');
+    Route::post('dogs/quick', [DogController::class, 'quick'])->name('dogs.quick');
+    Route::resource('dogs', DogController::class)->except('show')->withTrashed(['edit', 'update']);
+    Route::post('dogs/{dog}/restore', [DogController::class, 'restore'])->withTrashed()->name('dogs.restore');
+    Route::delete('dogs/{dog}/purge', [DogController::class, 'purge'])->withTrashed()->name('dogs.purge');
     Route::post('dogs/{dog}/health-tests', [HealthTestController::class, 'store'])->name('health-tests.store');
     Route::put('health-tests/{healthTest}', [HealthTestController::class, 'update'])->name('health-tests.update');
     Route::delete('health-tests/{healthTest}', [HealthTestController::class, 'destroy'])->name('health-tests.destroy');
 
+    Route::post('dogs/{dog}/achievements', [DogAchievementController::class, 'store'])->name('achievements.store');
+    Route::put('achievements/{achievement}', [DogAchievementController::class, 'update'])->name('achievements.update');
+    Route::delete('achievements/{achievement}', [DogAchievementController::class, 'destroy'])->name('achievements.destroy');
     Route::post('dogs/{dog}/heat-cycles', [HeatCycleController::class, 'store'])->name('heat-cycles.store');
     Route::delete('heat-cycles/{heatCycle}', [HeatCycleController::class, 'destroy'])->name('heat-cycles.destroy');
 
-    Route::resource('litters', LitterController::class)->except('show');
+    Route::resource('litters', LitterController::class)->except('show')->withTrashed(['edit', 'update']);
+    Route::get('litters/{litter}/akc-application', [AkcApplicationController::class, 'show'])->withTrashed()->name('litters.akc');
+    Route::get('akc/litter-application.pdf', [AkcApplicationController::class, 'form'])->name('akc.litter-form');
+    Route::post('litters/{litter}/restore', [LitterController::class, 'restore'])->withTrashed()->name('litters.restore');
+    Route::delete('litters/{litter}/purge', [LitterController::class, 'purge'])->withTrashed()->name('litters.purge');
     Route::post('litters/{litter}/diary', [DiaryEntryController::class, 'store'])->name('diary.store');
     Route::delete('diary/{diaryEntry}', [DiaryEntryController::class, 'destroy'])->name('diary.destroy');
     Route::post('litters/{litter}/weigh-ins', [WeighInController::class, 'store'])->name('weigh-ins.store');
     Route::delete('litters/{litter}/weigh-ins/{date}', [WeighInController::class, 'destroy'])->name('weigh-ins.destroy');
+    Route::post('litters/{litter}/messages', [LitterMessageController::class, 'store'])->name('litter-messages.store');
+    Route::post('litters/{litter}/schedule', [LitterTaskController::class, 'generate'])->name('tasks.generate');
+    Route::post('litters/{litter}/tasks', [LitterTaskController::class, 'store'])->name('tasks.store');
+    Route::put('tasks/{task}', [LitterTaskController::class, 'update'])->name('tasks.update');
+    Route::delete('tasks/{task}', [LitterTaskController::class, 'destroy'])->name('tasks.destroy');
     Route::post('litters/{litter}/puppies', [PuppyController::class, 'store'])->name('puppies.store');
     Route::put('puppies/{puppy}', [PuppyController::class, 'update'])->name('puppies.update');
     Route::delete('puppies/{puppy}', [PuppyController::class, 'destroy'])->name('puppies.destroy');
@@ -47,7 +75,34 @@ Route::middleware('auth')->prefix('admin')->name('admin.')->group(function () {
     Route::get('site', [SiteSettingsController::class, 'edit'])->name('site.edit');
     Route::put('site', [SiteSettingsController::class, 'update'])->name('site.update');
 
+    Route::inertia('help', 'admin/Help')->name('help');
+
+    Route::post('attention/snooze', [AttentionSnoozeController::class, 'store'])->name('attention.snooze');
+    Route::get('search', SearchController::class)->name('search');
+    Route::get('planner', [PlannerController::class, 'index'])->name('planner');
+
+    Route::get('money', [ExpenseController::class, 'index'])->name('money');
+    Route::post('expenses', [ExpenseController::class, 'store'])->name('expenses.store');
+    Route::put('expenses/{expense}', [ExpenseController::class, 'update'])->name('expenses.update');
+    Route::delete('expenses/{expense}', [ExpenseController::class, 'destroy'])->name('expenses.destroy');
+    Route::put('akc-programs', [AkcProgramsController::class, 'update'])->name('akc-programs.update');
+    Route::get('records', [RecordsController::class, 'index'])->name('records');
+    Route::get('records/emergency-plan', [RecordsController::class, 'emergencyPlan'])->name('records.emergency-plan');
+    Route::get('records/all', [RecordsController::class, 'all'])->name('records.all');
+    Route::get('records/puppies/{puppy}/packet', [PaperworkController::class, 'packet'])->name('records.packet');
+    Route::get('records/puppies/{puppy}/agreement', [PaperworkController::class, 'agreement'])->name('records.agreement');
+    Route::get('records/waitlist/{waitlist}/receipt', [PaperworkController::class, 'receipt'])->name('records.receipt');
+    Route::get('records/litters/{litter}/stud-agreement', [PaperworkController::class, 'stud'])->withTrashed()->name('records.stud');
+    Route::get('records/dogs/{dog}', [RecordsController::class, 'dog'])->withTrashed()->name('records.dog');
+    Route::get('records/litters/{litter}', [RecordsController::class, 'litter'])->withTrashed()->name('records.litter');
+
     Route::post('photos/bulk', [PhotoController::class, 'bulk'])->name('photos.bulk');
     Route::resource('photos', PhotoController::class)->only(['index', 'store', 'update', 'destroy']);
     Route::resource('albums', AlbumController::class)->only(['store', 'update', 'destroy']);
+    Route::post('dogs/{dog}/health-records', [HealthRecordController::class, 'storeForDog'])->name('health-records.dog');
+    Route::post('puppies/{puppy}/health-records', [HealthRecordController::class, 'storeForPuppy'])->name('health-records.puppy');
+    Route::post('litters/{litter}/health-records', [HealthRecordController::class, 'storeForLitter'])->name('health-records.litter');
+    Route::put('health-records/{health_record}', [HealthRecordController::class, 'update'])->name('health-records.update');
+    Route::delete('health-records/{health_record}', [HealthRecordController::class, 'destroy'])->name('health-records.destroy');
+    Route::resource('documents', DocumentController::class)->only(['store', 'update', 'show', 'destroy']);
 });

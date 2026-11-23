@@ -1,19 +1,40 @@
 <script setup lang="ts">
-defineProps<{ title: string; description?: string }>();
+import PageHelp from '@/components/admin/PageHelp.vue';
+
+defineProps<{
+    title: string;
+    description?: string;
+    /** Plain-language steps shown under the title. */
+    help?: string[];
+    helpTitle?: string;
+    /** Question of the matching how-to on the Help page. */
+    helpTopic?: string;
+}>();
 </script>
 
 <template>
-    <div class="flex flex-wrap items-start justify-between gap-3">
-        <div class="min-w-0">
-            <h1 class="font-serif text-3xl font-semibold tracking-tight">
-                {{ title }}
-            </h1>
-            <p v-if="description" class="mt-1 text-sm text-muted-foreground">
-                {{ description }}
-            </p>
+    <div class="space-y-3">
+        <div class="flex flex-wrap items-start justify-between gap-3">
+            <div class="min-w-0">
+                <h1 class="font-serif text-3xl font-semibold tracking-tight">
+                    {{ title }}
+                </h1>
+                <p
+                    v-if="description"
+                    class="mt-1 text-sm text-muted-foreground"
+                >
+                    {{ description }}
+                </p>
+            </div>
+            <div class="flex flex-wrap items-center gap-2">
+                <slot />
+            </div>
         </div>
-        <div class="flex flex-wrap items-center gap-2">
-            <slot />
-        </div>
+        <PageHelp
+            v-if="help?.length"
+            :title="helpTitle"
+            :steps="help"
+            :topic="helpTopic"
+        />
     </div>
 </template>

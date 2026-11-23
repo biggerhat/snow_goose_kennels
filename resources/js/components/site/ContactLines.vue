@@ -27,7 +27,7 @@ defineProps<{
                 ><Mail class="size-5" />{{ contact.email }}</a
             >
         </li>
-        <li v-if="contact.location" class="inline-flex items-center gap-3">
+        <li v-if="contact.location" class="flex min-h-11 items-center gap-3">
             <MapPin class="size-5" />{{ contact.location }}
         </li>
         <li v-if="contact.facebook">

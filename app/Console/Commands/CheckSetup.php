@@ -51,10 +51,11 @@ class CheckSetup extends Command
 
         $beat = Cache::get('kennel.heartbeat');
         $fresh = $beat && now()->diffInMinutes($beat) < 10;
-        $this->add($fresh, 'Scheduler (cron)', $beat ? "last ran {$beat}" : 'never ran', 'Add the cron line: * * * * * cd '.base_path().' && php artisan schedule:run >> /dev/null 2>&1', warn: true);
+        $this->add($fresh, 'Scheduler (cron)', $beat ? "last ran {$beat}" : 'never ran', 'On Laravel Forge, switch on the site\'s Scheduler. Otherwise add the cron line: * * * * * cd '.preg_replace('#/releases/[^/]+$#', '/current', base_path()).' && php artisan schedule:run >> /dev/null 2>&1', warn: true);
 
         $contact = Setting::contact();
-        $this->add(filled($contact['phone'] ?? null) || filled($contact['email'] ?? null), 'Contact details', 'set', 'Fill in phone or email on the Website text page.', warn: true);
+        $hasContact = filled($contact['phone'] ?? null) || filled($contact['email'] ?? null);
+        $this->add($hasContact, 'Contact details', $hasContact ? 'set' : 'not set yet', 'Fill in phone or email on the Website text page.', warn: true);
 
         $this->table(['', 'Check', 'Result'], array_map(fn ($r) => [match ($r[0]) {
             'ok' => '<fg=green>OK</>', 'warn' => '<fg=yellow>WARN</>', 'fail' => '<fg=red>FAIL</>', default => 'info',

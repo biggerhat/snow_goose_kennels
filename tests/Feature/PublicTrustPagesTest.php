@@ -21,21 +21,19 @@ it('shows only public clearances on a public dog page', function () {
         ->where('dog.health_tests.0.name', 'OFA Hips'));
 });
 
-it('puts how it works and happy families on the contact page', function () {
+it('puts how it works on the contact page and the stories on the home page', function () {
     Testimonial::create(['name' => 'The Millers', 'body' => 'Best dog ever', 'is_public' => true]);
     Testimonial::create(['name' => 'Hidden', 'body' => 'Not for show', 'is_public' => false]);
+    Testimonial::create(['name' => 'Waiting', 'body' => 'Sent in by a visitor', 'is_public' => false, 'needs_review' => true]);
     Setting::put('deposit_policy', 'Deposits are $300.');
 
-    $this->get('/contact')->assertOk()->assertInertia(fn ($p) => $p
-        ->component('public/Contact')
-        ->has('testimonials', 1)
-        ->where('testimonials.0.name', 'The Millers')
-        ->has('sections', 1));
+    $this->get('/contact')->assertOk()->assertInertia(fn ($p) => $p->component('public/Contact')->has('sections', 1)->missing('testimonials'));
+    $this->get('/')->assertOk()->assertInertia(fn ($p) => $p->has('quotes', 1)->where('quotes.0.name', 'The Millers'));
 });
 
 it('sends the old page addresses to where the content lives now', function () {
     $this->get('/how-it-works')->assertRedirect('/contact#how-it-works')->assertStatus(301);
-    $this->get('/happy-families')->assertRedirect('/contact#happy-families');
+    $this->get('/happy-families')->assertRedirect('/#happy-families');
     $this->get('/health-testing')->assertRedirect('/our-dogs');
 });
 

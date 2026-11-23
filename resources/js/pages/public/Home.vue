@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { Head, Link, usePage } from '@inertiajs/vue3';
-import { computed } from 'vue';
+import { computed, ref } from 'vue';
 import AppLogoIcon from '@/components/AppLogoIcon.vue';
 import ContactLines from '@/components/site/ContactLines.vue';
 import LitterCard from '@/components/site/LitterCard.vue';
@@ -8,7 +8,7 @@ import Reeds from '@/components/site/Reeds.vue';
 import { labelFor } from '@/lib/format';
 import type { Options } from '@/types';
 
-defineProps<{
+const props = defineProps<{
     next: any | null;
     onGround: any[];
     dogs: {
@@ -34,6 +34,10 @@ defineProps<{
     };
 }>();
 
+const allQuotes = ref(false);
+const shownQuotes = computed(() =>
+    allQuotes.value ? props.quotes : props.quotes.slice(0, 3),
+);
 const name = computed(() => usePage().props.name as string);
 const options = computed(() => usePage().props.options as Options);
 </script>
@@ -191,29 +195,46 @@ const options = computed(() => usePage().props.options as Options);
 
     <section
         v-if="quotes.length"
-        class="mx-auto mt-16 max-w-6xl space-y-6 px-5"
+        id="happy-families"
+        class="mx-auto mt-16 max-w-6xl scroll-mt-6 space-y-6 px-5"
     >
-        <div class="flex items-end justify-between">
+        <div class="flex flex-wrap items-end justify-between gap-2">
             <h2 class="font-serif text-3xl font-semibold">Happy families</h2>
             <Link
-                href="/contact#happy-families"
+                href="/share-your-story"
                 class="font-medium underline underline-offset-4"
-                >More stories →</Link
+                >Share your story →</Link
             >
         </div>
         <ul class="grid gap-5 md:grid-cols-3">
             <li
-                v-for="q in quotes"
+                v-for="q in shownQuotes"
                 :key="q.id"
                 class="photo-frame space-y-3 p-5"
             >
-                <p class="line-clamp-6 leading-relaxed">“{{ q.body }}”</p>
+                <p class="leading-relaxed whitespace-pre-line">
+                    “{{ q.body }}”
+                </p>
                 <p class="text-sm text-muted-foreground">
                     {{ q.name }}<span v-if="q.location">, {{ q.location }}</span
                     ><span v-if="q.puppy_name"> · with {{ q.puppy_name }}</span>
                 </p>
             </li>
         </ul>
+        <p v-if="quotes.length > 3" class="text-center">
+            <button
+                type="button"
+                class="font-medium underline underline-offset-4"
+                :aria-expanded="allQuotes"
+                @click="allQuotes = !allQuotes"
+            >
+                {{
+                    allQuotes
+                        ? 'Show fewer stories'
+                        : `Read all ${quotes.length} stories`
+                }}
+            </button>
+        </p>
     </section>
 
     <section

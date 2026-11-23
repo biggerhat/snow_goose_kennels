@@ -33,7 +33,7 @@ class SiteController extends Controller
             'onGround' => $litters->where('status', 'on_ground')->values(),
             'dogs' => $this->publicDogs()->whereIn('role', ['stud', 'dam'])->take(4)->values(),
             'gallery' => $this->galleryPhotos()->take(8)->values(),
-            'quotes' => Testimonial::where('is_public', true)->orderBy('sort_order')->latest('id')->limit(3)->get(['id', 'name', 'location', 'puppy_name', 'body']),
+            'quotes' => Testimonial::where('is_public', true)->orderBy('sort_order')->latest('id')->get(['id', 'name', 'location', 'puppy_name', 'body']),
             'contact' => Setting::contact(),
         ]);
     }
@@ -82,7 +82,7 @@ class SiteController extends Controller
 
     public function sitemap()
     {
-        $urls = collect(['/', '/litters', '/our-dogs', '/gallery', '/apply', '/contact', '/privacy'])
+        $urls = collect(['/', '/litters', '/our-dogs', '/gallery', '/apply', '/share-your-story', '/contact', '/privacy'])
             ->map(fn ($p) => url($p))
             ->merge(Dog::where('is_public', true)->pluck('slug')->map(fn ($slug) => url("/our-dogs/$slug")));
 
@@ -96,11 +96,9 @@ class SiteController extends Controller
     public function contact(): Response
     {
         return Inertia::render('public/Contact', [
-            'meta' => self::meta('Contact', 'Call, email or apply for a puppy. How reserving a puppy works, and kind words from families who took one home.'),
+            'meta' => self::meta('Contact', 'Call, email or apply for a puppy, and how reserving a puppy works.'),
             'contact' => Setting::contact(),
             'sections' => SiteContent::filled(),
-            'testimonials' => Testimonial::where('is_public', true)->orderBy('sort_order')->latest('id')
-                ->get(['id', 'name', 'location', 'puppy_name', 'body']),
         ]);
     }
 

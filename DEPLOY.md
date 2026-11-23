@@ -154,6 +154,8 @@ Everything should say OK. WARN lines are decisions (for example mail), FAIL line
       example if you add analytics or a mailing-list service).
 - [ ] In **Website text → Buyer papers**, help her write how buyers pay, what the puppies eat, her vet, and any
       extra terms. Printed agreements and receipts contain only wording she wrote.
+- [ ] Send past buyers the **/share-your-story** link. Their stories wait under Happy families for her OK, and an
+      email (real mail settings needed) tells her when one arrives.
 - [ ] Mark each stud's and dam's clearances **Show on the website** on the dog's Health tab, so they appear
       on that dog's public page under **Health clearances**.
 - [ ] Check whether iPhone HEIC photos are supported (`kennel:check` says). If not, tell iPhone users to use

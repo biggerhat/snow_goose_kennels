@@ -44,6 +44,7 @@ const nav = computed(
     () =>
         usePage().props.nav as {
             applications: number;
+            stories: number;
             attention: number;
         } | null,
 );
@@ -83,6 +84,7 @@ const groups = computed<{ label: string; items: NavItem[] }[]>(() => [
                 title: 'Happy families',
                 href: testimonials(),
                 icon: MessageSquareQuote,
+                badge: nav.value?.stories,
             },
             { title: 'Website text', href: siteContent(), icon: PenLine },
         ],

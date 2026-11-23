@@ -36,6 +36,15 @@ class TestimonialController extends Controller
         return back();
     }
 
+    public function approve(Testimonial $testimonial): RedirectResponse
+    {
+        $testimonial->update(['is_public' => true, 'needs_review' => false]);
+
+        Inertia::flash('toast', ['type' => 'success', 'message' => 'Approved. It is on the website now.']);
+
+        return back();
+    }
+
     public function destroy(Testimonial $testimonial): RedirectResponse
     {
         $testimonial->delete();

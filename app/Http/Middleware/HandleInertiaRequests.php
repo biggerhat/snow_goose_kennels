@@ -3,6 +3,7 @@
 namespace App\Http\Middleware;
 
 use App\Enums\WaitlistStatus;
+use App\Models\Testimonial;
 use App\Models\WaitlistEntry;
 use App\Support\Attention;
 use App\Support\Options;
@@ -51,6 +52,7 @@ class HandleInertiaRequests extends Middleware
             // Counts for the badges in the owner menu. Cached briefly so every click is not a new count.
             'nav' => fn () => $request->user() ? [
                 'applications' => WaitlistEntry::where('status', WaitlistStatus::New)->count(),
+                'stories' => Testimonial::where('needs_review', true)->count(),
                 'attention' => Cache::remember('nav.attention', 60, fn () => Attention::items(14)->count()),
             ] : null,
             'options' => Options::all(),

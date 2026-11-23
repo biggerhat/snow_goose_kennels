@@ -30,11 +30,11 @@ class Photo extends Model
 
     public function getUrlAttribute(): string
     {
-        return Storage::disk('public')->url($this->path);
+        return Storage::disk(config('kennel.photo_disk'))->url($this->path);
     }
 
     public function getThumbUrlAttribute(): string
     {
-        return Storage::disk('public')->url($this->thumb_path);
+        return Storage::disk(config('kennel.photo_disk'))->url($this->thumb_path);
     }
 }

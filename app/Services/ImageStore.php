@@ -28,7 +28,7 @@ class ImageStore
         $full = $this->render($file->getRealPath(), 2000);
         $thumb = $this->render($file->getRealPath(), 640);
 
-        $disk = Storage::disk('public');
+        $disk = Storage::disk(config('kennel.photo_disk'));
         $disk->put("$dir/$name.jpg", $full);
         $disk->put("$dir/{$name}_thumb.jpg", $thumb);
 
@@ -37,7 +37,7 @@ class ImageStore
 
     public function delete(string ...$paths): void
     {
-        Storage::disk('public')->delete($paths);
+        Storage::disk(config('kennel.photo_disk'))->delete($paths);
     }
 
     private function render(string $source, int $max): string

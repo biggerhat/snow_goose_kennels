@@ -7,6 +7,7 @@ use App\Models\User;
 use App\Services\ImageStore;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Storage;
 
 /** One-stop "is this server set up right for the kennel site?" report. */
 class CheckSetup extends Command
@@ -31,8 +32,8 @@ class CheckSetup extends Command
         $this->limit('post_max_size', 30, 'Set post_max_size to at least 60M so several photos can upload together.');
         $this->limit('memory_limit', 256, 'Set memory_limit to 512M so large photos can be resized.');
 
-        $this->add(is_link(public_path('storage')) || is_dir(public_path('storage')), 'Public photo link', 'public/storage exists', 'Run: php artisan storage:link');
-        $this->add(is_writable(storage_path('app/public')), 'Photo folder writable', 'storage/app/public', 'Make storage/ writable by the web server user.');
+        $this->storage('Photo storage', (string) config('kennel.photo_disk'));
+        $this->storage('Document storage', (string) config('kennel.document_disk'));
         $this->add(is_writable(base_path('bootstrap/cache')), 'Cache folder writable', 'bootstrap/cache', 'Make bootstrap/cache writable by the web server user.');
 
         if (config('database.default') === 'sqlite') {
@@ -69,6 +70,34 @@ class CheckSetup extends Command
         $fails->isEmpty() ? $this->info('Ready.') : $this->error($fails->count().' problem(s) to fix.');
 
         return $fails->isEmpty() ? self::SUCCESS : self::FAILURE;
+    }
+
+    /** Local folders must be writable; a Backblaze bucket must accept a small test file. */
+    private function storage(string $label, string $disk): void
+    {
+        $driver = config("filesystems.disks.$disk.driver");
+
+        if ($driver === 's3') {
+            try {
+                $fs = Storage::disk($disk);
+                $fs->put('.kennel-check', 'ok');
+                $works = $fs->get('.kennel-check') === 'ok';
+                $fs->delete('.kennel-check');
+            } catch (\Throwable $e) {
+                $works = false;
+            }
+
+            $this->add($works, $label, "$disk (Backblaze B2)", "Could not write to the $disk bucket. Check B2_KEY_ID, B2_APPLICATION_KEY, B2_ENDPOINT and the bucket name in .env, and that the key can read and write that bucket.");
+
+            return;
+        }
+
+        if ($disk === 'public') {
+            $this->add(is_link(public_path('storage')) || is_dir(public_path('storage')), 'Public photo link', 'public/storage exists', 'Run: php artisan storage:link');
+        }
+
+        $root = (string) config("filesystems.disks.$disk.root");
+        $this->add(is_dir($root) && is_writable($root) || is_writable(dirname($root)), $label, $root, 'Make storage/ writable by the web server user.');
     }
 
     private function add(bool $ok, string $label, string $result, string $fix, bool $warn = false): void

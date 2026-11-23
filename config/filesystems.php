@@ -47,6 +47,42 @@ return [
             'report' => false,
         ],
 
+        // Backblaze B2 through its S3-compatible API. Photos go in a PUBLIC bucket (the website links straight to
+        // them, like the public/storage folder does now); documents go in a PRIVATE bucket and are only ever
+        // handed out by the app to a logged-in owner.
+        'b2_photos' => [
+            'driver' => 's3',
+            'key' => env('B2_KEY_ID'),
+            'secret' => env('B2_APPLICATION_KEY'),
+            'region' => env('B2_REGION', 'us-west-004'),
+            'bucket' => env('B2_PHOTOS_BUCKET'),
+            'endpoint' => env('B2_ENDPOINT', 'https://s3.us-west-004.backblazeb2.com'),
+            // The public address of the bucket, e.g. https://f004.backblazeb2.com/file/<bucket-name>
+            'url' => env('B2_PHOTOS_URL'),
+            'use_path_style_endpoint' => true,
+            // Photo files never change once stored, so browsers may keep them.
+            'options' => ['CacheControl' => 'public, max-age=31536000, immutable'],
+            'request_checksum_calculation' => 'when_required',
+            'response_checksum_validation' => 'when_required',
+            'throw' => false,
+            'report' => false,
+        ],
+
+        'b2_documents' => [
+            'driver' => 's3',
+            'key' => env('B2_KEY_ID'),
+            'secret' => env('B2_APPLICATION_KEY'),
+            'region' => env('B2_REGION', 'us-west-004'),
+            'bucket' => env('B2_DOCUMENTS_BUCKET'),
+            'endpoint' => env('B2_ENDPOINT', 'https://s3.us-west-004.backblazeb2.com'),
+            'use_path_style_endpoint' => true,
+            'visibility' => 'private',
+            'request_checksum_calculation' => 'when_required',
+            'response_checksum_validation' => 'when_required',
+            'throw' => false,
+            'report' => false,
+        ],
+
         's3' => [
             'driver' => 's3',
             'key' => env('AWS_ACCESS_KEY_ID'),

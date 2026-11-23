@@ -56,15 +56,20 @@ SESSION_SECURE_COOKIE=true          # the site is https, so cookies are https-on
 DB_CONNECTION=sqlite
 DB_DATABASE=/home/forge/kennel-data/database.sqlite
 
-MAIL_MAILER=...                      # see the mail note below
-MAIL_FROM_ADDRESS="hello@snowgoosekennels.example"
+MAIL_MAILER=resend
+RESEND_KEY=re_xxxxxxxx               # Resend → API Keys, "Sending access"
+MAIL_FROM_ADDRESS="hello@snowgoosekennels.com"   # must be on the domain verified in Resend
+MAIL_FROM_NAME="Snow Goose Kennels"
 ```
 
 Generate the app key from the Forge environment page or run `php artisan key:generate --force` once.
 
 **Mail note.** New applications, the daily reminder and the litter update emails she sends to her waitlist (Litter → Waitlist tab) go out by email, and `MAIL_MAILER=log` only writes them
-to a file. DigitalOcean blocks the usual SMTP ports on droplets (25, and often 465 and 587 on newer accounts), so
-use a mail service with an HTTP API (Postmark, Resend, Mailgun or Amazon SES) or an SMTP port they allow, such as 2525. Each API mailer needs one small composer package; tell me which service she will use and I will wire it up.
+to a file. The site uses **Resend** over its HTTP API (the `resend/resend-php` package is installed), because
+DigitalOcean blocks the usual SMTP ports. Before it will send, add the domain in Resend (Domains → Add Domain) and
+put the DNS records it shows into the domain's DNS (DigitalOcean → Networking → Domains), then wait for it to
+say Verified. The from address must be on that domain. Resend only sends; it does not give her a mailbox.
+After changing `.env`, run `php artisan config:cache`.
 
 ## 5. PHP upload limits (the one that bites)
 

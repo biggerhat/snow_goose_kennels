@@ -78,16 +78,20 @@ class CheckSetup extends Command
         $driver = config("filesystems.disks.$disk.driver");
 
         if ($driver === 's3') {
+            $why = null;
+
             try {
-                $fs = Storage::disk($disk);
+                // Built with errors switched on, so Backblaze's own message comes back instead of a silent false.
+                $fs = Storage::build(['throw' => true] + (array) config("filesystems.disks.$disk"));
                 $fs->put('.kennel-check', 'ok');
                 $works = $fs->get('.kennel-check') === 'ok';
                 $fs->delete('.kennel-check');
             } catch (\Throwable $e) {
                 $works = false;
+                $why = trim(preg_replace('/\s+/', ' ', $e->getPrevious()?->getMessage() ?: $e->getMessage()));
             }
 
-            $this->add($works, $label, "$disk (Backblaze B2)", "Could not write to the $disk bucket. Check B2_KEY_ID, B2_APPLICATION_KEY, B2_ENDPOINT and the bucket name in .env, and that the key can read and write that bucket.");
+            $this->add($works, $label, "$disk (Backblaze B2)", "Could not write to the $disk bucket".($why ? ': '.mb_strimwidth($why, 0, 300, '…') : '.').' Check B2_KEY_ID, B2_APPLICATION_KEY, B2_ENDPOINT and the bucket name in .env, and that the key can read and write that bucket.');
 
             return;
         }

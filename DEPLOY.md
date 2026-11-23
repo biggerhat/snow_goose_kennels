@@ -154,8 +154,10 @@ Everything should say OK. WARN lines are decisions (for example mail), FAIL line
       example if you add analytics or a mailing-list service).
 - [ ] In **Website text → Buyer papers**, help her write how buyers pay, what the puppies eat, her vet, and any
       extra terms. Printed agreements and receipts contain only wording she wrote.
-- [ ] Mark each stud's and dam's clearances **Show on the website** on the dog's Health tab, so the public
-      **Health testing** page has something to show. The menu link appears once one is public.
+- [ ] Send past buyers the **/share-your-story** link. Their stories wait under Happy families for her OK, and an
+      email (real mail settings needed) tells her when one arrives.
+- [ ] Mark each stud's and dam's clearances **Show on the website** on the dog's Health tab, so they appear
+      on that dog's public page under **Health clearances**.
 - [ ] Check whether iPhone HEIC photos are supported (`kennel:check` says). If not, tell iPhone users to use
       Settings → Camera → Formats → Most Compatible.
 - [ ] Submit `https://snowgoosekennels.example/sitemap.xml` in Google Search Console, and paste the home page
@@ -167,18 +169,18 @@ No new environment values and no new scheduled jobs. Deploying runs one new migr
 (`create_breeder_tools_tables`: puppy schedule steps, expenses, litter update emails, and whelping-log columns
 on puppies). The new features and where she finds them:
 
-| Feature                                                                    | Where                                                     |
-| -------------------------------------------------------------------------- | --------------------------------------------------------- |
-| Puppy schedule (builds itself from the birth date, shows on the dashboard) | Litter → Health & diary                                   |
-| Email everyone waiting for a litter                                        | Litter → Waitlist                                         |
-| Go-home packet, sales agreement                                            | Litter → Puppies → open a puppy                           |
-| Deposit receipt                                                            | Waitlist entry                                            |
-| Stud agreement                                                             | Litter → Breeding & AKC                                   |
-| Whelping log                                                               | Litter → Puppies → open a puppy → Birth details           |
-| Money (expenses, yearly summary, per-litter results)                       | Menu → Money                                              |
-| AKC programs checklist                                                     | Records → AKC programs                                    |
-| Mother's litter history                                                    | Litter → Details, and the Pairing planner                 |
-| Privacy and Health testing pages                                           | Public site (footer, and menu once a clearance is public) |
+| Feature                                                                    | Where                                           |
+| -------------------------------------------------------------------------- | ----------------------------------------------- |
+| Puppy schedule (builds itself from the birth date, shows on the dashboard) | Litter → Health & diary                         |
+| Email everyone waiting for a litter                                        | Litter → Waitlist                               |
+| Go-home packet, sales agreement                                            | Litter → Puppies → open a puppy                 |
+| Deposit receipt                                                            | Waitlist entry                                  |
+| Stud agreement                                                             | Litter → Breeding & AKC                         |
+| Whelping log                                                               | Litter → Puppies → open a puppy → Birth details |
+| Money (expenses, yearly summary, per-litter results)                       | Menu → Money                                    |
+| AKC programs checklist                                                     | Records → AKC programs                          |
+| Mother's litter history                                                    | Litter → Details, and the Pairing planner       |
+| Privacy page; How it works and Happy families on the Contact page          | Public site (Privacy in the footer)             |
 
 Online payments are not built in. Buyers pay however she says (check, Venmo, Zelle). Her instructions print on
 deposit receipts and sales agreements (**Website text → Buyer papers → How buyers pay**). A card-payment

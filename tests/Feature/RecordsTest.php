@@ -69,7 +69,7 @@ test('testimonials show on the public site only when public', function () {
     Testimonial::create(['name' => 'The Millers', 'body' => 'PUBLIC-STORY', 'is_public' => true]);
     Testimonial::create(['name' => 'Hidden Family', 'body' => 'HIDDEN-STORY', 'is_public' => false]);
 
-    $html = $this->get(route('site.families'))->getContent();
+    $html = $this->get(route('home'))->getContent();
     expect($html)->toContain('PUBLIC-STORY')->not->toContain('HIDDEN-STORY');
     expect($this->get(route('home'))->getContent())->not->toContain('HIDDEN-STORY');
 });

@@ -3,12 +3,10 @@
 namespace App\Http\Middleware;
 
 use App\Enums\WaitlistStatus;
-use App\Models\HealthTest;
 use App\Models\Testimonial;
 use App\Models\WaitlistEntry;
 use App\Support\Attention;
 use App\Support\Options;
-use App\Support\SiteContent;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
 use Inertia\Middleware;
@@ -49,14 +47,12 @@ class HandleInertiaRequests extends Middleware
             'auth' => [
                 'user' => $request->user(),
             ],
-            'site' => [
-                'hasProcess' => SiteContent::hasAny(),
-                'hasFamilies' => Testimonial::where('is_public', true)->exists(),
-                'hasHealth' => HealthTest::where('is_public', true)->whereHas('dog', fn ($q) => $q->where('is_public', true)->where('is_ours', true))->exists(),
-            ],
+            // The visitor's colour theme, so the server draws the right dog head as selected (and the client agrees on hydration).
+            'palette' => in_array($request->cookie('palette'), ['black', 'chocolate', 'yellow'], true) ? $request->cookie('palette') : 'black',
             // Counts for the badges in the owner menu. Cached briefly so every click is not a new count.
             'nav' => fn () => $request->user() ? [
                 'applications' => WaitlistEntry::where('status', WaitlistStatus::New)->count(),
+                'stories' => Testimonial::where('needs_review', true)->count(),
                 'attention' => Cache::remember('nav.attention', 60, fn () => Attention::items(14)->count()),
             ] : null,
             'options' => Options::all(),

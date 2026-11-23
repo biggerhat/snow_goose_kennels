@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { Head, router, useForm } from '@inertiajs/vue3';
-import { ref } from 'vue';
+import { computed, ref } from 'vue';
 import ConfirmDelete from '@/components/admin/ConfirmDelete.vue';
 import EmptyState from '@/components/admin/EmptyState.vue';
 import Field from '@/components/admin/Field.vue';
@@ -9,13 +9,26 @@ import TextArea from '@/components/admin/TextArea.vue';
 import ToggleField from '@/components/admin/ToggleField.vue';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { destroy, index, store, update } from '@/routes/admin/testimonials';
+import {
+    approve,
+    destroy,
+    index,
+    store,
+    update,
+} from '@/routes/admin/testimonials';
 import type { Testimonial } from '@/types';
 
 defineOptions({
     layout: { breadcrumbs: [{ title: 'Happy families', href: index() }] },
 });
-defineProps<{ testimonials: Testimonial[] }>();
+const props = defineProps<{ testimonials: Testimonial[] }>();
+
+const waiting = computed(() =>
+    props.testimonials.filter((t) => t.needs_review),
+);
+const others = computed(() =>
+    props.testimonials.filter((t) => !t.needs_review),
+);
 
 const form = useForm({
     name: '',
@@ -61,10 +74,69 @@ function submit() {
             :help="[
                 'Type or paste something a puppy family said about you, such as from a text, an email or a Facebook comment.',
                 'Ask their permission first. A first name or family name is plenty; you do not need their full name.',
-                'Stories you add appear on the Happy families page and a few on the home page. Untick Show on the website to hide one without deleting it.',
+                'Stories appear in the Happy families part of the home page. Untick Show on the website to hide one without deleting it.',
+                'Families can send their own story from the Share your story page on your website. Those wait here for your OK and do not show until you approve them. Send people the link (your website address followed by /share-your-story).',
             ]"
             help-title="Happy families"
         />
+
+        <section
+            v-if="waiting.length"
+            class="space-y-3 rounded-xl border-2 border-primary/40 bg-card p-5"
+        >
+            <h2 class="font-serif text-lg font-semibold">
+                Waiting for your OK ({{ waiting.length }})
+            </h2>
+            <p class="text-sm text-muted-foreground">
+                A family sent these in. Nothing shows on the website until you
+                approve it. You can fix a typo with Edit first.
+            </p>
+            <ul class="space-y-3">
+                <li
+                    v-for="t in waiting"
+                    :key="t.id"
+                    class="space-y-2 rounded-lg border bg-background p-4"
+                >
+                    <p class="whitespace-pre-line">“{{ t.body }}”</p>
+                    <p class="text-sm text-muted-foreground">
+                        {{ t.name
+                        }}<span v-if="t.location">, {{ t.location }}</span
+                        ><span v-if="t.puppy_name"> · {{ t.puppy_name }}</span
+                        ><span v-if="t.email"> · {{ t.email }}</span>
+                    </p>
+                    <div class="flex flex-wrap items-center gap-2">
+                        <Button
+                            type="button"
+                            size="sm"
+                            @click="
+                                router.post(
+                                    approve.url(t.id),
+                                    {},
+                                    { preserveScroll: true },
+                                )
+                            "
+                            >Approve and show</Button
+                        >
+                        <Button
+                            type="button"
+                            size="sm"
+                            variant="outline"
+                            @click="start(t)"
+                            >Edit</Button
+                        >
+                        <ConfirmDelete
+                            icon
+                            message="Delete this story?"
+                            @confirm="
+                                router.delete(destroy.url(t.id), {
+                                    preserveScroll: true,
+                                })
+                            "
+                        />
+                    </div>
+                </li>
+            </ul>
+        </section>
 
         <form
             class="space-y-4 rounded-xl border bg-card p-5"
@@ -121,7 +193,7 @@ function submit() {
 
         <ul class="space-y-3">
             <li
-                v-for="t in testimonials"
+                v-for="t in others"
                 :key="t.id"
                 class="space-y-2 rounded-xl border bg-card p-4"
             >

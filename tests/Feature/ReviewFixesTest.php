@@ -66,3 +66,12 @@ test('searching for an underscore finds it', function () {
     $this->getJson(route('admin.search', ['q' => 'la_B']))->assertOk()
         ->assertJsonCount(1, 'groups.0.items');
 });
+
+test('the saved colour theme reaches the page so the right dog head is selected', function () {
+    $this->withUnencryptedCookie('palette', 'chocolate')->get('/')
+        ->assertOk()
+        ->assertSee('data-theme="chocolate"', false)
+        ->assertInertia(fn ($page) => $page->where('palette', 'chocolate'));
+
+    $this->withUnencryptedCookie('palette', 'bogus')->get('/')->assertInertia(fn ($page) => $page->where('palette', 'black'));
+});

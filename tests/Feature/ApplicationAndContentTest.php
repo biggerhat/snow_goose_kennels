@@ -64,13 +64,13 @@ test('application answers never appear on the public site', function () {
     Mail::fake();
     $this->post(route('site.apply.store'), ['name' => 'Secret Buyer', 'email' => 's@example.com', 'message' => 'APPLICATION-SECRET']);
 
-    foreach (['home', 'site.litters', 'site.dogs', 'site.apply', 'site.how', 'site.contact'] as $r) {
+    foreach (['home', 'site.litters', 'site.dogs', 'site.apply', 'site.contact'] as $r) {
         expect($this->get(route($r))->getContent())->not->toContain('APPLICATION-SECRET')->not->toContain('Secret Buyer');
     }
 });
 
 test('how it works shows only the sections the owner has filled in', function () {
-    $this->get(route('site.how'))->assertOk();
+    $this->get(route('site.contact'))->assertOk();
 
     $this->actingAs(User::factory()->create())
         ->put(route('admin.site.update'), ['phone' => '555-1234', 'deposit_policy' => 'Deposits are $300 and non-refundable.'])
@@ -78,7 +78,7 @@ test('how it works shows only the sections the owner has filled in', function ()
 
     expect(Setting::get('deposit_policy'))->toBe('Deposits are $300 and non-refundable.');
 
-    $html = $this->get(route('site.how'))->getContent();
+    $html = $this->get(route('site.contact'))->getContent();
     expect($html)->toContain('Deposits are $300')->not->toContain('Refunds and changes\\u0022,\\u0022body');
     $this->get(route('site.contact'))->assertSee('555-1234', false);
 });

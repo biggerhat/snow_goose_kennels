@@ -3,27 +3,12 @@
 use App\Models\Contact;
 use App\Models\Dog;
 use App\Models\Litter;
-use App\Models\Testimonial;
 use App\Models\User;
 use App\Models\WaitlistEntry;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Cache;
 
 uses(RefreshDatabase::class);
-
-test('the public menu shows Happy families once there is a public story', function () {
-    expect($this->get('/')->viewData('page')['props']['site']['hasFamilies'])->toBeFalse();
-
-    Testimonial::create(['name' => 'The Millers', 'body' => 'Great', 'is_public' => true]);
-
-    expect($this->get('/')->viewData('page')['props']['site']['hasFamilies'])->toBeTrue();
-});
-
-test('a hidden story does not add the menu item', function () {
-    Testimonial::create(['name' => 'Private', 'body' => 'x', 'is_public' => false]);
-
-    expect($this->get('/')->viewData('page')['props']['site']['hasFamilies'])->toBeFalse();
-});
 
 test('the owner menu counts new applications and things needing attention', function () {
     Cache::flush();
@@ -59,7 +44,7 @@ test('every public page tells crawlers and link previews what it is', function (
     expect($html)->toMatch('/<title[^>]*>\s*Bella - /')->toContain('name="description"')->toContain('Loves the water.')
         ->toContain('property="og:title"')->toContain('rel="canonical"');
 
-    foreach (['/', '/litters', '/our-dogs', '/gallery', '/how-it-works', '/happy-families', '/contact', '/apply'] as $url) {
+    foreach (['/', '/litters', '/our-dogs', '/gallery', '/contact', '/apply'] as $url) {
         expect($this->get($url)->getContent())->toContain('name="description"')->toContain('og:description');
     }
 });

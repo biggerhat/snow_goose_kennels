@@ -262,6 +262,15 @@ const jobs = [
         ],
     },
     {
+        q: 'Get happy-family stories from my buyers',
+        a: [
+            'Your website has a Share your story page where families can write about their puppy. Text or email them the link: your website address followed by /share-your-story.',
+            'Their story does not show on the website until you approve it. You get an email when one arrives, and Happy families in the menu shows a number.',
+            'Open Happy families. Stories waiting for you are at the top. Tap Approve and show, fix a typo with Edit first if you like, or delete it.',
+            'You can also type a story in yourself with Add a story, if someone sent it to you by text or Facebook. Ask their permission first.',
+        ],
+    },
+    {
         q: 'Hide something from the website',
         a: [
             'Dogs and litters have a Show on the website box. Untick it and they disappear from the public site, but nothing is deleted.',
@@ -272,7 +281,7 @@ const jobs = [
     {
         q: 'Change my phone number or the website wording',
         a: [
-            'Go to Website text. The Contact details tab has your phone, email, town and Facebook. The How it works tab becomes the How it works page; leave a box empty and it will not appear. Tap Save changes when you are done.',
+            'Go to Website text. The Contact details tab has your phone, email, town and Facebook. The How it works tab becomes the How it works part of the Contact page; leave a box empty and it will not appear. Tap Save changes when you are done.',
             'Changes show on the website straight away.',
         ],
     },
@@ -561,12 +570,15 @@ onMounted(() => {
                         <li>Prices and deposit on public litters</li>
                         <li>Photos marked <em>Show on the website</em></li>
                         <li>Puppy diary entries marked public</li>
-                        <li>Your phone, email and town from Website text</li>
                         <li>
-                            A Health testing page listing the clearances you
-                            marked public for your studs and dams
+                            Your phone, email and town from Website text, with
+                            your How it works wording on the Contact page
                         </li>
-                        <li>A short Privacy page about the application form</li>
+                        <li>
+                            Happy families stories you approved (including ones
+                            families sent in) on the home page
+                        </li>
+                        <li>A short Privacy page about the forms</li>
                     </ul>
                 </div>
                 <div class="rounded-xl border bg-card p-4">

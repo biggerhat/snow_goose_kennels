@@ -37,8 +37,10 @@ defineProps<{
                 Only what you choose to send us. If you fill in the puppy
                 application, that is your name, your email or phone number, your
                 town and state, and your answers about your home, your
-                experience and what you are looking for. Nothing else is
-                collected about you when you browse.
+                experience and what you are looking for. If you send in a story
+                about your puppy, that is your name, your story, and optionally
+                your town and email. Nothing else is collected about you when
+                you browse.
             </p>
         </section>
 
@@ -46,9 +48,11 @@ defineProps<{
             <h2 class="font-serif text-2xl font-semibold">How we use it</h2>
             <p class="text-lg leading-relaxed">
                 To reply to you, to keep our waiting list, and to match people
-                with puppies. If you buy a puppy, we keep the sale record, as
-                the American Kennel Club asks breeders to keep records for
-                several years.
+                with puppies. A story is shown on the website, with the name and
+                town you typed, only after we have read it and you have ticked
+                the box that says we may. If you buy a puppy, we keep the sale
+                record, as the American Kennel Club asks breeders to keep
+                records for several years.
             </p>
         </section>
 
@@ -57,8 +61,9 @@ defineProps<{
             <p class="text-lg leading-relaxed">
                 Only the family who run the kennel. We do not sell, rent or
                 share your information with anyone else, and we do not show your
-                name or details anywhere on this website. Applications are also
-                sent by email to the people who run the kennel.
+                name or details on this website, except a story you sent in and
+                said we may show. Applications and stories are also sent by
+                email to the people who run the kennel.
             </p>
         </section>
 
@@ -68,9 +73,9 @@ defineProps<{
             </h2>
             <p class="text-lg leading-relaxed">
                 We use one small cookie that keeps the application form safe
-                from misuse. We do not use advertising or analytics trackers.
-                The fonts on this site are loaded from Bunny Fonts, a service
-                that does not track visitors.
+                from misuse on the application and story forms. We do not use
+                advertising or analytics trackers. The fonts on this site are
+                loaded from Bunny Fonts, a service that does not track visitors.
             </p>
         </section>
 

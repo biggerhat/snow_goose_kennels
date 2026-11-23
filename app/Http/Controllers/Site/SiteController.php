@@ -33,7 +33,7 @@ class SiteController extends Controller
             'onGround' => $litters->where('status', 'on_ground')->values(),
             'dogs' => $this->publicDogs()->whereIn('role', ['stud', 'dam'])->take(4)->values(),
             'gallery' => $this->galleryPhotos()->take(8)->values(),
-            'quotes' => Testimonial::where('is_public', true)->orderBy('sort_order')->latest('id')->limit(3)->get(['id', 'name', 'location', 'puppy_name', 'body']),
+            'quotes' => Testimonial::where('is_public', true)->orderBy('sort_order')->latest('id')->get(['id', 'name', 'location', 'puppy_name', 'body']),
             'contact' => Setting::contact(),
         ]);
     }
@@ -72,24 +72,6 @@ class SiteController extends Controller
         return Inertia::render('public/Gallery', ['photos' => $this->galleryPhotos(), 'meta' => self::meta('Gallery', 'Photos of our Labrador retrievers and puppies.')]);
     }
 
-    public function families(): Response
-    {
-        return Inertia::render('public/Families', [
-            'meta' => self::meta('Happy families', 'Kind words from families who took a puppy home.'),
-            'testimonials' => Testimonial::where('is_public', true)->orderBy('sort_order')->latest('id')
-                ->get(['id', 'name', 'location', 'puppy_name', 'body']),
-        ]);
-    }
-
-    public function howItWorks(): Response
-    {
-        return Inertia::render('public/HowItWorks', [
-            'meta' => self::meta('How it works', 'From first call to go-home day: deposits, picking a puppy and what to expect.'),
-            'sections' => SiteContent::filled(),
-            'contact' => Setting::contact(),
-        ]);
-    }
-
     public function privacy(): Response
     {
         return Inertia::render('public/Privacy', [
@@ -98,26 +80,9 @@ class SiteController extends Controller
         ]);
     }
 
-    public function healthTesting(): Response
-    {
-        $dogs = Dog::query()->where('is_public', true)->where('is_ours', true)
-            ->with(['photos' => fn ($q) => $q->where('is_public', true), 'healthTests' => fn ($q) => $q->where('is_public', true)])
-            ->get()
-            ->filter(fn (Dog $d) => in_array($d->role, [DogRole::Stud, DogRole::Dam], true))
-            ->sortBy(fn (Dog $d) => [array_search($d->role, [DogRole::Stud, DogRole::Dam]), $d->sort_order, $d->name])
-            ->values()
-            ->map(fn (Dog $d) => $this->dogData($d));
-
-        return Inertia::render('public/HealthTesting', [
-            'meta' => self::meta('Health testing', 'The health clearances for each of our breeding dogs, with links to the public records.'),
-            'dogs' => $dogs,
-            'contact' => Setting::contact(),
-        ]);
-    }
-
     public function sitemap()
     {
-        $urls = collect(['/', '/litters', '/our-dogs', '/gallery', '/how-it-works', '/health-testing', '/happy-families', '/apply', '/contact', '/privacy'])
+        $urls = collect(['/', '/litters', '/our-dogs', '/gallery', '/apply', '/share-your-story', '/contact', '/privacy'])
             ->map(fn ($p) => url($p))
             ->merge(Dog::where('is_public', true)->pluck('slug')->map(fn ($slug) => url("/our-dogs/$slug")));
 
@@ -130,7 +95,11 @@ class SiteController extends Controller
 
     public function contact(): Response
     {
-        return Inertia::render('public/Contact', ['contact' => Setting::contact(), 'meta' => self::meta('Contact', 'Call, email or apply for a puppy.')]);
+        return Inertia::render('public/Contact', [
+            'meta' => self::meta('Contact', 'Call, email or apply for a puppy, and how reserving a puppy works.'),
+            'contact' => Setting::contact(),
+            'sections' => SiteContent::filled(),
+        ]);
     }
 
     /**

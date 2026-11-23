@@ -98,7 +98,7 @@ function save() {
     <div class="max-w-3xl space-y-8 p-4 md:p-6">
         <PageHeader
             title="Website text"
-            description="What visitors read on the Contact page and the How it works page. Leave a box empty and it will not appear."
+            description="What visitors read on the Contact page: your details, then How it works. Leave a box empty and it will not appear."
             :help="[
                 'Fill in your phone, email and town first. They show on the Contact page and the bottom of the home page.',
                 'The boxes under How it works and policies are optional. Write them the way you would explain it on the phone. Only boxes with text appear on the website, so it is fine to leave some empty.',
@@ -115,8 +115,8 @@ function save() {
                 ></Button
             >
             <Button as-child variant="outline" size="sm"
-                ><a href="/how-it-works" target="_blank" rel="noopener"
-                    >See How it works</a
+                ><a href="/contact#how-it-works" target="_blank" rel="noopener"
+                    >See the Contact page</a
                 ></Button
             >
         </PageHeader>

@@ -69,6 +69,7 @@ Route::middleware('auth')->prefix('admin')->name('admin.')->group(function () {
 
     Route::resource('waitlist', WaitlistController::class)->except('show')->parameters(['waitlist' => 'waitlist']);
 
+    Route::post('testimonials/{testimonial}/approve', [TestimonialController::class, 'approve'])->name('testimonials.approve');
     Route::resource('testimonials', TestimonialController::class)->only(['index', 'store', 'update', 'destroy']);
     Route::get('export/{type}', ExportController::class)->name('export');
 

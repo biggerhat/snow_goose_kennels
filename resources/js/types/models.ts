@@ -278,5 +278,7 @@ export type Testimonial = {
     location: string | null;
     puppy_name: string | null;
     body: string;
+    email?: string | null;
     is_public?: boolean;
+    needs_review?: boolean;
 };

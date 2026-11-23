@@ -14,15 +14,6 @@ const user = computed(() => page.props.auth.user);
 const nav = computed(() => [
     { label: 'Litters', href: '/litters' },
     { label: 'Our Dogs', href: '/our-dogs' },
-    ...((page.props.site as { hasProcess: boolean }).hasProcess
-        ? [{ label: 'How it works', href: '/how-it-works' }]
-        : []),
-    ...((page.props.site as { hasHealth: boolean }).hasHealth
-        ? [{ label: 'Health testing', href: '/health-testing' }]
-        : []),
-    ...((page.props.site as { hasFamilies: boolean }).hasFamilies
-        ? [{ label: 'Happy families', href: '/happy-families' }]
-        : []),
     { label: 'Gallery', href: '/gallery' },
     { label: 'Contact', href: '/contact' },
 ]);

@@ -81,11 +81,14 @@ class DocumentController extends Controller
         $inline = in_array($document->mime, self::INLINE, true);
         $filename = Str::ascii($document->original_name) ?: 'document';
 
-        return Storage::disk('local')->response($document->path, $filename, [
-            'Content-Type' => $document->mime,
-            'X-Content-Type-Options' => 'nosniff',
-            'Content-Security-Policy' => "default-src 'none'; style-src 'unsafe-inline'; sandbox",
-        ], $inline ? 'inline' : 'attachment');
+        $headers = ['Content-Type' => $document->mime, 'X-Content-Type-Options' => 'nosniff'];
+
+        // A sandbox policy stops the browser's own PDF viewer from opening the file, so PDFs go without it.
+        if ($document->mime !== 'application/pdf') {
+            $headers['Content-Security-Policy'] = "default-src 'none'; style-src 'unsafe-inline'; sandbox";
+        }
+
+        return Storage::disk('local')->response($document->path, $filename, $headers, $inline ? 'inline' : 'attachment');
     }
 
     public function destroy(Document $document): RedirectResponse

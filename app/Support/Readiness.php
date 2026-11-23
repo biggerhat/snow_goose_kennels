@@ -52,7 +52,7 @@ class Readiness
         };
 
         // Overdue health care
-        $overdue = Attention::items(0)->where('kind', 'health')->where('overdue', true);
+        $overdue = Attention::items(0, honourSnooze: false)->where('kind', 'health')->where('overdue', true);
         $items[] = $overdue->isNotEmpty()
             ? ['key' => 'health', 'status' => 'todo', 'title' => $overdue->count().($overdue->count() === 1 ? ' vaccine or treatment is overdue' : ' vaccines or treatments are overdue'), 'details' => $overdue->map(fn ($a) => ['text' => $a['title'], 'href' => $a['href']])->values()->all()]
             : ['key' => 'health', 'status' => 'ok', 'title' => 'No vaccines or treatments overdue', 'details' => []];

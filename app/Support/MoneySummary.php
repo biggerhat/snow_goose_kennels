@@ -16,7 +16,7 @@ class MoneySummary
     public static function forYear(int $year): array
     {
         $sales = Puppy::query()->with('litter.sire')->whereNotNull('sale_price')->where('status', 'home')->get()
-            ->filter(fn (Puppy $p) => ($p->went_home_on ?? $p->litter?->born_on)?->year === $year);
+            ->filter(fn (Puppy $p) => self::saleYear($p) === $year);
         $studIncome = Litter::withTrashed()->with('sire')->whereNotNull('stud_fee')->whereNotNull('stud_fee_paid_on')->whereYear('stud_fee_paid_on', $year)->get()
             ->filter(fn (Litter $l) => $l->sire?->is_ours);
         $studCosts = Litter::withTrashed()->with('sire')->whereNotNull('stud_fee')->whereNotNull('stud_fee_paid_on')->whereYear('stud_fee_paid_on', $year)->get()
@@ -59,6 +59,12 @@ class MoneySummary
         ];
     }
 
+    /** The day the puppy went home, or failing that the day the record was last touched: when the money came in, not when the litter was born. */
+    private static function saleYear(Puppy $p): ?int
+    {
+        return ($p->went_home_on ?? $p->updated_at)?->year;
+    }
+
     /** @return list<int> Years that have anything in them, newest first, always including this year. */
     public static function years(): array
     {
@@ -69,7 +75,7 @@ class MoneySummary
         }
 
         foreach (Puppy::whereNotNull('sale_price')->where('status', 'home')->with('litter')->get() as $p) {
-            if ($y = ($p->went_home_on ?? $p->litter?->born_on)?->year) {
+            if ($y = self::saleYear($p)) {
                 $years->push($y);
             }
         }

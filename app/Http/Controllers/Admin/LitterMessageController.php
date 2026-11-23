@@ -33,22 +33,39 @@ class LitterMessageController extends Controller
             ->filter(fn ($e) => filled($e->contact?->email))
             ->unique('contact_id');
 
+        // Sending takes a moment per person, so give a big list time, and keep the log as we go
+        // so a slow connection never leaves her wondering who already got it.
+        @set_time_limit(300);
+
         $sent = 0;
         $failed = [];
+        $log = $entries->isNotEmpty()
+            ? $litter->messages()->create(['subject' => $data['subject'], 'body' => $data['body'], 'recipient_count' => 0, 'sent_at' => now()])
+            : null;
 
         foreach ($entries as $entry) {
             try {
                 Mail::to($entry->contact->email)->send(new LitterUpdate($entry->contact, $data['subject'], $data['body'], $litter->title));
-                $entry->contact->contactNotes()->create(['body' => "Emailed an update: “{$data['subject']}”", 'noted_at' => now()]);
-                $sent++;
             } catch (\Throwable $e) {
                 report($e);
                 $failed[] = $entry->contact->name;
+
+                continue;
+            }
+
+            $sent++;
+            $log->update(['recipient_count' => $sent]);
+
+            // The email is out: a problem writing the note must not be reported as a failed email.
+            try {
+                $entry->contact->contactNotes()->create(['body' => "Emailed an update: “{$data['subject']}”", 'noted_at' => now()]);
+            } catch (\Throwable $e) {
+                report($e);
             }
         }
 
-        if ($sent) {
-            $litter->messages()->create(['subject' => $data['subject'], 'body' => $data['body'], 'recipient_count' => $sent, 'sent_at' => now()]);
+        if ($log && ! $sent) {
+            $log->delete();
         }
 
         Inertia::flash('toast', $failed

@@ -50,7 +50,7 @@ class Puppy extends Model
 
     public function litter(): BelongsTo
     {
-        return $this->belongsTo(Litter::class);
+        return $this->belongsTo(Litter::class)->withTrashed();
     }
 
     public function buyer(): BelongsTo

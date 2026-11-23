@@ -18,9 +18,9 @@ use Illuminate\Support\Collection;
 class Attention
 {
     /** @return Collection<int, array{kind: string, title: string, detail: string, date: string, overdue: bool, href: string}> */
-    public static function items(int $healthDays = 7, int $documentDays = 30, int $akcDays = 30): Collection
+    public static function items(int $healthDays = 7, int $documentDays = 30, int $akcDays = 30, bool $honourSnooze = true): Collection
     {
-        $snoozed = AttentionSnooze::where('until', '>=', today())->pluck('key')->flip();
+        $snoozed = $honourSnooze ? AttentionSnooze::where('until', '>=', today())->pluck('key')->flip() : collect();
 
         return collect([
             ...self::health($healthDays),
@@ -76,7 +76,9 @@ class Attention
                     $dogGroups[$key]['dogs'][$owner->id] = $owner;
 
                     return;
-                } elseif ($owner instanceof Puppy) {
+                }
+
+                if ($owner instanceof Puppy) {
                     if (in_array($owner->status, [PuppyStatus::Home, PuppyStatus::Kept], true)) {
                         return;
                     }
@@ -86,18 +88,7 @@ class Attention
                     $groups[$key]['count']++;
 
                     return;
-                } else {
-                    return;
                 }
-
-                $out[] = [
-                    'kind' => 'health',
-                    'title' => "{$r->name} due for {$who}",
-                    'detail' => $r->type->label().', last given '.$r->given_on->format('M j, Y'),
-                    'date' => $r->next_due_on->toDateString(),
-                    'overdue' => $r->next_due_on->lt(today()),
-                    'href' => $href,
-                ];
             });
 
         foreach ($dogGroups as $g) {

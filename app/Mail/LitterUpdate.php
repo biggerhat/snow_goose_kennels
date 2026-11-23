@@ -22,6 +22,6 @@ class LitterUpdate extends Mailable
 
     public function content(): Content
     {
-        return new Content(markdown: 'mail.litter-update', with: ['owner' => Kennel::owner(), 'first' => explode(' ', trim($this->contact->name))[0]]);
+        return new Content(markdown: 'mail.litter-update', with: ['owner' => Kennel::owner(), 'first' => explode(' ', trim($this->contact->name))[0], 'messageBody' => preg_replace('/\r?\n/', "  \n", $this->messageBody)]);
     }
 }

@@ -76,10 +76,12 @@ class LitterController extends Controller
 
     public function update(Request $request, Litter $litter): RedirectResponse
     {
+        $hadBirthDate = (bool) $litter->born_on;
         $litter->update($this->validated($request));
 
-        // A litter with a birth date gets the usual puppy schedule the first time, so nothing is forgotten.
-        $made = $litter->born_on && $litter->tasks()->doesntExist() ? PuppySchedule::create($litter) : 0;
+        // A litter gets the usual puppy schedule the moment its birth date is first entered, so nothing is forgotten.
+        // After that the steps are hers: deleting them or changing the date does not bring them back.
+        $made = ! $hadBirthDate && $litter->born_on && $litter->tasks()->doesntExist() ? PuppySchedule::create($litter) : 0;
 
         Inertia::flash('toast', ['type' => 'success', 'message' => $made ? 'Saved. I also made a puppy schedule for you. Find it on the Health & diary tab.' : 'Saved.']);
 

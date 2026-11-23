@@ -28,11 +28,11 @@ class ExportController extends Controller
             ],
             'health' => [
                 ['For', 'Dog or puppy', 'Kind', 'What', 'Given on', 'Next due', 'Given by', 'Lot', 'Notes'],
-                HealthRecord::with('recordable')->orderBy('given_on')->get()->map(fn ($r) => [$r->recordable?->name ?: ($r->recordable?->collar ? $r->recordable->collar.' collar puppy' : 'puppy'), $r->recordable_type === 'dog' ? 'Dog' : 'Puppy', $r->type->label(), $r->name, $r->given_on->toDateString(), $r->next_due_on?->toDateString(), $r->given_by, $r->lot_number, $r->notes]),
+                HealthRecord::with(['recordable' => fn ($m) => $m->constrain([Dog::class => fn ($q) => $q->withTrashed()])])->orderBy('given_on')->get()->map(fn ($r) => [$r->recordable?->name ?: ($r->recordable?->collar ? $r->recordable->collar.' collar puppy' : 'puppy'), $r->recordable_type === 'dog' ? 'Dog' : 'Puppy', $r->type->label(), $r->name, $r->given_on->toDateString(), $r->next_due_on?->toDateString(), $r->given_by, $r->lot_number, $r->notes]),
             ],
             'documents' => [
                 ['Belongs to', 'Kind of record', 'Title', 'What it is', 'File name', 'Dated', 'Runs out'],
-                Document::with('documentable')->orderBy('documentable_type')->get()->map(fn ($d) => [$d->documentable?->title ?? $d->documentable?->name ?? $d->documentable?->collar, $d->documentable_type, $d->title, $d->category, $d->original_name, $d->issued_on?->toDateString(), $d->expires_on?->toDateString()]),
+                Document::with(['documentable' => fn ($m) => $m->constrain([Dog::class => fn ($q) => $q->withTrashed(), Litter::class => fn ($q) => $q->withTrashed()])])->orderBy('documentable_type')->get()->map(fn ($d) => [$d->documentable?->title ?? $d->documentable?->name ?? $d->documentable?->collar, $d->documentable_type, $d->title, $d->category, $d->original_name, $d->issued_on?->toDateString(), $d->expires_on?->toDateString()]),
             ],
             'puppies' => [
                 ['Litter', 'Born', 'Collar', 'Name', 'Sex', 'Colour', 'Birth weight (g)', 'Status', 'Buyer', 'Buyer address', 'Buyer phone', 'Buyer email', 'Sale price', 'Microchip', 'Papers', 'AKC number', 'Papers given', 'Went home', 'Vet check', 'Notes'],

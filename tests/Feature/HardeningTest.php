@@ -26,7 +26,14 @@ test('private documents keep their own stricter policy', function () {
 
     $r = $this->get(route('admin.documents.show', $dog->documents()->first()));
 
-    expect($r->headers->get('Content-Security-Policy'))->toContain('sandbox');
+    // A sandbox policy stops the browser's own PDF viewer from opening the file, so PDFs go without it.
+    expect($r->headers->get('X-Content-Type-Options'))->toBe('nosniff');
+    expect($r->headers->get('Content-Security-Policy'))->not->toContain('sandbox');
+
+    $this->post(route('admin.documents.store'), ['file' => UploadedFile::fake()->image('scan.png'), 'documentable_type' => 'dog', 'documentable_id' => $dog->id, 'category' => 'other']);
+    $image = $dog->documents()->where('mime', 'image/png')->first();
+
+    expect($this->get(route('admin.documents.show', $image))->headers->get('Content-Security-Policy'))->toContain('sandbox');
 });
 
 test('a missing page shows the branded error page', function () {

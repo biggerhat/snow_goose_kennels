@@ -1,4 +1,5 @@
-import { ref } from 'vue';
+import { usePage } from '@inertiajs/vue3';
+import { computed, ref } from 'vue';
 import type { Palette } from '@/types';
 
 export const palettes: { value: Palette; label: string; swatch: string }[] = [
@@ -14,7 +15,8 @@ export const palettes: { value: Palette; label: string; swatch: string }[] = [
 const isPalette = (v: unknown): v is Palette =>
     palettes.some((p) => p.value === v);
 
-const palette = ref<Palette>('black');
+// Set in the browser only. On the server the saved cookie (shared as a page prop) decides, per request.
+const chosen = ref<Palette | null>(null);
 
 function applyPalette(value: Palette): void {
     document.documentElement.dataset.theme = value;
@@ -34,17 +36,25 @@ export function initializePalette(): void {
     }
 
     const current = document.documentElement.dataset.theme;
-    palette.value = isPalette(stored)
+    const value = isPalette(stored)
         ? stored
         : isPalette(current)
           ? current
           : 'black';
-    applyPalette(palette.value);
+    chosen.value = value;
+    applyPalette(value);
 }
 
 export function usePalette() {
+    const page = usePage();
+    const palette = computed<Palette>(
+        () =>
+            chosen.value ??
+            (isPalette(page.props.palette) ? page.props.palette : 'black'),
+    );
+
     function updatePalette(value: Palette): void {
-        palette.value = value;
+        chosen.value = value;
 
         try {
             localStorage.setItem('palette', value);

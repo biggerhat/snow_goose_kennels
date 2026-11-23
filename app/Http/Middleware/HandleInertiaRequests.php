@@ -49,6 +49,8 @@ class HandleInertiaRequests extends Middleware
             'auth' => [
                 'user' => $request->user(),
             ],
+            // The visitor's colour theme, so the server draws the right dog head as selected (and the client agrees on hydration).
+            'palette' => in_array($request->cookie('palette'), ['black', 'chocolate', 'yellow'], true) ? $request->cookie('palette') : 'black',
             'site' => [
                 'hasProcess' => SiteContent::hasAny(),
                 'hasFamilies' => Testimonial::where('is_public', true)->exists(),

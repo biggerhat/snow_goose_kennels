@@ -196,7 +196,7 @@ const options = computed(() => usePage().props.options as Options);
         <div class="flex items-end justify-between">
             <h2 class="font-serif text-3xl font-semibold">Happy families</h2>
             <Link
-                href="/happy-families"
+                href="/contact#happy-families"
                 class="font-medium underline underline-offset-4"
                 >More stories →</Link
             >

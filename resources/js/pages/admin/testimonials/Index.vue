@@ -61,7 +61,7 @@ function submit() {
             :help="[
                 'Type or paste something a puppy family said about you, such as from a text, an email or a Facebook comment.',
                 'Ask their permission first. A first name or family name is plenty; you do not need their full name.',
-                'Stories you add appear on the Happy families page and a few on the home page. Untick Show on the website to hide one without deleting it.',
+                'Stories you add appear at the bottom of the Contact page and a few on the home page. Untick Show on the website to hide one without deleting it.',
             ]"
             help-title="Happy families"
         />

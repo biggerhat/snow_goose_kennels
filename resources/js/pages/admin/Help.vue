@@ -272,7 +272,7 @@ const jobs = [
     {
         q: 'Change my phone number or the website wording',
         a: [
-            'Go to Website text. The Contact details tab has your phone, email, town and Facebook. The How it works tab becomes the How it works page; leave a box empty and it will not appear. Tap Save changes when you are done.',
+            'Go to Website text. The Contact details tab has your phone, email, town and Facebook. The How it works tab becomes the How it works part of the Contact page; leave a box empty and it will not appear. Tap Save changes when you are done.',
             'Changes show on the website straight away.',
         ],
     },
@@ -561,10 +561,10 @@ onMounted(() => {
                         <li>Prices and deposit on public litters</li>
                         <li>Photos marked <em>Show on the website</em></li>
                         <li>Puppy diary entries marked public</li>
-                        <li>Your phone, email and town from Website text</li>
                         <li>
-                            A Health testing page listing the clearances you
-                            marked public for your studs and dams
+                            Your phone, email and town from Website text, with
+                            your How it works wording and Happy families
+                            stories, all together on the Contact page
                         </li>
                         <li>A short Privacy page about the application form</li>
                     </ul>

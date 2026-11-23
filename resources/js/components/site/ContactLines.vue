@@ -16,14 +16,14 @@ defineProps<{
         <li v-if="contact.phone">
             <a
                 :href="`tel:${contact.phone}`"
-                class="inline-flex items-center gap-3 hover:underline"
+                class="inline-flex min-h-11 items-center gap-3 hover:underline"
                 ><Phone class="size-5" />{{ contact.phone }}</a
             >
         </li>
         <li v-if="contact.email">
             <a
                 :href="`mailto:${contact.email}`"
-                class="inline-flex items-center gap-3 hover:underline"
+                class="inline-flex min-h-11 items-center gap-3 hover:underline"
                 ><Mail class="size-5" />{{ contact.email }}</a
             >
         </li>
@@ -35,7 +35,7 @@ defineProps<{
                 :href="contact.facebook"
                 target="_blank"
                 rel="noopener"
-                class="inline-flex items-center gap-3 hover:underline"
+                class="inline-flex min-h-11 items-center gap-3 hover:underline"
                 ><ExternalLink class="size-5" />Find us on Facebook</a
             >
         </li>

@@ -37,21 +37,21 @@ const isActive = (href: string) =>
                     >
                 </Link>
                 <nav
-                    class="flex flex-wrap items-center gap-x-6 gap-y-1 text-sm font-medium"
+                    class="flex flex-wrap items-center gap-x-4 gap-y-0 text-sm font-medium sm:gap-x-6"
                 >
                     <Link
                         v-for="item in nav"
                         :key="item.href"
                         :href="item.href"
                         :class="[
-                            'underline-offset-8 hover:underline',
+                            'inline-flex min-h-11 items-center underline-offset-8 hover:underline',
                             isActive(item.href) && 'underline decoration-2',
                         ]"
                         >{{ item.label }}</Link
                     >
                     <Link
                         href="/apply"
-                        class="rounded-full bg-primary px-4 py-1.5 text-primary-foreground hover:opacity-90"
+                        class="inline-flex min-h-11 items-center rounded-full bg-primary px-4 text-primary-foreground hover:opacity-90"
                         >Apply</Link
                     >
                 </nav>
@@ -70,13 +70,13 @@ const isActive = (href: string) =>
                     © {{ new Date().getFullYear() }} {{ name }} ·
                     <Link
                         href="/privacy"
-                        class="underline-offset-4 hover:underline"
+                        class="inline-block py-3 underline-offset-4 hover:underline"
                         >Privacy</Link
                     >
                 </p>
                 <Link
                     :href="user ? dashboard() : login()"
-                    class="underline-offset-4 hover:underline"
+                    class="inline-block py-3 underline-offset-4 hover:underline"
                 >
                     {{ user ? 'Back to dashboard' : 'Owner login' }}
                 </Link>

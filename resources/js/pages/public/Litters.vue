@@ -83,7 +83,7 @@ defineProps<{
             </div>
             <Link
                 href="/contact"
-                class="font-medium underline underline-offset-4"
+                class="inline-flex min-h-11 items-center font-medium underline underline-offset-4"
                 >Contact us →</Link
             >
         </section>

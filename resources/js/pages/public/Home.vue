@@ -202,7 +202,7 @@ const options = computed(() => usePage().props.options as Options);
             <h2 class="font-serif text-3xl font-semibold">Happy families</h2>
             <Link
                 href="/share-your-story"
-                class="font-medium underline underline-offset-4"
+                class="inline-flex min-h-11 items-center font-medium underline underline-offset-4"
                 >Share your story →</Link
             >
         </div>

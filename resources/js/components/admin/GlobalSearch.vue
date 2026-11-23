@@ -82,7 +82,7 @@ onBeforeUnmount(() => window.removeEventListener('keydown', onKey));
 <template>
     <button
         type="button"
-        class="ml-auto inline-flex min-h-9 items-center gap-2 rounded-full border px-3 py-1 text-sm text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
+        class="ml-auto inline-flex min-h-11 items-center gap-2 rounded-full border px-3 py-1 text-sm text-muted-foreground transition-colors hover:bg-muted hover:text-foreground md:min-h-9"
         aria-label="Find a dog, litter, puppy or contact"
         @click="open = true"
     >

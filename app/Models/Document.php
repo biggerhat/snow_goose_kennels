@@ -19,7 +19,7 @@ class Document extends Model
 
     protected static function booted(): void
     {
-        static::deleted(fn (Document $d) => Storage::disk('local')->delete($d->path));
+        static::deleted(fn (Document $d) => Storage::disk(config('kennel.document_disk'))->delete($d->path));
     }
 
     protected function casts(): array

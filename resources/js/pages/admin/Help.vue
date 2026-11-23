@@ -289,7 +289,7 @@ const jobs = [
         q: 'Keep a copy of my information',
         a: [
             'Open Records and tap the Spreadsheets tab. Each button saves a spreadsheet you can open in Excel or Google Sheets.',
-            'Photos are not in those files. Ask whoever set up the website how photos are backed up.',
+            'Photos and documents are not in those files. Ask whoever set up the website how they are backed up.',
         ],
     },
 ];

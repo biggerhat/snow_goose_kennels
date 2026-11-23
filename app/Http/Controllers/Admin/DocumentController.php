@@ -41,7 +41,7 @@ class DocumentController extends Controller
             : Relation::getMorphedModel($data['documentable_type'])::findOrFail($data['documentable_id']);
         $file = $data['file'];
         $name = Str::uuid()->toString().'.'.($file->guessExtension() ?: 'bin');
-        $path = $file->storeAs('documents/'.now()->format('Y/m'), $name, 'local');
+        $path = $file->storeAs('documents/'.now()->format('Y/m'), $name, config('kennel.document_disk'));
 
         $owner->documents()->create([
             'category' => $data['category'],
@@ -88,7 +88,7 @@ class DocumentController extends Controller
             $headers['Content-Security-Policy'] = "default-src 'none'; style-src 'unsafe-inline'; sandbox";
         }
 
-        return Storage::disk('local')->response($document->path, $filename, $headers, $inline ? 'inline' : 'attachment');
+        return Storage::disk(config('kennel.document_disk'))->response($document->path, $filename, $headers, $inline ? 'inline' : 'attachment');
     }
 
     public function destroy(Document $document): RedirectResponse

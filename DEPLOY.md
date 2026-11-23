@@ -107,6 +107,41 @@ location /storage/ { add_header Cache-Control "public, max-age=2592000"; try_fil
 
 (Built files have hashed names, and every photo gets a new name on upload, so long caching is safe.)
 
+**Photos and documents on Backblaze B2 (optional, recommended).** By default photos and documents live in this
+server's folders. To keep them in Backblaze instead (cheap, off the droplet, and the droplet becomes disposable):
+
+1. In Backblaze, create **two buckets**:
+    - `snowgoose-photos`, set to **Public** (the website links straight to these, as it does to `/storage` today).
+    - `snowgoose-documents`, set to **Private** (registration papers, agreements and the like; only the app, for a
+      logged-in owner, ever reads them).
+2. Create one **Application Key** (App Keys → Add) with read and write access to both buckets. Copy the keyID and
+   the key now; the key is shown once.
+3. Note the bucket's **S3 endpoint** and region from the bucket page (for example `s3.us-west-004.backblazeb2.com`,
+   region `us-west-004`) and the **friendly URL** of the public bucket (`https://f004.backblazeb2.com/file/snowgoose-photos`).
+4. Add to the site's environment, then `php artisan config:cache`:
+
+```
+PHOTO_DISK=b2_photos
+DOCUMENT_DISK=b2_documents
+B2_KEY_ID=...
+B2_APPLICATION_KEY=...
+B2_REGION=us-west-004
+B2_ENDPOINT=https://s3.us-west-004.backblazeb2.com
+B2_PHOTOS_BUCKET=snowgoose-photos
+B2_PHOTOS_URL=https://f004.backblazeb2.com/file/snowgoose-photos
+B2_DOCUMENTS_BUCKET=snowgoose-documents
+```
+
+5. Run `php artisan kennel:check`. **Photo storage** and **Document storage** should say OK (it writes and deletes a
+   tiny test file in each bucket).
+6. Copy what is already uploaded: `php artisan kennel:move-files`. It is safe to run again, and keeps the originals.
+   Open a few photos and documents to confirm, then run `php artisan kennel:move-files --delete-source` to clear
+   the old copies from the server.
+
+New uploads go straight to Backblaze from then on. Nothing in the database changes (file names stay the same), so
+switching back is just changing the two `*_DISK` values. With B2 in use, the `/storage/` caching block above no longer
+matters (the photos carry their own long cache header), and the droplet only needs the database backed up below.
+
 **Backups.** Forge's database backups only cover MySQL and Postgres, so they do **not** cover this SQLite
 database or the photos. Everything she has entered lives in three places:
 

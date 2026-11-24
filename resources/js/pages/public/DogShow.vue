@@ -51,7 +51,7 @@ const photo = computed(() => props.dog.photos[active.value]);
     <div class="mx-auto max-w-5xl space-y-8 px-5 pt-10">
         <Link
             href="/our-dogs"
-            class="text-sm text-muted-foreground underline-offset-4 hover:underline"
+            class="inline-flex min-h-11 items-center text-sm text-muted-foreground underline-offset-4 hover:underline"
             >← All dogs</Link
         >
 

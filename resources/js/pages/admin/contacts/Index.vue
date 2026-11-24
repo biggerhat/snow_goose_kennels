@@ -127,7 +127,7 @@ watch([q, type], () => {
                 <a
                     v-if="c.phone"
                     :href="`tel:${c.phone.replace(/[^0-9+]/g, '')}`"
-                    class="mr-3 inline-flex shrink-0 items-center gap-1.5 rounded-md border px-3 py-2 text-sm font-medium hover:bg-muted"
+                    class="mr-3 inline-flex min-h-11 shrink-0 items-center gap-1.5 rounded-md border px-4 py-2 text-sm font-medium hover:bg-muted"
                     :aria-label="`Call ${c.name}`"
                     ><Phone class="size-4" />Call</a
                 >

@@ -320,13 +320,13 @@ const available = computed(
                 >
                     <a
                         :href="`/apply?litter=${litter.id}`"
-                        class="inline-flex font-medium underline underline-offset-4"
-                        >Apply for this litter →</a
+                        class="inline-flex min-h-11 items-center rounded-full bg-primary px-5 font-medium text-primary-foreground hover:opacity-90"
+                        >Apply for this litter</a
                     >
                     <a
                         v-if="contactHref"
                         :href="contactHref"
-                        class="inline-flex text-muted-foreground underline underline-offset-4"
+                        class="inline-flex min-h-11 items-center text-muted-foreground underline underline-offset-4"
                         >Ask a question</a
                     >
                 </div>

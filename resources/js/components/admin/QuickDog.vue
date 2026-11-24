@@ -46,7 +46,7 @@ function save() {
         <button
             v-if="!open"
             type="button"
-            class="text-left text-xs text-primary underline underline-offset-2"
+            class="min-h-11 text-left text-sm text-primary underline underline-offset-2"
             @click="open = true"
         >
             {{ label }} not in the list? Add a dog from another kennel

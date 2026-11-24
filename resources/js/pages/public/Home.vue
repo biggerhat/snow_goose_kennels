@@ -68,25 +68,25 @@ const options = computed(() => usePage().props.options as Options);
                 Black, chocolate and yellow Labs, raised underfoot and ready for
                 the marsh, the field or the couch.
             </p>
-            <div class="flex flex-wrap gap-3">
+            <div class="flex flex-col gap-3 sm:flex-row sm:flex-wrap">
                 <Link
                     href="/litters"
-                    class="rounded-full bg-primary px-6 py-3 font-medium text-primary-foreground transition-opacity hover:opacity-90"
+                    class="rounded-full bg-primary px-6 py-3 text-center font-medium text-primary-foreground transition-opacity hover:opacity-90"
                     >See upcoming litters</Link
                 >
                 <Link
                     href="/apply"
-                    class="rounded-full border border-foreground/30 px-6 py-3 font-medium transition-colors hover:bg-foreground/5"
+                    class="rounded-full border border-foreground/30 px-6 py-3 text-center font-medium transition-colors hover:bg-foreground/5"
                     >Apply for a puppy</Link
                 >
                 <Link
                     href="/our-dogs"
-                    class="rounded-full border border-foreground/30 px-6 py-3 font-medium transition-colors hover:bg-foreground/5"
+                    class="rounded-full border border-foreground/30 px-6 py-3 text-center font-medium transition-colors hover:bg-foreground/5"
                     >Meet our dogs</Link
                 >
             </div>
         </div>
-        <div class="relative mx-auto w-full max-w-sm">
+        <div class="relative mx-auto w-full max-w-[13rem] sm:max-w-sm">
             <AppLogoIcon
                 class-name="relative z-10 w-full text-foreground drop-shadow-[0_18px_18px_oklch(0.2_0.02_60/0.18)]"
             />
@@ -202,7 +202,7 @@ const options = computed(() => usePage().props.options as Options);
             <h2 class="font-serif text-3xl font-semibold">Happy families</h2>
             <Link
                 href="/share-your-story"
-                class="font-medium underline underline-offset-4"
+                class="inline-flex min-h-11 items-center font-medium underline underline-offset-4"
                 >Share your story →</Link
             >
         </div>

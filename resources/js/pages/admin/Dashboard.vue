@@ -127,7 +127,7 @@ const shownAttention = computed(() =>
             </p>
             <button
                 type="button"
-                class="shrink-0 rounded px-2 py-1 text-muted-foreground hover:bg-muted"
+                class="min-h-11 shrink-0 rounded px-3 text-muted-foreground hover:bg-muted"
                 @click="dismissWelcome"
             >
                 Got it
@@ -217,7 +217,7 @@ const shownAttention = computed(() =>
                         </Link>
                         <button
                             type="button"
-                            class="min-h-9 w-full border-t px-3 py-1.5 text-left text-xs text-muted-foreground hover:text-foreground"
+                            class="min-h-11 w-full border-t px-3 py-1.5 text-left text-xs text-muted-foreground hover:text-foreground"
                             @click="snooze(a.key)"
                         >
                             Remind me in a week

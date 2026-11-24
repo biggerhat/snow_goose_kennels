@@ -4,11 +4,11 @@ const model = defineModel<boolean>();
 </script>
 
 <template>
-    <label class="flex cursor-pointer items-start gap-3 text-sm">
+    <label class="flex min-h-11 cursor-pointer items-start gap-3 py-2 text-sm">
         <input
             v-model="model"
             type="checkbox"
-            class="mt-0.5 size-4 shrink-0 accent-primary"
+            class="mt-0.5 size-5 shrink-0 accent-primary"
         />
         <span>
             <span class="font-medium">{{ label }}</span>

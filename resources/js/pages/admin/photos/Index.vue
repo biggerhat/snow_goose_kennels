@@ -278,7 +278,7 @@ const subjectLabel: Record<string, string> = {
                 :href="index.url()"
                 preserve-scroll
                 :class="[
-                    'rounded-full border px-3.5 py-1.5 text-sm transition-colors',
+                    'inline-flex min-h-11 items-center rounded-full border px-4 text-sm transition-colors md:min-h-9',
                     !filters.album
                         ? 'border-foreground bg-card font-medium'
                         : 'hover:bg-muted',
@@ -292,7 +292,7 @@ const subjectLabel: Record<string, string> = {
                 :href="index.url({ query: { album: 'none' } })"
                 preserve-scroll
                 :class="[
-                    'rounded-full border px-3.5 py-1.5 text-sm transition-colors',
+                    'inline-flex min-h-11 items-center rounded-full border px-4 text-sm transition-colors md:min-h-9',
                     filters.album === 'none'
                         ? 'border-foreground bg-card font-medium'
                         : 'hover:bg-muted',
@@ -308,7 +308,7 @@ const subjectLabel: Record<string, string> = {
                 :href="index.url({ query: { album: String(a.id) } })"
                 preserve-scroll
                 :class="[
-                    'rounded-full border px-3.5 py-1.5 text-sm transition-colors',
+                    'inline-flex min-h-11 items-center rounded-full border px-4 text-sm transition-colors md:min-h-9',
                     filters.album === String(a.id)
                         ? 'border-foreground bg-card font-medium'
                         : 'hover:bg-muted',

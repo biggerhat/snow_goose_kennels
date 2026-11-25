@@ -48,7 +48,7 @@ upload `public/build` instead.
 APP_ENV=production
 APP_DEBUG=false
 APP_URL=https://snowgoosekennels.example
-APP_TIMEZONE=America/Boise          # her local time zone: dates and the 8:00 reminder follow it
+APP_TIMEZONE=America/New_York       # her local time zone (Eastern): dates and the 8:00 reminder follow it. Not the fixed "EST"
 INERTIA_SSR_ENABLED=false           # no page-rendering service on this server
 SESSION_LIFETIME=480                # stay logged in for 8 hours
 SESSION_SECURE_COOKIE=true          # the site is https, so cookies are https-only
@@ -220,7 +220,7 @@ on puppies). The new features and where she finds them:
 | Money (expenses, yearly summary, per-litter results)                       | Menu → Money                                    |
 | AKC programs checklist                                                     | Records → AKC programs                          |
 | Mother's litter history                                                    | Litter → Details, and the Pairing planner       |
-| Privacy page; How it works and Happy families on the Contact page          | Public site (Privacy in the footer)             |
+| Privacy page; How it works on the Contact page; Happy families on the home page, with a story form at /share-your-story | Public site (Privacy in the footer) |
 
 Online payments are not built in. Buyers pay however she says (check, Venmo, Zelle). Her instructions print on
 deposit receipts and sales agreements (**Website text → Buyer papers → How buyers pay**). A card-payment

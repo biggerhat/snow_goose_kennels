@@ -4,6 +4,7 @@ use App\Models\Contact;
 use App\Models\Dog;
 use App\Models\Litter;
 use App\Models\Photo;
+use App\Models\Setting;
 use App\Models\User;
 use App\Models\WaitlistEntry;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -168,7 +169,7 @@ test('the dashboard checklist offers buyer papers and ticks it once any wording 
 
     expect($steps())->toMatchArray(['papers' => false]);
 
-    \App\Models\Setting::put('packet_food', 'Purina Pro Plan');
+    Setting::put('packet_food', 'Purina Pro Plan');
 
     expect($steps())->toMatchArray(['papers' => true]);
 });

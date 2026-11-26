@@ -209,18 +209,18 @@ No new environment values and no new scheduled jobs. Deploying runs one new migr
 (`create_breeder_tools_tables`: puppy schedule steps, expenses, litter update emails, and whelping-log columns
 on puppies). The new features and where she finds them:
 
-| Feature                                                                    | Where                                           |
-| -------------------------------------------------------------------------- | ----------------------------------------------- |
-| Puppy schedule (builds itself from the birth date, shows on the dashboard) | Litter → Health & diary                         |
-| Email everyone waiting for a litter                                        | Litter → Waitlist                               |
-| Go-home packet, sales agreement                                            | Litter → Puppies → open a puppy                 |
-| Deposit receipt                                                            | Waitlist entry                                  |
-| Stud agreement                                                             | Litter → Breeding & AKC                         |
-| Whelping log                                                               | Litter → Puppies → open a puppy → Birth details |
-| Money (expenses, yearly summary, per-litter results)                       | Menu → Money                                    |
-| AKC programs checklist                                                     | Records → AKC programs                          |
-| Mother's litter history                                                    | Litter → Details, and the Pairing planner       |
-| Privacy page; How it works on the Contact page; Happy families on the home page, with a story form at /share-your-story | Public site (Privacy in the footer) |
+| Feature                                                                                                                 | Where                                           |
+| ----------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------- |
+| Puppy schedule (builds itself from the birth date, shows on the dashboard)                                              | Litter → Health & diary                         |
+| Email everyone waiting for a litter                                                                                     | Litter → Waitlist                               |
+| Go-home packet, sales agreement                                                                                         | Litter → Puppies → open a puppy                 |
+| Deposit receipt                                                                                                         | Waitlist entry                                  |
+| Stud agreement                                                                                                          | Litter → Breeding & AKC                         |
+| Whelping log                                                                                                            | Litter → Puppies → open a puppy → Birth details |
+| Money (expenses, yearly summary, per-litter results)                                                                    | Menu → Money                                    |
+| AKC programs checklist                                                                                                  | Records → AKC programs                          |
+| Mother's litter history                                                                                                 | Litter → Details, and the Pairing planner       |
+| Privacy page; How it works on the Contact page; Happy families on the home page, with a story form at /share-your-story | Public site (Privacy in the footer)             |
 
 Online payments are not built in. Buyers pay however she says (check, Venmo, Zelle). Her instructions print on
 deposit receipts and sales agreements (**Website text → Buyer papers → How buyers pay**). A card-payment

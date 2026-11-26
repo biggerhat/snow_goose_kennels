@@ -1,0 +1,2017 @@
+parameters:
+	ignoreErrors:
+		-
+			message: '#^Offset 3 does not exist on array\{string, string, string\}\.$#'
+			identifier: offsetAccess.notFound
+			count: 1
+			path: app/Console/Commands/CheckSetup.php
+
+		-
+			message: '#^Parameter \#1 \$key of method Illuminate\\Support\\Collection\<int,array\<int, string\>\>\:\:where\(\) expects \(callable\(\)\: mixed\)\|string, 0 given\.$#'
+			identifier: argument.type
+			count: 1
+			path: app/Console/Commands/CheckSetup.php
+
+		-
+			message: '#^Parameter \#1 \$key of method Illuminate\\Support\\Collection\<int,array\<int, string\>\>\:\:whereIn\(\) expects string, int given\.$#'
+			identifier: argument.type
+			count: 1
+			path: app/Console/Commands/CheckSetup.php
+
+		-
+			message: '#^Parameter \#4 \$paths of method App\\Console\\Commands\\MoveFiles\:\:move\(\) expects list\<string\>, array\<int, non\-falsy\-string\> given\.$#'
+			identifier: argument.type
+			count: 1
+			path: app/Console/Commands/MoveFiles.php
+
+		-
+			message: '#^Parameter \#4 \$paths of method App\\Console\\Commands\\MoveFiles\:\:move\(\) expects list\<string\>, array\<mixed\> given\.$#'
+			identifier: argument.type
+			count: 1
+			path: app/Console/Commands/MoveFiles.php
+
+		-
+			message: '#^Right side of && is always false\.$#'
+			identifier: booleanAnd.rightAlwaysFalse
+			count: 1
+			path: app/Console/Commands/MoveFiles.php
+
+		-
+			message: '#^Unreachable statement \- code above always terminates\.$#'
+			identifier: deadCode.unreachable
+			count: 1
+			path: app/Console/Commands/MoveFiles.php
+
+		-
+			message: '#^Call to function in_array\(\) with arguments string, array\{App\\Enums\\LitterStatus\:\:Planned, App\\Enums\\LitterStatus\:\:Expected\} and true will always evaluate to false\.$#'
+			identifier: function.impossibleType
+			count: 1
+			path: app/Console/Commands/SendReminders.php
+
+		-
+			message: '#^Cannot call method between\(\) on string\.$#'
+			identifier: method.nonObject
+			count: 2
+			path: app/Console/Commands/SendReminders.php
+
+		-
+			message: '#^Strict comparison using \!\=\= between string and App\\Enums\\LitterStatus\:\:AllHome will always evaluate to true\.$#'
+			identifier: notIdentical.alwaysTrue
+			count: 1
+			path: app/Console/Commands/SendReminders.php
+
+		-
+			message: '#^Access to an undefined property App\\Models\\Litter\:\:\$title\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Controllers/Admin/AkcApplicationController.php
+
+		-
+			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$litter\.$#'
+			identifier: property.notFound
+			count: 2
+			path: app/Http/Controllers/Admin/ContactController.php
+
+		-
+			message: '#^Access to an undefined property App\\Models\\Litter\:\:\$title\.$#'
+			identifier: property.notFound
+			count: 2
+			path: app/Http/Controllers/Admin/DashboardController.php
+
+		-
+			message: '#^Cannot call method between\(\) on string\.$#'
+			identifier: method.nonObject
+			count: 2
+			path: app/Http/Controllers/Admin/DashboardController.php
+
+		-
+			message: '#^Cannot call method toDateString\(\) on string\.$#'
+			identifier: method.nonObject
+			count: 2
+			path: app/Http/Controllers/Admin/DashboardController.php
+
+		-
+			message: '#^Parameter \#1 \$callback of method Illuminate\\Support\\Collection\<int,App\\Models\\Litter\>\:\:flatMap\(\) contains unresolvable type\.$#'
+			identifier: argument.unresolvableType
+			count: 1
+			path: app/Http/Controllers/Admin/DashboardController.php
+
+		-
+			message: '#^Parameter \#1 \$callback of method Illuminate\\Support\\Collection\<int,array\<string, mixed\>\>\:\:sortBy\(\) contains unresolvable type\.$#'
+			identifier: argument.unresolvableType
+			count: 1
+			path: app/Http/Controllers/Admin/DashboardController.php
+
+		-
+			message: '#^Return type of call to method Illuminate\\Support\\Collection\<int,App\\Models\\Litter\>\:\:flatMap\(\) contains unresolvable type\.$#'
+			identifier: method.unresolvableReturnType
+			count: 1
+			path: app/Http/Controllers/Admin/DashboardController.php
+
+		-
+			message: '#^Return type of call to method Illuminate\\Support\\Collection\<int,array\<string, mixed\>\>\:\:values\(\) contains unresolvable type\.$#'
+			identifier: method.unresolvableReturnType
+			count: 1
+			path: app/Http/Controllers/Admin/DashboardController.php
+
+		-
+			message: '#^Strict comparison using \!\=\= between string and App\\Enums\\LitterStatus\:\:OnGround will always evaluate to true\.$#'
+			identifier: notIdentical.alwaysTrue
+			count: 1
+			path: app/Http/Controllers/Admin/DashboardController.php
+
+		-
+			message: '#^Call to an undefined method Illuminate\\Database\\Eloquent\\Collection\<int, Illuminate\\Database\\Eloquent\\Model\>\|Illuminate\\Database\\Eloquent\\Model\:\:documents\(\)\.$#'
+			identifier: method.notFound
+			count: 1
+			path: app/Http/Controllers/Admin/DocumentController.php
+
+		-
+			message: '#^Parameter \#1 \$dog of method App\\Http\\Controllers\\Admin\\DogAchievementController\:\:syncTitles\(\) expects App\\Models\\Dog, Illuminate\\Database\\Eloquent\\Model\|null given\.$#'
+			identifier: argument.type
+			count: 2
+			path: app/Http/Controllers/Admin/DogAchievementController.php
+
+		-
+			message: '#^Access to an undefined property \(object\|string\)\:\:\$id\.$#'
+			identifier: property.notFound
+			count: 2
+			path: app/Http/Controllers/Admin/DogController.php
+
+		-
+			message: '#^Access to an undefined property App\\Models\\Dog\|Illuminate\\Database\\Eloquent\\Collection\<int, App\\Models\\Dog\>\:\:\$id\.$#'
+			identifier: property.notFound
+			count: 2
+			path: app/Http/Controllers/Admin/DogController.php
+
+		-
+			message: '#^Access to an undefined property App\\Models\\Dog\|Illuminate\\Database\\Eloquent\\Collection\<int, App\\Models\\Dog\>\:\:\$name\.$#'
+			identifier: property.notFound
+			count: 2
+			path: app/Http/Controllers/Admin/DogController.php
+
+		-
+			message: '#^Access to an undefined property App\\Models\\Dog\|Illuminate\\Database\\Eloquent\\Collection\<int, App\\Models\\Dog\>\:\:\$sex\.$#'
+			identifier: property.notFound
+			count: 2
+			path: app/Http/Controllers/Admin/DogController.php
+
+		-
+			message: '#^Access to an undefined property App\\Models\\Litter\:\:\$title\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Controllers/Admin/DogController.php
+
+		-
+			message: '#^Cannot access property \$value on string\.$#'
+			identifier: property.nonObject
+			count: 2
+			path: app/Http/Controllers/Admin/DogController.php
+
+		-
+			message: '#^Cannot call method toDateString\(\) on string\.$#'
+			identifier: method.nonObject
+			count: 2
+			path: app/Http/Controllers/Admin/DogController.php
+
+		-
+			message: '#^Parameter \#1 \$callback of method Illuminate\\Database\\Eloquent\\Collection\<int,App\\Models\\Litter\>\:\:map\(\) contains unresolvable type\.$#'
+			identifier: argument.unresolvableType
+			count: 1
+			path: app/Http/Controllers/Admin/DogController.php
+
+		-
+			message: '#^Return type of call to method Illuminate\\Database\\Eloquent\\Collection\<int,App\\Models\\Litter\>\:\:map\(\) contains unresolvable type\.$#'
+			identifier: method.unresolvableReturnType
+			count: 1
+			path: app/Http/Controllers/Admin/DogController.php
+
+		-
+			message: '#^Strict comparison using \!\=\= between string and App\\Enums\\DogSex\:\:Female\|App\\Enums\\DogSex\:\:Male will always evaluate to true\.$#'
+			identifier: notIdentical.alwaysTrue
+			count: 1
+			path: app/Http/Controllers/Admin/DogController.php
+
+		-
+			message: '#^Access to an undefined property App\\Models\\Litter\:\:\$title\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Controllers/Admin/ExpenseController.php
+
+		-
+			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$name\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Controllers/Admin/ExpenseController.php
+
+		-
+			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$title\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Controllers/Admin/ExpenseController.php
+
+		-
+			message: '#^Cannot access property \$value on string\.$#'
+			identifier: property.nonObject
+			count: 1
+			path: app/Http/Controllers/Admin/ExpenseController.php
+
+		-
+			message: '#^Cannot call method toDateString\(\) on string\.$#'
+			identifier: method.nonObject
+			count: 1
+			path: app/Http/Controllers/Admin/ExpenseController.php
+
+		-
+			message: '#^Parameter \#1 \$callback of method Illuminate\\Database\\Eloquent\\Collection\<int,App\\Models\\Expense\>\:\:map\(\) contains unresolvable type\.$#'
+			identifier: argument.unresolvableType
+			count: 1
+			path: app/Http/Controllers/Admin/ExpenseController.php
+
+		-
+			message: '#^Parameter \#1 \$callback of method Illuminate\\Database\\Eloquent\\Collection\<int,App\\Models\\Litter\>\:\:map\(\) contains unresolvable type\.$#'
+			identifier: argument.unresolvableType
+			count: 1
+			path: app/Http/Controllers/Admin/ExpenseController.php
+
+		-
+			message: '#^Return type of call to method Illuminate\\Database\\Eloquent\\Collection\<int,App\\Models\\Expense\>\:\:map\(\) contains unresolvable type\.$#'
+			identifier: method.unresolvableReturnType
+			count: 1
+			path: app/Http/Controllers/Admin/ExpenseController.php
+
+		-
+			message: '#^Return type of call to method Illuminate\\Database\\Eloquent\\Collection\<int,App\\Models\\Litter\>\:\:map\(\) contains unresolvable type\.$#'
+			identifier: method.unresolvableReturnType
+			count: 1
+			path: app/Http/Controllers/Admin/ExpenseController.php
+
+		-
+			message: '#^Access to an undefined property App\\Models\\Litter\:\:\$title\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Controllers/Admin/ExportController.php
+
+		-
+			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$address\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Controllers/Admin/ExportController.php
+
+		-
+			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$born_on\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Controllers/Admin/ExportController.php
+
+		-
+			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$city\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Controllers/Admin/ExportController.php
+
+		-
+			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$collar\.$#'
+			identifier: property.notFound
+			count: 2
+			path: app/Http/Controllers/Admin/ExportController.php
+
+		-
+			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$email\.$#'
+			identifier: property.notFound
+			count: 2
+			path: app/Http/Controllers/Admin/ExportController.php
+
+		-
+			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$name\.$#'
+			identifier: property.notFound
+			count: 10
+			path: app/Http/Controllers/Admin/ExportController.php
+
+		-
+			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$phone\.$#'
+			identifier: property.notFound
+			count: 2
+			path: app/Http/Controllers/Admin/ExportController.php
+
+		-
+			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$postal_code\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Controllers/Admin/ExportController.php
+
+		-
+			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$registry_number\.$#'
+			identifier: property.notFound
+			count: 2
+			path: app/Http/Controllers/Admin/ExportController.php
+
+		-
+			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$state\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Controllers/Admin/ExportController.php
+
+		-
+			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$title\.$#'
+			identifier: property.notFound
+			count: 4
+			path: app/Http/Controllers/Admin/ExportController.php
+
+		-
+			message: '#^Cannot call method label\(\) on string\.$#'
+			identifier: method.nonObject
+			count: 16
+			path: app/Http/Controllers/Admin/ExportController.php
+
+		-
+			message: '#^Cannot call method toDateString\(\) on string\.$#'
+			identifier: method.nonObject
+			count: 17
+			path: app/Http/Controllers/Admin/ExportController.php
+
+		-
+			message: '#^Parameter \#1 \$callback of method Illuminate\\Database\\Eloquent\\Collection\<int,App\\Models\\Contact\>\:\:map\(\) contains unresolvable type\.$#'
+			identifier: argument.unresolvableType
+			count: 1
+			path: app/Http/Controllers/Admin/ExportController.php
+
+		-
+			message: '#^Parameter \#1 \$callback of method Illuminate\\Database\\Eloquent\\Collection\<int,App\\Models\\Document\>\:\:map\(\) contains unresolvable type\.$#'
+			identifier: argument.unresolvableType
+			count: 1
+			path: app/Http/Controllers/Admin/ExportController.php
+
+		-
+			message: '#^Parameter \#1 \$callback of method Illuminate\\Database\\Eloquent\\Collection\<int,App\\Models\\Dog\>\:\:map\(\) contains unresolvable type\.$#'
+			identifier: argument.unresolvableType
+			count: 1
+			path: app/Http/Controllers/Admin/ExportController.php
+
+		-
+			message: '#^Parameter \#1 \$callback of method Illuminate\\Database\\Eloquent\\Collection\<int,App\\Models\\Expense\>\:\:map\(\) contains unresolvable type\.$#'
+			identifier: argument.unresolvableType
+			count: 1
+			path: app/Http/Controllers/Admin/ExportController.php
+
+		-
+			message: '#^Parameter \#1 \$callback of method Illuminate\\Database\\Eloquent\\Collection\<int,App\\Models\\HealthRecord\>\:\:map\(\) contains unresolvable type\.$#'
+			identifier: argument.unresolvableType
+			count: 1
+			path: app/Http/Controllers/Admin/ExportController.php
+
+		-
+			message: '#^Parameter \#1 \$callback of method Illuminate\\Database\\Eloquent\\Collection\<int,App\\Models\\Litter\>\:\:map\(\) contains unresolvable type\.$#'
+			identifier: argument.unresolvableType
+			count: 1
+			path: app/Http/Controllers/Admin/ExportController.php
+
+		-
+			message: '#^Parameter \#1 \$callback of method Illuminate\\Database\\Eloquent\\Collection\<int,App\\Models\\Puppy\>\:\:map\(\) contains unresolvable type\.$#'
+			identifier: argument.unresolvableType
+			count: 1
+			path: app/Http/Controllers/Admin/ExportController.php
+
+		-
+			message: '#^Parameter \#1 \$callback of method Illuminate\\Database\\Eloquent\\Collection\<int,App\\Models\\WaitlistEntry\>\:\:map\(\) contains unresolvable type\.$#'
+			identifier: argument.unresolvableType
+			count: 1
+			path: app/Http/Controllers/Admin/ExportController.php
+
+		-
+			message: '#^Parameter \#1 \$stream of function fclose expects resource, resource\|false given\.$#'
+			identifier: argument.type
+			count: 1
+			path: app/Http/Controllers/Admin/ExportController.php
+
+		-
+			message: '#^Parameter \#1 \$stream of function fputcsv expects resource, resource\|false given\.$#'
+			identifier: argument.type
+			count: 2
+			path: app/Http/Controllers/Admin/ExportController.php
+
+		-
+			message: '#^Parameter \#1 \$stream of function fwrite expects resource, resource\|false given\.$#'
+			identifier: argument.type
+			count: 1
+			path: app/Http/Controllers/Admin/ExportController.php
+
+		-
+			message: '#^Return type of call to method Illuminate\\Database\\Eloquent\\Collection\<int,App\\Models\\Contact\>\:\:map\(\) contains unresolvable type\.$#'
+			identifier: method.unresolvableReturnType
+			count: 1
+			path: app/Http/Controllers/Admin/ExportController.php
+
+		-
+			message: '#^Return type of call to method Illuminate\\Database\\Eloquent\\Collection\<int,App\\Models\\Document\>\:\:map\(\) contains unresolvable type\.$#'
+			identifier: method.unresolvableReturnType
+			count: 1
+			path: app/Http/Controllers/Admin/ExportController.php
+
+		-
+			message: '#^Return type of call to method Illuminate\\Database\\Eloquent\\Collection\<int,App\\Models\\Dog\>\:\:map\(\) contains unresolvable type\.$#'
+			identifier: method.unresolvableReturnType
+			count: 1
+			path: app/Http/Controllers/Admin/ExportController.php
+
+		-
+			message: '#^Return type of call to method Illuminate\\Database\\Eloquent\\Collection\<int,App\\Models\\Expense\>\:\:map\(\) contains unresolvable type\.$#'
+			identifier: method.unresolvableReturnType
+			count: 1
+			path: app/Http/Controllers/Admin/ExportController.php
+
+		-
+			message: '#^Return type of call to method Illuminate\\Database\\Eloquent\\Collection\<int,App\\Models\\HealthRecord\>\:\:map\(\) contains unresolvable type\.$#'
+			identifier: method.unresolvableReturnType
+			count: 1
+			path: app/Http/Controllers/Admin/ExportController.php
+
+		-
+			message: '#^Return type of call to method Illuminate\\Database\\Eloquent\\Collection\<int,App\\Models\\Litter\>\:\:map\(\) contains unresolvable type\.$#'
+			identifier: method.unresolvableReturnType
+			count: 1
+			path: app/Http/Controllers/Admin/ExportController.php
+
+		-
+			message: '#^Return type of call to method Illuminate\\Database\\Eloquent\\Collection\<int,App\\Models\\Puppy\>\:\:map\(\) contains unresolvable type\.$#'
+			identifier: method.unresolvableReturnType
+			count: 1
+			path: app/Http/Controllers/Admin/ExportController.php
+
+		-
+			message: '#^Return type of call to method Illuminate\\Database\\Eloquent\\Collection\<int,App\\Models\\WaitlistEntry\>\:\:map\(\) contains unresolvable type\.$#'
+			identifier: method.unresolvableReturnType
+			count: 1
+			path: app/Http/Controllers/Admin/ExportController.php
+
+		-
+			message: '#^Using nullsafe property access "\?\-\>name" on left side of \?\? is unnecessary\. Use \-\> instead\.$#'
+			identifier: nullsafe.neverNull
+			count: 1
+			path: app/Http/Controllers/Admin/ExportController.php
+
+		-
+			message: '#^Using nullsafe property access "\?\-\>title" on left side of \?\? is unnecessary\. Use \-\> instead\.$#'
+			identifier: nullsafe.neverNull
+			count: 1
+			path: app/Http/Controllers/Admin/ExportController.php
+
+		-
+			message: '#^Cannot call method format\(\) on string\.$#'
+			identifier: method.nonObject
+			count: 1
+			path: app/Http/Controllers/Admin/HealthRecordController.php
+
+		-
+			message: '#^Cannot call method toDateString\(\) on string\.$#'
+			identifier: method.nonObject
+			count: 1
+			path: app/Http/Controllers/Admin/HealthRecordController.php
+
+		-
+			message: '#^Parameter \#1 \$callback of method Illuminate\\Support\\Collection\<int,Illuminate\\Database\\Eloquent\\Model\>\:\:each\(\) expects callable\(Illuminate\\Database\\Eloquent\\Model, int\)\: mixed, Closure\(App\\Models\\Puppy\)\: Illuminate\\Database\\Eloquent\\Model given\.$#'
+			identifier: argument.type
+			count: 1
+			path: app/Http/Controllers/Admin/HealthRecordController.php
+
+		-
+			message: '#^Access to an undefined property App\\Models\\Dog\|Illuminate\\Database\\Eloquent\\Collection\<int, App\\Models\\Dog\>\:\:\$name\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Controllers/Admin/LitterController.php
+
+		-
+			message: '#^Access to an undefined property App\\Models\\Dog\|Illuminate\\Database\\Eloquent\\Collection\<int, App\\Models\\Dog\>\:\:\$sex\.$#'
+			identifier: property.notFound
+			count: 2
+			path: app/Http/Controllers/Admin/LitterController.php
+
+		-
+			message: '#^Access to an undefined property App\\Models\\Litter\:\:\$title\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Controllers/Admin/LitterController.php
+
+		-
+			message: '#^Cannot access property \$value on string\.$#'
+			identifier: property.nonObject
+			count: 1
+			path: app/Http/Controllers/Admin/LitterController.php
+
+		-
+			message: '#^Cannot call method copy\(\) on string\.$#'
+			identifier: method.nonObject
+			count: 1
+			path: app/Http/Controllers/Admin/LitterController.php
+
+		-
+			message: '#^Cannot call method gt\(\) on string\.$#'
+			identifier: method.nonObject
+			count: 1
+			path: app/Http/Controllers/Admin/LitterController.php
+
+		-
+			message: '#^Cannot call method toDateString\(\) on string\.$#'
+			identifier: method.nonObject
+			count: 1
+			path: app/Http/Controllers/Admin/LitterController.php
+
+		-
+			message: '#^Method App\\Http\\Controllers\\Admin\\LitterController\:\:dogs\(\) has no return type specified\.$#'
+			identifier: missingType.return
+			count: 1
+			path: app/Http/Controllers/Admin/LitterController.php
+
+		-
+			message: '#^Parameter \#1 \$callback of method Illuminate\\Database\\Eloquent\\Collection\<int,App\\Models\\Litter\>\:\:map\(\) contains unresolvable type\.$#'
+			identifier: argument.unresolvableType
+			count: 1
+			path: app/Http/Controllers/Admin/LitterController.php
+
+		-
+			message: '#^Parameter \#1 \$dam of static method App\\Support\\LitterHistory\:\:forDam\(\) expects App\\Models\\Dog\|null, Illuminate\\Database\\Eloquent\\Model\|null given\.$#'
+			identifier: argument.type
+			count: 1
+			path: app/Http/Controllers/Admin/LitterController.php
+
+		-
+			message: '#^Parameter \#1 \$sire of static method App\\Support\\Inbreeding\:\:forMating\(\) expects App\\Models\\Dog, Illuminate\\Database\\Eloquent\\Model given\.$#'
+			identifier: argument.type
+			count: 1
+			path: app/Http/Controllers/Admin/LitterController.php
+
+		-
+			message: '#^Parameter \#2 \$dam of static method App\\Support\\Inbreeding\:\:forMating\(\) expects App\\Models\\Dog, Illuminate\\Database\\Eloquent\\Model given\.$#'
+			identifier: argument.type
+			count: 1
+			path: app/Http/Controllers/Admin/LitterController.php
+
+		-
+			message: '#^Result of && is always false\.$#'
+			identifier: booleanAnd.alwaysFalse
+			count: 2
+			path: app/Http/Controllers/Admin/LitterController.php
+
+		-
+			message: '#^Return type of call to method Illuminate\\Database\\Eloquent\\Collection\<int,App\\Models\\Litter\>\:\:map\(\) contains unresolvable type\.$#'
+			identifier: method.unresolvableReturnType
+			count: 1
+			path: app/Http/Controllers/Admin/LitterController.php
+
+		-
+			message: '#^Right side of && is always false\.$#'
+			identifier: booleanAnd.rightAlwaysFalse
+			count: 1
+			path: app/Http/Controllers/Admin/LitterController.php
+
+		-
+			message: '#^Strict comparison using \!\=\= between string and App\\Enums\\DogSex\:\:Female\|App\\Enums\\DogSex\:\:Male will always evaluate to true\.$#'
+			identifier: notIdentical.alwaysTrue
+			count: 1
+			path: app/Http/Controllers/Admin/LitterController.php
+
+		-
+			message: '#^Strict comparison using \=\=\= between string and App\\Enums\\LitterStatus\:\:OnGround will always evaluate to false\.$#'
+			identifier: identical.alwaysFalse
+			count: 1
+			path: app/Http/Controllers/Admin/LitterController.php
+
+		-
+			message: '#^Ternary operator condition is always false\.$#'
+			identifier: ternary.alwaysFalse
+			count: 1
+			path: app/Http/Controllers/Admin/LitterController.php
+
+		-
+			message: '#^Access to an undefined property App\\Models\\Litter\:\:\$title\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Controllers/Admin/LitterMessageController.php
+
+		-
+			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$contact\.$#'
+			identifier: property.notFound
+			count: 5
+			path: app/Http/Controllers/Admin/LitterMessageController.php
+
+		-
+			message: '#^Match expression does not handle remaining value\: mixed$#'
+			identifier: match.unhandled
+			count: 1
+			path: app/Http/Controllers/Admin/PhotoController.php
+
+		-
+			message: '#^Access to an undefined property App\\Models\\Dog\:\:\$age_label\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Controllers/Admin/PlannerController.php
+
+		-
+			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$name\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Controllers/Admin/PlannerController.php
+
+		-
+			message: '#^Cannot access property \$value on string\.$#'
+			identifier: property.nonObject
+			count: 1
+			path: app/Http/Controllers/Admin/PlannerController.php
+
+		-
+			message: '#^Parameter \#1 \$litter of method App\\Http\\Controllers\\Admin\\PuppyController\:\:syncLitterStatus\(\) expects App\\Models\\Litter, Illuminate\\Database\\Eloquent\\Model\|null given\.$#'
+			identifier: argument.type
+			count: 2
+			path: app/Http/Controllers/Admin/PuppyController.php
+
+		-
+			message: '#^Result of && is always false\.$#'
+			identifier: booleanAnd.alwaysFalse
+			count: 2
+			path: app/Http/Controllers/Admin/PuppyController.php
+
+		-
+			message: '#^Strict comparison using \=\=\= between string and App\\Enums\\LitterStatus\:\:OnGround will always evaluate to false\.$#'
+			identifier: identical.alwaysFalse
+			count: 1
+			path: app/Http/Controllers/Admin/PuppyController.php
+
+		-
+			message: '#^Access to an undefined property App\\Models\\Litter\:\:\$title\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Controllers/Admin/RecordsController.php
+
+		-
+			message: '#^Cannot access property \$value on string\.$#'
+			identifier: property.nonObject
+			count: 1
+			path: app/Http/Controllers/Admin/RecordsController.php
+
+		-
+			message: '#^Cannot call method toDateString\(\) on string\.$#'
+			identifier: method.nonObject
+			count: 3
+			path: app/Http/Controllers/Admin/RecordsController.php
+
+		-
+			message: '#^Parameter \#1 \$callback of method Illuminate\\Database\\Eloquent\\Collection\<int,App\\Models\\Litter\>\:\:map\(\) contains unresolvable type\.$#'
+			identifier: argument.unresolvableType
+			count: 1
+			path: app/Http/Controllers/Admin/RecordsController.php
+
+		-
+			message: '#^Return type of call to method Illuminate\\Database\\Eloquent\\Collection\<int,App\\Models\\Litter\>\:\:map\(\) contains unresolvable type\.$#'
+			identifier: method.unresolvableReturnType
+			count: 1
+			path: app/Http/Controllers/Admin/RecordsController.php
+
+		-
+			message: '#^Access to an undefined property App\\Models\\Litter\:\:\$title\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Controllers/Admin/SearchController.php
+
+		-
+			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$title\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Controllers/Admin/SearchController.php
+
+		-
+			message: '#^Call to an undefined method Illuminate\\Database\\Eloquent\\Builder\<Illuminate\\Database\\Eloquent\\Model\>\:\:withTrashed\(\)\.$#'
+			identifier: method.notFound
+			count: 2
+			path: app/Http/Controllers/Admin/SearchController.php
+
+		-
+			message: '#^Cannot access property \$value on string\.$#'
+			identifier: property.nonObject
+			count: 1
+			path: app/Http/Controllers/Admin/SearchController.php
+
+		-
+			message: '#^Cannot call method format\(\) on string\.$#'
+			identifier: method.nonObject
+			count: 2
+			path: app/Http/Controllers/Admin/SearchController.php
+
+		-
+			message: '#^Cannot call method label\(\) on string\.$#'
+			identifier: method.nonObject
+			count: 2
+			path: app/Http/Controllers/Admin/SearchController.php
+
+		-
+			message: '#^Parameter \#1 \$callback of method Illuminate\\Database\\Eloquent\\Collection\<int,App\\Models\\Litter\>\:\:map\(\) contains unresolvable type\.$#'
+			identifier: argument.unresolvableType
+			count: 1
+			path: app/Http/Controllers/Admin/SearchController.php
+
+		-
+			message: '#^Parameter \#1 \$callback of method Illuminate\\Support\\Collection\<int,App\\Models\\Puppy\>\:\:filter\(\) expects \(callable\(App\\Models\\Puppy, int\)\: bool\)\|null, Closure\(App\\Models\\Puppy\)\: \(Illuminate\\Database\\Eloquent\\Model\|null\) given\.$#'
+			identifier: argument.type
+			count: 1
+			path: app/Http/Controllers/Admin/SearchController.php
+
+		-
+			message: '#^Return type of call to method Illuminate\\Database\\Eloquent\\Collection\<int,App\\Models\\Litter\>\:\:map\(\) contains unresolvable type\.$#'
+			identifier: method.unresolvableReturnType
+			count: 1
+			path: app/Http/Controllers/Admin/SearchController.php
+
+		-
+			message: '#^Return type of call to method Illuminate\\Support\\Collection\<int,array\<string, mixed\>\>\:\:values\(\) contains unresolvable type\.$#'
+			identifier: method.unresolvableReturnType
+			count: 1
+			path: app/Http/Controllers/Admin/SearchController.php
+
+		-
+			message: '#^Unable to resolve the template type TValue in call to function collect$#'
+			identifier: argument.templateType
+			count: 1
+			path: app/Http/Controllers/Admin/SearchController.php
+
+		-
+			message: '#^Access to an undefined property App\\Models\\Litter\:\:\$title\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Controllers/Admin/WaitlistController.php
+
+		-
+			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$name\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Controllers/Admin/WaitlistController.php
+
+		-
+			message: '#^Call to an undefined method Illuminate\\Database\\Eloquent\\Model\:\:puppies\(\)\.$#'
+			identifier: method.notFound
+			count: 1
+			path: app/Http/Controllers/Admin/WaitlistController.php
+
+		-
+			message: '#^Cannot call method getKey\(\) on object\|string\.$#'
+			identifier: method.nonObject
+			count: 1
+			path: app/Http/Controllers/Admin/WaitlistController.php
+
+		-
+			message: '#^Method App\\Http\\Controllers\\Admin\\WaitlistController\:\:litters\(\) has no return type specified\.$#'
+			identifier: missingType.return
+			count: 1
+			path: app/Http/Controllers/Admin/WaitlistController.php
+
+		-
+			message: '#^Parameter \#1 \$callback of method Illuminate\\Database\\Eloquent\\Collection\<int,App\\Models\\Litter\>\:\:map\(\) contains unresolvable type\.$#'
+			identifier: argument.unresolvableType
+			count: 1
+			path: app/Http/Controllers/Admin/WaitlistController.php
+
+		-
+			message: '#^Return type of call to method Illuminate\\Database\\Eloquent\\Collection\<int,App\\Models\\Litter\>\:\:map\(\) contains unresolvable type\.$#'
+			identifier: method.unresolvableReturnType
+			count: 1
+			path: app/Http/Controllers/Admin/WaitlistController.php
+
+		-
+			message: '#^Cannot call method format\(\) on string\.$#'
+			identifier: method.nonObject
+			count: 1
+			path: app/Http/Controllers/Admin/WeighInController.php
+
+		-
+			message: '#^Access to an undefined property App\\Models\\Litter\:\:\$title\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Controllers/Site/ApplicationController.php
+
+		-
+			message: '#^Parameter \#1 \$callback of method Illuminate\\Database\\Eloquent\\Collection\<int,App\\Models\\Litter\>\:\:map\(\) contains unresolvable type\.$#'
+			identifier: argument.unresolvableType
+			count: 1
+			path: app/Http/Controllers/Site/ApplicationController.php
+
+		-
+			message: '#^Return type of call to method Illuminate\\Database\\Eloquent\\Collection\<int,App\\Models\\Litter\>\:\:map\(\) contains unresolvable type\.$#'
+			identifier: method.unresolvableReturnType
+			count: 1
+			path: app/Http/Controllers/Site/ApplicationController.php
+
+		-
+			message: '#^Access to an undefined property App\\Models\\Dog\:\:\$age_label\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Controllers/Site/SiteController.php
+
+		-
+			message: '#^Access to an undefined property App\\Models\\Litter\:\:\$title\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Controllers/Site/SiteController.php
+
+		-
+			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$body\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Controllers/Site/SiteController.php
+
+		-
+			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$certificate_number\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Controllers/Site/SiteController.php
+
+		-
+			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$collar\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Controllers/Site/SiteController.php
+
+		-
+			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$color\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Controllers/Site/SiteController.php
+
+		-
+			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$id\.$#'
+			identifier: property.notFound
+			count: 2
+			path: app/Http/Controllers/Site/SiteController.php
+
+		-
+			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$name\.$#'
+			identifier: property.notFound
+			count: 2
+			path: app/Http/Controllers/Site/SiteController.php
+
+		-
+			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$photos\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Controllers/Site/SiteController.php
+
+		-
+			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$posted_on\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Controllers/Site/SiteController.php
+
+		-
+			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$result\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Controllers/Site/SiteController.php
+
+		-
+			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$sex\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Controllers/Site/SiteController.php
+
+		-
+			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$status\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Controllers/Site/SiteController.php
+
+		-
+			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$tested_on\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Controllers/Site/SiteController.php
+
+		-
+			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$title\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Controllers/Site/SiteController.php
+
+		-
+			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$url\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Controllers/Site/SiteController.php
+
+		-
+			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$verification_url\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Controllers/Site/SiteController.php
+
+		-
+			message: '#^Cannot access property \$timestamp on string\.$#'
+			identifier: property.nonObject
+			count: 2
+			path: app/Http/Controllers/Site/SiteController.php
+
+		-
+			message: '#^Cannot access property \$value on string\.$#'
+			identifier: property.nonObject
+			count: 5
+			path: app/Http/Controllers/Site/SiteController.php
+
+		-
+			message: '#^Cannot call method format\(\) on string\.$#'
+			identifier: method.nonObject
+			count: 5
+			path: app/Http/Controllers/Site/SiteController.php
+
+		-
+			message: '#^Cannot call method label\(\) on string\.$#'
+			identifier: method.nonObject
+			count: 1
+			path: app/Http/Controllers/Site/SiteController.php
+
+		-
+			message: '#^Method App\\Http\\Controllers\\Site\\SiteController\:\:publicLitters\(\) should return Illuminate\\Support\\Collection\<int, array\<string, mixed\>\> but returns Illuminate\\Support\\Collection\<int, array\{id\: int, title\: mixed, description\: string\|null, status\: mixed, bred_on\: mixed, due_on\: mixed, born_on\: mixed, go_home_on\: mixed, \.\.\.\}\>\.$#'
+			identifier: return.type
+			count: 1
+			path: app/Http/Controllers/Site/SiteController.php
+
+		-
+			message: '#^Method App\\Http\\Controllers\\Site\\SiteController\:\:sitemap\(\) has no return type specified\.$#'
+			identifier: missingType.return
+			count: 1
+			path: app/Http/Controllers/Site/SiteController.php
+
+		-
+			message: '#^Parameter \#1 \$callback of method Illuminate\\Database\\Eloquent\\Collection\<int,App\\Models\\Litter\>\:\:map\(\) contains unresolvable type\.$#'
+			identifier: argument.unresolvableType
+			count: 1
+			path: app/Http/Controllers/Site/SiteController.php
+
+		-
+			message: '#^Parameter \#1 \$callback of method Illuminate\\Database\\Eloquent\\Collection\<int,Illuminate\\Database\\Eloquent\\Model\>\:\:map\(\) contains unresolvable type\.$#'
+			identifier: argument.unresolvableType
+			count: 3
+			path: app/Http/Controllers/Site/SiteController.php
+
+		-
+			message: '#^Parameter \#1 \$dog of method App\\Http\\Controllers\\Site\\SiteController\:\:parent\(\) expects App\\Models\\Dog, Illuminate\\Database\\Eloquent\\Model given\.$#'
+			identifier: argument.type
+			count: 2
+			path: app/Http/Controllers/Site/SiteController.php
+
+		-
+			message: '#^Parameter \#1 \$p of method App\\Http\\Controllers\\Site\\SiteController\:\:photo\(\) expects App\\Models\\Photo, Illuminate\\Database\\Eloquent\\Model given\.$#'
+			identifier: argument.type
+			count: 3
+			path: app/Http/Controllers/Site/SiteController.php
+
+		-
+			message: '#^Return type of call to method Illuminate\\Database\\Eloquent\\Collection\<int,App\\Models\\Litter\>\:\:map\(\) contains unresolvable type\.$#'
+			identifier: method.unresolvableReturnType
+			count: 1
+			path: app/Http/Controllers/Site/SiteController.php
+
+		-
+			message: '#^Return type of call to method Illuminate\\Database\\Eloquent\\Collection\<int,Illuminate\\Database\\Eloquent\\Model\>\:\:map\(\) contains unresolvable type\.$#'
+			identifier: method.unresolvableReturnType
+			count: 3
+			path: app/Http/Controllers/Site/SiteController.php
+
+		-
+			message: '#^Return type of call to method Illuminate\\Support\\Collection\<int,array\<string, mixed\>\>\:\:values\(\) contains unresolvable type\.$#'
+			identifier: method.unresolvableReturnType
+			count: 3
+			path: app/Http/Controllers/Site/SiteController.php
+
+		-
+			message: '#^Strict comparison using \=\=\= between string and App\\Enums\\LitterStatus\:\:AllHome will always evaluate to false\.$#'
+			identifier: identical.alwaysFalse
+			count: 1
+			path: app/Http/Controllers/Site/SiteController.php
+
+		-
+			message: '#^Using nullsafe property access "\?\-\>timestamp" on left side of \?\? is unnecessary\. Use \-\> instead\.$#'
+			identifier: nullsafe.neverNull
+			count: 2
+			path: app/Http/Controllers/Site/SiteController.php
+
+		-
+			message: '#^Method App\\Mail\\DailyReminders\:\:__construct\(\) has parameter \$attention with generic class Illuminate\\Support\\Collection but does not specify its types\: TKey, TValue$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Mail/DailyReminders.php
+
+		-
+			message: '#^Method App\\Mail\\DailyReminders\:\:__construct\(\) has parameter \$due with generic class Illuminate\\Support\\Collection but does not specify its types\: TKey, TValue$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Mail/DailyReminders.php
+
+		-
+			message: '#^Method App\\Mail\\DailyReminders\:\:__construct\(\) has parameter \$goingHome with generic class Illuminate\\Support\\Collection but does not specify its types\: TKey, TValue$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Mail/DailyReminders.php
+
+		-
+			message: '#^Method App\\Mail\\DailyReminders\:\:__construct\(\) has parameter \$unanswered with generic class Illuminate\\Support\\Collection but does not specify its types\: TKey, TValue$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Mail/DailyReminders.php
+
+		-
+			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$name\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Mail/NewApplication.php
+
+		-
+			message: '#^Method App\\Models\\Album\:\:photos\(\) return type with generic class Illuminate\\Database\\Eloquent\\Relations\\HasMany does not specify its types\: TRelatedModel, TDeclaringModel$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Models/Album.php
+
+		-
+			message: '#^Cannot call method isForceDeleting\(\) on class\-string\|object\.$#'
+			identifier: method.nonObject
+			count: 1
+			path: app/Models/Contact.php
+
+		-
+			message: '#^Method App\\Models\\Contact\:\:contactNotes\(\) return type with generic class Illuminate\\Database\\Eloquent\\Relations\\HasMany does not specify its types\: TRelatedModel, TDeclaringModel$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Models/Contact.php
+
+		-
+			message: '#^Method App\\Models\\Contact\:\:documents\(\) return type with generic class Illuminate\\Database\\Eloquent\\Relations\\MorphMany does not specify its types\: TRelatedModel, TDeclaringModel$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Models/Contact.php
+
+		-
+			message: '#^Method App\\Models\\Contact\:\:puppies\(\) return type with generic class Illuminate\\Database\\Eloquent\\Relations\\HasMany does not specify its types\: TRelatedModel, TDeclaringModel$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Models/Contact.php
+
+		-
+			message: '#^Method App\\Models\\Contact\:\:waitlistEntries\(\) return type with generic class Illuminate\\Database\\Eloquent\\Relations\\HasMany does not specify its types\: TRelatedModel, TDeclaringModel$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Models/Contact.php
+
+		-
+			message: '#^Method App\\Models\\ContactNote\:\:contact\(\) return type with generic class Illuminate\\Database\\Eloquent\\Relations\\BelongsTo does not specify its types\: TRelatedModel, TDeclaringModel$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Models/ContactNote.php
+
+		-
+			message: '#^Method App\\Models\\DiaryEntry\:\:litter\(\) return type with generic class Illuminate\\Database\\Eloquent\\Relations\\BelongsTo does not specify its types\: TRelatedModel, TDeclaringModel$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Models/DiaryEntry.php
+
+		-
+			message: '#^Property App\\Models\\DiaryEntry\:\:\$touches type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: app/Models/DiaryEntry.php
+
+		-
+			message: '#^Method App\\Models\\Document\:\:documentable\(\) return type with generic class Illuminate\\Database\\Eloquent\\Relations\\MorphTo does not specify its types\: TRelatedModel, TDeclaringModel$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Models/Document.php
+
+		-
+			message: '#^Cannot call method copy\(\) on Carbon\\CarbonImmutable\|string\.$#'
+			identifier: method.nonObject
+			count: 1
+			path: app/Models/Dog.php
+
+		-
+			message: '#^Cannot call method diffInMonths\(\) on string\.$#'
+			identifier: method.nonObject
+			count: 1
+			path: app/Models/Dog.php
+
+		-
+			message: '#^Cannot call method diffInYears\(\) on string\.$#'
+			identifier: method.nonObject
+			count: 1
+			path: app/Models/Dog.php
+
+		-
+			message: '#^Cannot call method isForceDeleting\(\) on class\-string\|object\.$#'
+			identifier: method.nonObject
+			count: 1
+			path: app/Models/Dog.php
+
+		-
+			message: '#^Method App\\Models\\Dog\:\:achievements\(\) return type with generic class Illuminate\\Database\\Eloquent\\Relations\\HasMany does not specify its types\: TRelatedModel, TDeclaringModel$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Models/Dog.php
+
+		-
+			message: '#^Method App\\Models\\Dog\:\:ageLabel\(\) return type with generic class Illuminate\\Database\\Eloquent\\Casts\\Attribute does not specify its types\: TGet, TSet$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Models/Dog.php
+
+		-
+			message: '#^Method App\\Models\\Dog\:\:dam\(\) return type with generic class Illuminate\\Database\\Eloquent\\Relations\\BelongsTo does not specify its types\: TRelatedModel, TDeclaringModel$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Models/Dog.php
+
+		-
+			message: '#^Method App\\Models\\Dog\:\:documents\(\) return type with generic class Illuminate\\Database\\Eloquent\\Relations\\MorphMany does not specify its types\: TRelatedModel, TDeclaringModel$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Models/Dog.php
+
+		-
+			message: '#^Method App\\Models\\Dog\:\:healthRecords\(\) return type with generic class Illuminate\\Database\\Eloquent\\Relations\\MorphMany does not specify its types\: TRelatedModel, TDeclaringModel$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Models/Dog.php
+
+		-
+			message: '#^Method App\\Models\\Dog\:\:healthTests\(\) return type with generic class Illuminate\\Database\\Eloquent\\Relations\\HasMany does not specify its types\: TRelatedModel, TDeclaringModel$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Models/Dog.php
+
+		-
+			message: '#^Method App\\Models\\Dog\:\:heatCycles\(\) return type with generic class Illuminate\\Database\\Eloquent\\Relations\\HasMany does not specify its types\: TRelatedModel, TDeclaringModel$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Models/Dog.php
+
+		-
+			message: '#^Method App\\Models\\Dog\:\:ownerContact\(\) return type with generic class Illuminate\\Database\\Eloquent\\Relations\\BelongsTo does not specify its types\: TRelatedModel, TDeclaringModel$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Models/Dog.php
+
+		-
+			message: '#^Method App\\Models\\Dog\:\:photos\(\) return type with generic class Illuminate\\Database\\Eloquent\\Relations\\MorphMany does not specify its types\: TRelatedModel, TDeclaringModel$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Models/Dog.php
+
+		-
+			message: '#^Method App\\Models\\Dog\:\:sire\(\) return type with generic class Illuminate\\Database\\Eloquent\\Relations\\BelongsTo does not specify its types\: TRelatedModel, TDeclaringModel$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Models/Dog.php
+
+		-
+			message: '#^Method App\\Models\\DogAchievement\:\:dog\(\) return type with generic class Illuminate\\Database\\Eloquent\\Relations\\BelongsTo does not specify its types\: TRelatedModel, TDeclaringModel$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Models/DogAchievement.php
+
+		-
+			message: '#^Method App\\Models\\Expense\:\:dog\(\) return type with generic class Illuminate\\Database\\Eloquent\\Relations\\BelongsTo does not specify its types\: TRelatedModel, TDeclaringModel$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Models/Expense.php
+
+		-
+			message: '#^Method App\\Models\\Expense\:\:litter\(\) return type with generic class Illuminate\\Database\\Eloquent\\Relations\\BelongsTo does not specify its types\: TRelatedModel, TDeclaringModel$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Models/Expense.php
+
+		-
+			message: '#^Method App\\Models\\HealthRecord\:\:recordable\(\) return type with generic class Illuminate\\Database\\Eloquent\\Relations\\MorphTo does not specify its types\: TRelatedModel, TDeclaringModel$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Models/HealthRecord.php
+
+		-
+			message: '#^Method App\\Models\\HealthTest\:\:dog\(\) return type with generic class Illuminate\\Database\\Eloquent\\Relations\\BelongsTo does not specify its types\: TRelatedModel, TDeclaringModel$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Models/HealthTest.php
+
+		-
+			message: '#^Method App\\Models\\HeatCycle\:\:dog\(\) return type with generic class Illuminate\\Database\\Eloquent\\Relations\\BelongsTo does not specify its types\: TRelatedModel, TDeclaringModel$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Models/HeatCycle.php
+
+		-
+			message: '#^Cannot call method isForceDeleting\(\) on class\-string\|object\.$#'
+			identifier: method.nonObject
+			count: 1
+			path: app/Models/KennelProfile.php
+
+		-
+			message: '#^Method App\\Models\\KennelProfile\:\:documents\(\) return type with generic class Illuminate\\Database\\Eloquent\\Relations\\MorphMany does not specify its types\: TRelatedModel, TDeclaringModel$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Models/KennelProfile.php
+
+		-
+			message: '#^Access to an undefined property App\\Models\\Litter\:\:\$title\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Models/Litter.php
+
+		-
+			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$name\.$#'
+			identifier: property.notFound
+			count: 2
+			path: app/Models/Litter.php
+
+		-
+			message: '#^Cannot call method isForceDeleting\(\) on class\-string\|object\.$#'
+			identifier: method.nonObject
+			count: 1
+			path: app/Models/Litter.php
+
+		-
+			message: '#^Method App\\Models\\Litter\:\:dam\(\) return type with generic class Illuminate\\Database\\Eloquent\\Relations\\BelongsTo does not specify its types\: TRelatedModel, TDeclaringModel$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Models/Litter.php
+
+		-
+			message: '#^Method App\\Models\\Litter\:\:diary\(\) return type with generic class Illuminate\\Database\\Eloquent\\Relations\\HasMany does not specify its types\: TRelatedModel, TDeclaringModel$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Models/Litter.php
+
+		-
+			message: '#^Method App\\Models\\Litter\:\:documents\(\) return type with generic class Illuminate\\Database\\Eloquent\\Relations\\MorphMany does not specify its types\: TRelatedModel, TDeclaringModel$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Models/Litter.php
+
+		-
+			message: '#^Method App\\Models\\Litter\:\:keyDate\(\) return type with generic class Illuminate\\Database\\Eloquent\\Casts\\Attribute does not specify its types\: TGet, TSet$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Models/Litter.php
+
+		-
+			message: '#^Method App\\Models\\Litter\:\:messages\(\) return type with generic class Illuminate\\Database\\Eloquent\\Relations\\HasMany does not specify its types\: TRelatedModel, TDeclaringModel$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Models/Litter.php
+
+		-
+			message: '#^Method App\\Models\\Litter\:\:photos\(\) return type with generic class Illuminate\\Database\\Eloquent\\Relations\\MorphMany does not specify its types\: TRelatedModel, TDeclaringModel$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Models/Litter.php
+
+		-
+			message: '#^Method App\\Models\\Litter\:\:puppies\(\) return type with generic class Illuminate\\Database\\Eloquent\\Relations\\HasMany does not specify its types\: TRelatedModel, TDeclaringModel$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Models/Litter.php
+
+		-
+			message: '#^Method App\\Models\\Litter\:\:sire\(\) return type with generic class Illuminate\\Database\\Eloquent\\Relations\\BelongsTo does not specify its types\: TRelatedModel, TDeclaringModel$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Models/Litter.php
+
+		-
+			message: '#^Method App\\Models\\Litter\:\:tasks\(\) return type with generic class Illuminate\\Database\\Eloquent\\Relations\\HasMany does not specify its types\: TRelatedModel, TDeclaringModel$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Models/Litter.php
+
+		-
+			message: '#^Method App\\Models\\Litter\:\:title\(\) return type with generic class Illuminate\\Database\\Eloquent\\Casts\\Attribute does not specify its types\: TGet, TSet$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Models/Litter.php
+
+		-
+			message: '#^Method App\\Models\\Litter\:\:waitlistEntries\(\) return type with generic class Illuminate\\Database\\Eloquent\\Relations\\HasMany does not specify its types\: TRelatedModel, TDeclaringModel$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Models/Litter.php
+
+		-
+			message: '#^Method App\\Models\\LitterMessage\:\:litter\(\) return type with generic class Illuminate\\Database\\Eloquent\\Relations\\BelongsTo does not specify its types\: TRelatedModel, TDeclaringModel$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Models/LitterMessage.php
+
+		-
+			message: '#^Method App\\Models\\LitterTask\:\:litter\(\) return type with generic class Illuminate\\Database\\Eloquent\\Relations\\BelongsTo does not specify its types\: TRelatedModel, TDeclaringModel$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Models/LitterTask.php
+
+		-
+			message: '#^Method App\\Models\\Photo\:\:album\(\) return type with generic class Illuminate\\Database\\Eloquent\\Relations\\BelongsTo does not specify its types\: TRelatedModel, TDeclaringModel$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Models/Photo.php
+
+		-
+			message: '#^Method App\\Models\\Photo\:\:photoable\(\) return type with generic class Illuminate\\Database\\Eloquent\\Relations\\MorphTo does not specify its types\: TRelatedModel, TDeclaringModel$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Models/Photo.php
+
+		-
+			message: '#^Cannot call method isForceDeleting\(\) on class\-string\|object\.$#'
+			identifier: method.nonObject
+			count: 1
+			path: app/Models/Puppy.php
+
+		-
+			message: '#^Method App\\Models\\Puppy\:\:buyer\(\) return type with generic class Illuminate\\Database\\Eloquent\\Relations\\BelongsTo does not specify its types\: TRelatedModel, TDeclaringModel$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Models/Puppy.php
+
+		-
+			message: '#^Method App\\Models\\Puppy\:\:documents\(\) return type with generic class Illuminate\\Database\\Eloquent\\Relations\\MorphMany does not specify its types\: TRelatedModel, TDeclaringModel$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Models/Puppy.php
+
+		-
+			message: '#^Method App\\Models\\Puppy\:\:healthRecords\(\) return type with generic class Illuminate\\Database\\Eloquent\\Relations\\MorphMany does not specify its types\: TRelatedModel, TDeclaringModel$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Models/Puppy.php
+
+		-
+			message: '#^Method App\\Models\\Puppy\:\:litter\(\) return type with generic class Illuminate\\Database\\Eloquent\\Relations\\BelongsTo does not specify its types\: TRelatedModel, TDeclaringModel$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Models/Puppy.php
+
+		-
+			message: '#^Method App\\Models\\Puppy\:\:photos\(\) return type with generic class Illuminate\\Database\\Eloquent\\Relations\\MorphMany does not specify its types\: TRelatedModel, TDeclaringModel$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Models/Puppy.php
+
+		-
+			message: '#^Method App\\Models\\Puppy\:\:weights\(\) return type with generic class Illuminate\\Database\\Eloquent\\Relations\\HasMany does not specify its types\: TRelatedModel, TDeclaringModel$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Models/Puppy.php
+
+		-
+			message: '#^Property App\\Models\\Puppy\:\:\$touches type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: app/Models/Puppy.php
+
+		-
+			message: '#^Method App\\Models\\PuppyWeight\:\:puppy\(\) return type with generic class Illuminate\\Database\\Eloquent\\Relations\\BelongsTo does not specify its types\: TRelatedModel, TDeclaringModel$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Models/PuppyWeight.php
+
+		-
+			message: '#^Property App\\Models\\PuppyWeight\:\:\$touches type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: app/Models/PuppyWeight.php
+
+		-
+			message: '#^Method App\\Models\\Setting\:\:contact\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: app/Models/Setting.php
+
+		-
+			message: '#^Method App\\Models\\WaitlistEntry\:\:contact\(\) return type with generic class Illuminate\\Database\\Eloquent\\Relations\\BelongsTo does not specify its types\: TRelatedModel, TDeclaringModel$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Models/WaitlistEntry.php
+
+		-
+			message: '#^Method App\\Models\\WaitlistEntry\:\:litter\(\) return type with generic class Illuminate\\Database\\Eloquent\\Relations\\BelongsTo does not specify its types\: TRelatedModel, TDeclaringModel$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Models/WaitlistEntry.php
+
+		-
+			message: '#^Method App\\Models\\WaitlistEntry\:\:puppy\(\) return type with generic class Illuminate\\Database\\Eloquent\\Relations\\BelongsTo does not specify its types\: TRelatedModel, TDeclaringModel$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Models/WaitlistEntry.php
+
+		-
+			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$buyer\.$#'
+			identifier: property.notFound
+			count: 2
+			path: app/Support/AkcChecks.php
+
+		-
+			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$co_owner_name\.$#'
+			identifier: property.notFound
+			count: 2
+			path: app/Support/AkcChecks.php
+
+		-
+			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$dna_profile\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Support/AkcChecks.php
+
+		-
+			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$id\.$#'
+			identifier: property.notFound
+			count: 2
+			path: app/Support/AkcChecks.php
+
+		-
+			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$is_ours\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Support/AkcChecks.php
+
+		-
+			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$left_on\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Support/AkcChecks.php
+
+		-
+			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$name\.$#'
+			identifier: property.notFound
+			count: 5
+			path: app/Support/AkcChecks.php
+
+		-
+			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$ownerContact\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Support/AkcChecks.php
+
+		-
+			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$papers_given_on\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Support/AkcChecks.php
+
+		-
+			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$registration_type\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Support/AkcChecks.php
+
+		-
+			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$registry_number\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Support/AkcChecks.php
+
+		-
+			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$status\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Support/AkcChecks.php
+
+		-
+			message: '#^Cannot access property \$value on string\.$#'
+			identifier: property.nonObject
+			count: 2
+			path: app/Support/AkcChecks.php
+
+		-
+			message: '#^Cannot access property \$year on string\.$#'
+			identifier: property.nonObject
+			count: 2
+			path: app/Support/AkcChecks.php
+
+		-
+			message: '#^Cannot call method copy\(\) on string\.$#'
+			identifier: method.nonObject
+			count: 1
+			path: app/Support/AkcChecks.php
+
+		-
+			message: '#^Cannot call method diffInMonths\(\) on string\.$#'
+			identifier: method.nonObject
+			count: 1
+			path: app/Support/AkcChecks.php
+
+		-
+			message: '#^Cannot call method format\(\) on string\.$#'
+			identifier: method.nonObject
+			count: 1
+			path: app/Support/AkcChecks.php
+
+		-
+			message: '#^Parameter \#1 \$callback of method Illuminate\\Support\\Collection\<int,Illuminate\\Database\\Eloquent\\Model\>\:\:filter\(\) expects \(callable\(Illuminate\\Database\\Eloquent\\Model, int\)\: bool\)\|null, Closure\(App\\Models\\Dog\)\: bool given\.$#'
+			identifier: argument.type
+			count: 1
+			path: app/Support/AkcChecks.php
+
+		-
+			message: '#^Parameter \#3 \$dog of static method App\\Support\\AkcChecks\:\:age\(\) expects App\\Models\\Dog, Illuminate\\Database\\Eloquent\\Model given\.$#'
+			identifier: argument.type
+			count: 2
+			path: app/Support/AkcChecks.php
+
+		-
+			message: '#^Parameter \#4 \$bred of static method App\\Support\\AkcChecks\:\:age\(\) expects DateTimeInterface, string given\.$#'
+			identifier: argument.type
+			count: 2
+			path: app/Support/AkcChecks.php
+
+		-
+			message: '#^Strict comparison using \!\=\= between non\-falsy\-string and App\\Enums\\BreedingMethod\:\:Natural will always evaluate to true\.$#'
+			identifier: notIdentical.alwaysTrue
+			count: 1
+			path: app/Support/AkcChecks.php
+
+		-
+			message: '#^Strict comparison using \=\=\= between string\|null and App\\Enums\\BreedingMethod\:\:AiFresh will always evaluate to false\.$#'
+			identifier: identical.alwaysFalse
+			count: 1
+			path: app/Support/AkcChecks.php
+
+		-
+			message: '#^Strict comparison using \=\=\= between string\|null and App\\Enums\\BreedingMethod\:\:AiFrozen will always evaluate to false\.$#'
+			identifier: identical.alwaysFalse
+			count: 1
+			path: app/Support/AkcChecks.php
+
+		-
+			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$co_owner_name\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Support/AkcLitterApplication.php
+
+		-
+			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$is_ours\.$#'
+			identifier: property.notFound
+			count: 2
+			path: app/Support/AkcLitterApplication.php
+
+		-
+			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$name\.$#'
+			identifier: property.notFound
+			count: 8
+			path: app/Support/AkcLitterApplication.php
+
+		-
+			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$ownerContact\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Support/AkcLitterApplication.php
+
+		-
+			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$registered_name\.$#'
+			identifier: property.notFound
+			count: 2
+			path: app/Support/AkcLitterApplication.php
+
+		-
+			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$registry_number\.$#'
+			identifier: property.notFound
+			count: 2
+			path: app/Support/AkcLitterApplication.php
+
+		-
+			message: '#^Cannot call method format\(\) on string\.$#'
+			identifier: method.nonObject
+			count: 4
+			path: app/Support/AkcLitterApplication.php
+
+		-
+			message: '#^Parameter \#1 \$c of static method App\\Support\\AkcLitterApplication\:\:contactAsOwner\(\) expects App\\Models\\Contact, Illuminate\\Database\\Eloquent\\Model given\.$#'
+			identifier: argument.type
+			count: 1
+			path: app/Support/AkcLitterApplication.php
+
+		-
+			message: '#^Parameter \#1 \$dog of static method App\\Support\\AkcLitterApplication\:\:ownerOf\(\) expects App\\Models\\Dog, Illuminate\\Database\\Eloquent\\Model given\.$#'
+			identifier: argument.type
+			count: 3
+			path: app/Support/AkcLitterApplication.php
+
+		-
+			message: '#^Parameter \#2 \$sire of static method App\\Support\\AkcLitterApplication\:\:sections\(\) expects App\\Models\\Dog\|null, Illuminate\\Database\\Eloquent\\Model\|null given\.$#'
+			identifier: argument.type
+			count: 1
+			path: app/Support/AkcLitterApplication.php
+
+		-
+			message: '#^Parameter \#3 \$dam of static method App\\Support\\AkcLitterApplication\:\:sections\(\) expects App\\Models\\Dog\|null, Illuminate\\Database\\Eloquent\\Model\|null given\.$#'
+			identifier: argument.type
+			count: 1
+			path: app/Support/AkcLitterApplication.php
+
+		-
+			message: '#^Access to an undefined property App\\Models\\Litter\:\:\$title\.$#'
+			identifier: property.notFound
+			count: 2
+			path: app/Support/Attention.php
+
+		-
+			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$title\.$#'
+			identifier: property.notFound
+			count: 3
+			path: app/Support/Attention.php
+
+		-
+			message: '#^Anonymous function has an unused use \$out\.$#'
+			identifier: closure.unusedUse
+			count: 1
+			path: app/Support/Attention.php
+
+		-
+			message: '#^Call to function in_array\(\) with arguments string, array\{App\\Enums\\PuppyStatus\:\:Home, App\\Enums\\PuppyStatus\:\:Kept\} and true will always evaluate to false\.$#'
+			identifier: function.impossibleType
+			count: 1
+			path: app/Support/Attention.php
+
+		-
+			message: '#^Cannot call method addMonths\(\) on string\.$#'
+			identifier: method.nonObject
+			count: 1
+			path: app/Support/Attention.php
+
+		-
+			message: '#^Cannot call method copy\(\) on Carbon\\CarbonImmutable\|string\.$#'
+			identifier: method.nonObject
+			count: 1
+			path: app/Support/Attention.php
+
+		-
+			message: '#^Cannot call method format\(\) on Carbon\\CarbonImmutable\|string\.$#'
+			identifier: method.nonObject
+			count: 1
+			path: app/Support/Attention.php
+
+		-
+			message: '#^Cannot call method format\(\) on string\.$#'
+			identifier: method.nonObject
+			count: 3
+			path: app/Support/Attention.php
+
+		-
+			message: '#^Cannot call method label\(\) on string\.$#'
+			identifier: method.nonObject
+			count: 2
+			path: app/Support/Attention.php
+
+		-
+			message: '#^Cannot call method lt\(\) on Carbon\\CarbonImmutable\|string\.$#'
+			identifier: method.nonObject
+			count: 1
+			path: app/Support/Attention.php
+
+		-
+			message: '#^Cannot call method lt\(\) on string\.$#'
+			identifier: method.nonObject
+			count: 5
+			path: app/Support/Attention.php
+
+		-
+			message: '#^Cannot call method toDateString\(\) on string\.$#'
+			identifier: method.nonObject
+			count: 6
+			path: app/Support/Attention.php
+
+		-
+			message: '#^Method App\\Support\\Attention\:\:akc\(\) should return list\<array\<string, mixed\>\> but returns array\<int, array\{kind\: string, title\: string, detail\: string, date\: mixed, overdue\: mixed, href\: string\}\>\.$#'
+			identifier: return.type
+			count: 1
+			path: app/Support/Attention.php
+
+		-
+			message: '#^Method App\\Support\\Attention\:\:emergencyPlan\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: app/Support/Attention.php
+
+		-
+			message: '#^Method App\\Support\\Attention\:\:items\(\) should return Illuminate\\Support\\Collection\<int, array\{kind\: string, title\: string, detail\: string, date\: string, overdue\: bool, href\: string\}\> but returns Illuminate\\Support\\Collection\<int, non\-empty\-array\>\.$#'
+			identifier: return.type
+			count: 1
+			path: app/Support/Attention.php
+
+		-
+			message: '#^Method App\\Support\\Attention\:\:key\(\) has parameter \$item with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: app/Support/Attention.php
+
+		-
+			message: '#^Method App\\Support\\Attention\:\:schedule\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: app/Support/Attention.php
+
+		-
+			message: '#^Parameter \#1 \$callback of method Illuminate\\Database\\Eloquent\\Collection\<int,App\\Models\\LitterTask\>\:\:map\(\) contains unresolvable type\.$#'
+			identifier: argument.unresolvableType
+			count: 1
+			path: app/Support/Attention.php
+
+		-
+			message: '#^Return type of call to method Illuminate\\Database\\Eloquent\\Collection\<int,App\\Models\\LitterTask\>\:\:map\(\) contains unresolvable type\.$#'
+			identifier: method.unresolvableReturnType
+			count: 1
+			path: app/Support/Attention.php
+
+		-
+			message: '#^Return type of call to method Illuminate\\Support\\Collection\<int,array\<string, mixed\>\>\:\:all\(\) contains unresolvable type\.$#'
+			identifier: method.unresolvableReturnType
+			count: 1
+			path: app/Support/Attention.php
+
+		-
+			message: '#^Using nullsafe property access "\?\-\>title" on left side of \?\? is unnecessary\. Use \-\> instead\.$#'
+			identifier: nullsafe.neverNull
+			count: 1
+			path: app/Support/Attention.php
+
+		-
+			message: '#^Method App\\Support\\Inbreeding\:\:load\(\) has parameter \$ids with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: app/Support/Inbreeding.php
+
+		-
+			message: '#^Cannot call method diffInMonths\(\) on string\.$#'
+			identifier: method.nonObject
+			count: 1
+			path: app/Support/LitterHistory.php
+
+		-
+			message: '#^Cannot call method format\(\) on string\.$#'
+			identifier: method.nonObject
+			count: 1
+			path: app/Support/LitterHistory.php
+
+		-
+			message: '#^Cannot call method toDateString\(\) on string\.$#'
+			identifier: method.nonObject
+			count: 1
+			path: app/Support/LitterHistory.php
+
+		-
+			message: '#^Parameter \#1 \$callback of method Illuminate\\Support\\Collection\<int,App\\Models\\Litter\>\:\:first\(\) expects \(callable\(App\\Models\\Litter, int\)\: bool\)\|null, Closure\(App\\Models\\Litter\)\: \(string\|null\) given\.$#'
+			identifier: argument.type
+			count: 1
+			path: app/Support/LitterHistory.php
+
+		-
+			message: '#^Access to an undefined property App\\Models\\Litter\:\:\$title\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Support/MoneySummary.php
+
+		-
+			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$is_ours\.$#'
+			identifier: property.notFound
+			count: 2
+			path: app/Support/MoneySummary.php
+
+		-
+			message: '#^Cannot access property \$year on Carbon\\CarbonImmutable\|string\.$#'
+			identifier: property.nonObject
+			count: 1
+			path: app/Support/MoneySummary.php
+
+		-
+			message: '#^Cannot call method label\(\) on string\.$#'
+			identifier: method.nonObject
+			count: 1
+			path: app/Support/MoneySummary.php
+
+		-
+			message: '#^Method App\\Support\\MoneySummary\:\:forYear\(\) should return array\{income\: int, costs\: int, net\: int, income_lines\: list\<array\{label\: string, cents\: int\}\>, categories\: list\<array\{label\: string, cents\: int\}\>, litters\: list\<array\<string, mixed\>\>\} but returns array\{income\: int, costs\: int, net\: int, income_lines\: list\{0\?\: array\{label\: non\-falsy\-string, cents\: int\<1, max\>\}, 1\?\: array\{label\: ''Stud fees received'', cents\: int\<1, max\>\}\}, categories\: list\<array\{label\: \(int\|string\), cents\: int\}\>, litters\: array\<int, array\{id\: int, slug\: string, title\: mixed, income\: int, costs\: int, net\: int, puppies_sold\: int\}\>\}\.$#'
+			identifier: return.type
+			count: 1
+			path: app/Support/MoneySummary.php
+
+		-
+			message: '#^Method App\\Support\\MoneySummary\:\:years\(\) should return list\<int\> but returns array\<int, int\>\.$#'
+			identifier: return.type
+			count: 1
+			path: app/Support/MoneySummary.php
+
+		-
+			message: '#^Parameter \#1 \$callback of method Illuminate\\Database\\Eloquent\\Collection\<int,App\\Models\\Litter\>\:\:map\(\) contains unresolvable type\.$#'
+			identifier: argument.unresolvableType
+			count: 1
+			path: app/Support/MoneySummary.php
+
+		-
+			message: '#^Parameter \#1 \$callback of method Illuminate\\Support\\Collection\<int,array\<string, mixed\>\>\:\:sortByDesc\(\) contains unresolvable type\.$#'
+			identifier: argument.unresolvableType
+			count: 1
+			path: app/Support/MoneySummary.php
+
+		-
+			message: '#^Return type of call to method Illuminate\\Database\\Eloquent\\Collection\<int,App\\Models\\Litter\>\:\:map\(\) contains unresolvable type\.$#'
+			identifier: method.unresolvableReturnType
+			count: 1
+			path: app/Support/MoneySummary.php
+
+		-
+			message: '#^Return type of call to method Illuminate\\Support\\Collection\<int,array\<string, mixed\>\>\:\:all\(\) contains unresolvable type\.$#'
+			identifier: method.unresolvableReturnType
+			count: 1
+			path: app/Support/MoneySummary.php
+
+		-
+			message: '#^Return type of call to method Illuminate\\Support\\Collection\<int,array\<string, mixed\>\>\:\:values\(\) contains unresolvable type\.$#'
+			identifier: method.unresolvableReturnType
+			count: 1
+			path: app/Support/MoneySummary.php
+
+		-
+			message: '#^Unable to resolve the template type TGroupKey in call to method Illuminate\\Support\\Collection\<int,App\\Models\\Expense\>\:\:groupBy\(\)$#'
+			identifier: argument.templateType
+			count: 1
+			path: app/Support/MoneySummary.php
+
+		-
+			message: '#^Cannot access property \$value on string\.$#'
+			identifier: property.nonObject
+			count: 2
+			path: app/Support/Pedigree.php
+
+		-
+			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$kind\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Support/PuppySchedule.php
+
+		-
+			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$title\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Support/PuppySchedule.php
+
+		-
+			message: '#^Cannot call method copy\(\) on string\.$#'
+			identifier: method.nonObject
+			count: 1
+			path: app/Support/PuppySchedule.php
+
+		-
+			message: '#^Access to an undefined property App\\Models\\Litter\:\:\$title\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Support/Readiness.php
+
+		-
+			message: '#^Cannot call method format\(\) on Carbon\\CarbonImmutable\|string\.$#'
+			identifier: method.nonObject
+			count: 1
+			path: app/Support/Readiness.php
+
+		-
+			message: '#^Cannot call method gt\(\) on string\.$#'
+			identifier: method.nonObject
+			count: 1
+			path: app/Support/Readiness.php
+
+		-
+			message: '#^Cannot call method lt\(\) on Carbon\\CarbonImmutable\|string\.$#'
+			identifier: method.nonObject
+			count: 1
+			path: app/Support/Readiness.php
+
+		-
+			message: '#^Cannot call method copy\(\) on string\.$#'
+			identifier: method.nonObject
+			count: 2
+			path: database/seeders/DemoAkcSeeder.php
+
+		-
+			message: '#^Variable \$rows on left side of \?\? always exists and is not nullable\.$#'
+			identifier: nullCoalesce.variable
+			count: 1
+			path: database/seeders/DemoAkcSeeder.php
+
+		-
+			message: '#^Call to an undefined method Illuminate\\Database\\Eloquent\\Model\:\:healthRecords\(\)\.$#'
+			identifier: method.notFound
+			count: 1
+			path: database/seeders/DemoRecordsSeeder.php
+
+		-
+			message: '#^Cannot call method copy\(\) on string\.$#'
+			identifier: method.nonObject
+			count: 5
+			path: database/seeders/DemoRecordsSeeder.php
+
+		-
+			message: '#^Method Database\\Seeders\\DemoRecordsSeeder\:\:documents\(\) has parameter \$dogs with no type specified\.$#'
+			identifier: missingType.parameter
+			count: 1
+			path: database/seeders/DemoRecordsSeeder.php
+
+		-
+			message: '#^Method Database\\Seeders\\DemoRecordsSeeder\:\:healthRecords\(\) has parameter \$dogs with no type specified\.$#'
+			identifier: missingType.parameter
+			count: 1
+			path: database/seeders/DemoRecordsSeeder.php
+
+		-
+			message: '#^Method Database\\Seeders\\DemoRecordsSeeder\:\:litterDetails\(\) has parameter \$dogs with no type specified\.$#'
+			identifier: missingType.parameter
+			count: 1
+			path: database/seeders/DemoRecordsSeeder.php
+
+		-
+			message: '#^Using nullsafe property access "\?\-\>puppies" on left side of \?\? is unnecessary\. Use \-\> instead\.$#'
+			identifier: nullsafe.neverNull
+			count: 1
+			path: database/seeders/DemoRecordsSeeder.php
+
+		-
+			message: '#^Binary operation "%%" between int and 0 results in an error\.$#'
+			identifier: binaryOp.invalid
+			count: 1
+			path: database/seeders/DemoSeeder.php
+
+		-
+			message: '#^Call to an undefined method Illuminate\\Database\\Eloquent\\Model\:\:photos\(\)\.$#'
+			identifier: method.notFound
+			count: 1
+			path: database/seeders/DemoSeeder.php
+
+		-
+			message: '#^Call to an undefined method Illuminate\\Database\\Eloquent\\Model\:\:weights\(\)\.$#'
+			identifier: method.notFound
+			count: 1
+			path: database/seeders/DemoSeeder.php
+
+		-
+			message: '#^Cannot call method copy\(\) on string\.$#'
+			identifier: method.nonObject
+			count: 1
+			path: database/seeders/DemoSeeder.php
+
+		-
+			message: '#^Offset ''allen'' might not exist on non\-empty\-array\{jane\?\: App\\Models\\Contact, tom\?\: App\\Models\\Contact, sara\?\: App\\Models\\Contact, mike\?\: App\\Models\\Contact, priya\?\: App\\Models\\Contact, carl\?\: App\\Models\\Contact, beth\?\: App\\Models\\Contact, dan\?\: App\\Models\\Contact, \.\.\.\}\.$#'
+			identifier: offsetAccess.notFound
+			count: 1
+			path: database/seeders/DemoSeeder.php
+
+		-
+			message: '#^Offset ''jane'' might not exist on non\-empty\-array\{jane\?\: App\\Models\\Contact, tom\?\: App\\Models\\Contact, sara\?\: App\\Models\\Contact, mike\?\: App\\Models\\Contact, priya\?\: App\\Models\\Contact, carl\?\: App\\Models\\Contact, beth\?\: App\\Models\\Contact, dan\?\: App\\Models\\Contact, \.\.\.\}\.$#'
+			identifier: offsetAccess.notFound
+			count: 1
+			path: database/seeders/DemoSeeder.php
+
+		-
+			message: '#^Offset ''ridge'' might not exist on non\-empty\-array\{jane\?\: App\\Models\\Contact, tom\?\: App\\Models\\Contact, sara\?\: App\\Models\\Contact, mike\?\: App\\Models\\Contact, priya\?\: App\\Models\\Contact, carl\?\: App\\Models\\Contact, beth\?\: App\\Models\\Contact, dan\?\: App\\Models\\Contact, \.\.\.\}\.$#'
+			identifier: offsetAccess.notFound
+			count: 1
+			path: database/seeders/DemoSeeder.php
+
+		-
+			message: '#^Offset ''tom'' might not exist on non\-empty\-array\{jane\?\: App\\Models\\Contact, tom\?\: App\\Models\\Contact, sara\?\: App\\Models\\Contact, mike\?\: App\\Models\\Contact, priya\?\: App\\Models\\Contact, carl\?\: App\\Models\\Contact, beth\?\: App\\Models\\Contact, dan\?\: App\\Models\\Contact, \.\.\.\}\.$#'
+			identifier: offsetAccess.notFound
+			count: 1
+			path: database/seeders/DemoSeeder.php
+
+		-
+			message: '#^Offset int does not exist on array\{\}\.$#'
+			identifier: offsetAccess.notFound
+			count: 1
+			path: database/seeders/DemoSeeder.php
+
+		-
+			message: '#^Offset mixed does not exist on array\{\}\.$#'
+			identifier: offsetAccess.notFound
+			count: 1
+			path: database/seeders/DemoSeeder.php
+
+		-
+			message: '#^Parameter \#1 \$array \(array\{\}\) to function array_values is empty, call has no effect\.$#'
+			identifier: arrayValues.empty
+			count: 1
+			path: database/seeders/DemoSeeder.php
+
+		-
+			message: '#^Result of && is always false\.$#'
+			identifier: booleanAnd.alwaysFalse
+			count: 1
+			path: database/seeders/DemoSeeder.php
+
+		-
+			message: '#^Strict comparison using \=\=\= between \*NEVER\* and App\\Enums\\DogRole\:\:Dam will always evaluate to false\.$#'
+			identifier: identical.alwaysFalse
+			count: 1
+			path: database/seeders/DemoSeeder.php
+
+		-
+			message: '#^Strict comparison using \=\=\= between string and App\\Enums\\ContactType\:\:Buyer will always evaluate to false\.$#'
+			identifier: identical.alwaysFalse
+			count: 1
+			path: database/seeders/DemoSeeder.php

@@ -21,12 +21,12 @@ The demo login is `test@example.com` / `password`. Never seed or use that login 
 
 ## Everyday commands
 
-| Task | Command |
-| --- | --- |
-| Tests | `php artisan test --compact` |
-| PHP style | `vendor/bin/pint` |
-| JS lint and format | `npx vp check --fix` |
-| Type check | `npx vue-tsc --noEmit` |
+| Task                    | Command                                      |
+| ----------------------- | -------------------------------------------- |
+| Tests                   | `php artisan test --compact`                 |
+| PHP style               | `vendor/bin/pint`                            |
+| JS lint and format      | `npx vp check --fix`                         |
+| Type check              | `npx vue-tsc --noEmit`                       |
 | Regenerate typed routes | `php artisan wayfinder:generate --with-form` |
 
 Kennel commands (run on the server): `kennel:check` (setup health), `kennel:owner` (create or reset the owner login),
